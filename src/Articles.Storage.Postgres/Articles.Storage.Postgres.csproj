@@ -1,3 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Articles.Application\Articles.Application.csproj" />
+    <ProjectReference Include="..\Articles.Domain\Articles.Domain.csproj" />
+    <ProjectReference Include="..\Articles.Shared\Articles.Shared.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <InternalsVisibleTo Include="Articles.Storage.Postgres.Tests"/>
+  </ItemGroup>
 </Project>
