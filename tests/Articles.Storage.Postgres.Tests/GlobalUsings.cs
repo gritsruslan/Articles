@@ -1,0 +1,9 @@
+﻿global using FluentAssertions;
+global using Microsoft.EntityFrameworkCore;
+global using Articles.Application.Interfaces.Repositories;
+global using Articles.Domain.Constants;
+global using Articles.Domain.Identifiers;
+global using Articles.Domain.Models;
+global using Articles.Storage.Postgres.Entities;
+global using Articles.Storage.Postgres.Repositories;
+global using Xunit;
