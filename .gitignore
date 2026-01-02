@@ -10,4 +10,5 @@ riderModule.iml
 *.db-shm
 *.db-wal
 *.user
+launchSettings.json
 !MarketHistory.Db
