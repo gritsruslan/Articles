@@ -1,3 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Articles.Application\Articles.Application.csproj" />
+    <ProjectReference Include="..\Articles.Domain\Articles.Domain.csproj" />
+    <ProjectReference Include="..\Articles.Shared\Articles.Shared.csproj" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http"/>
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation"/>
+    <PackageReference Include="Newtonsoft.Json"/>
+  </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Articles.UnitTests"/>
+  </ItemGroup>
+    
 </Project>
