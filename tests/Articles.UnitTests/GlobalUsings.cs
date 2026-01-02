@@ -1,0 +1,11 @@
+﻿global using Moq;
+global using Xunit;
+global using FluentAssertions;
+global using Moq.Language.Flow;
+global using Articles.Application.Authentication;
+global using Articles.Application.Interfaces.Authentication;
+global using Articles.Application.Interfaces.Security;
+global using Articles.Domain.Identifiers;
+global using Articles.Domain.Models;
+global using Articles.Domain.ValueObjects;
+global using Articles.Shared.Result;

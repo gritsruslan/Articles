@@ -1,4 +1,6 @@
-﻿namespace Articles.Storage.Postgres.Initializer;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Articles.Storage.Postgres.Initializer;
 
 public interface IDbContextInitializer
 {
