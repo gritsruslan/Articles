@@ -7,8 +7,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Articles.Application\Articles.Application.csproj" />
-    <ProjectReference Include="..\src\Articles.Domain\Articles.Domain.csproj" />
+    <ProjectReference Include="..\Articles.Application\Articles.Application.csproj" />
+    <ProjectReference Include="..\Articles.Domain\Articles.Domain.csproj" />
+    <ProjectReference Include="..\Articles.Shared\Articles.Shared.csproj" />
   </ItemGroup>
 
 </Project>
