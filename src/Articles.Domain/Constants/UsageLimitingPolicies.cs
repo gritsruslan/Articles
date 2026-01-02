@@ -2,7 +2,7 @@
 
 public static class UsageLimitingPolicies
 {
-	public const string CreateTopic = "create-topic";
+	public const string CreateArticle = "create-article";
 
 	public const string CreateComment = "create-comment";
 

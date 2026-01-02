@@ -1,0 +1,42 @@
+{
+	"RolesOptions": {
+		"Roles": [
+			{
+				"Name" : "Guest",
+				"Permissions" : {
+					"ForumPermissions" : [],
+					"TopicPermissions": [],
+					"CommentPermissions" : [],
+					"AdminPermissions" : []
+				}
+			},
+			{
+				"Name": "User",
+				"Permissions": {
+					"ForumPermissions" : [],
+					"TopicPermissions": ["CreateTopic", "DeleteTopic", "LikeTopic", "UnlikeTopic"],
+					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
+					"AdminPermissions" : []
+				}
+			},
+			{
+				"Name": "Manager",
+				"Permissions": {
+					"ForumPermissions" : ["CreateForum", "OpenForum", "CloseForum"],
+					"TopicPermissions": ["CreateTopic", "DeleteOwnTopic", "LikeTopic", "UnlikeTopic"],
+					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
+					"AdminPermissions" : []
+				}
+			},
+			{
+				"Name": "Admin",
+				"Permissions": {
+					"ForumPermissions" : ["CreateForum", "OpenForum", "CloseForum"],
+					"TopicPermissions": ["CreateTopic", "DeleteTopic", "LikeTopic", "UnlikeTopic"],
+					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
+					"AdminPermissions" : ["BlockUser", "DeleteTopic", "DeleteComment"]
+				}
+			}
+		]
+	}
+}

@@ -1,3 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
+
+  <ItemGroup>
+    <PackageReference Include="MediatR"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog.AspNetCore"/>
+    <PackageReference Include="Swashbuckle.AspNetCore"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Articles.Storage.Redis\Articles.Storage.Redis.csproj" />
+    <ProjectReference Include="..\Articles.Application\Articles.Application.csproj" />
+    <ProjectReference Include="..\Articles.Infrastructure\Articles.Infrastructure.csproj" />
+    <ProjectReference Include="..\Articles.Shared\Articles.Shared.csproj" />
+    <ProjectReference Include="..\Articles.Storage.Postgres\Articles.Storage.Postgres.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Articles.UnitTests"/>
+    <InternalsVisibleTo Include="Articles.E2E"/>
+  </ItemGroup>
 </Project>
