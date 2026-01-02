@@ -1,6 +1,4 @@
-﻿using Articles.Shared.Result;
-
-namespace Articles.Application.Authorization;
+﻿namespace Articles.Application.Authorization;
 
 public interface IAuthorizationService
 {

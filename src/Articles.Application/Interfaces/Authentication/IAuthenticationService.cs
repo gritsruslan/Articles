@@ -1,5 +1,4 @@
 ﻿using Articles.Application.Authentication;
-using Articles.Domain.Identifiers;
 
 namespace Articles.Application.Interfaces.Authentication;
 

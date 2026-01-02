@@ -1,7 +1,5 @@
 ﻿using Articles.Application.Authentication;
-using Articles.Application.Interfaces.Authentication;
 using Articles.Application.Interfaces.Repositories;
-using Articles.Domain.Identifiers;
 
 namespace Articles.Infrastructure.Authentication;
 

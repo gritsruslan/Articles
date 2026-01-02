@@ -1,12 +1,6 @@
 ﻿using Articles.Application.Interfaces.Repositories;
 using Articles.Application.Interfaces.Security;
 using Articles.Domain.Enums;
-using Articles.Domain.Errors;
-using Articles.Domain.Identifiers;
-using Articles.Domain.Models;
-using Articles.Domain.ValueObjects;
-using Articles.Shared.CQRS;
-using Articles.Shared.Result;
 
 namespace Articles.Application.AuthUseCases.Commands.Registration;
 

@@ -1,16 +1,10 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Articles.Application.Authentication;
-using Articles.Application.Interfaces.Authentication;
-using Articles.Application.Interfaces.Security;
-using Articles.Domain.Errors;
-using Articles.Domain.Identifiers;
 using Articles.Shared.DefaultServices;
 using Articles.Shared.Options;
-using Articles.Shared.Result;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using JsonException = System.Text.Json.JsonException;
 
 namespace Articles.Infrastructure.Authentication;
 

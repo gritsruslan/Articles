@@ -1,8 +1,5 @@
 ﻿using Articles.Application.Interfaces.Authentication;
 using Articles.Application.Interfaces.Repositories;
-using Articles.Domain.Errors;
-using Articles.Shared.CQRS;
-using Articles.Shared.Result;
 
 namespace Articles.Application.AuthUseCases.Commands.Logout;
 

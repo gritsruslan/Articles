@@ -3,7 +3,6 @@ using Articles.Application.Authorization;
 using Articles.Application.UsageLimiting;
 using Articles.Domain.Constants;
 using Articles.Domain.Permissions;
-using Articles.Shared.CQRS;
 
 namespace Articles.Application.AuthUseCases.Commands.Me;
 

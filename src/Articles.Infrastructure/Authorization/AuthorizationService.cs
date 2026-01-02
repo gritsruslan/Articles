@@ -1,8 +1,5 @@
 ﻿using Articles.Application.Authorization;
-using Articles.Application.Interfaces.Authentication;
-using Articles.Domain.Errors;
 using Articles.Domain.Permissions;
-using Articles.Shared.Result;
 
 namespace Articles.Infrastructure.Authorization;
 

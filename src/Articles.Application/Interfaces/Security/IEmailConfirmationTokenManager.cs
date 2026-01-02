@@ -1,5 +1,4 @@
 ﻿using Articles.Application.Authentication;
-using Articles.Shared.Result;
 
 namespace Articles.Application.Interfaces.Security;
 

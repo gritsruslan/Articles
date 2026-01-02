@@ -1,10 +1,6 @@
-﻿using Articles.Application.Interfaces.Authentication;
-using Articles.Domain.Errors;
-using Articles.Domain.Identifiers;
-using Articles.Domain.Models;
+﻿using Articles.Domain.Models;
 using Articles.Shared.DefaultServices;
 using Articles.Shared.Options;
-using Articles.Shared.Result;
 using Microsoft.Extensions.Logging;
 
 namespace Articles.Infrastructure.Authentication;

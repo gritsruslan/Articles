@@ -1,8 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using Articles.Application.Interfaces.Security;
 using Articles.Domain.Constants;
-using Articles.Domain.Errors;
-using Articles.Shared.Result;
 
 namespace Articles.Infrastructure.Security;
 

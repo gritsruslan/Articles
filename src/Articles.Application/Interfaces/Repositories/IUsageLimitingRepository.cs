@@ -1,6 +1,4 @@
-﻿using Articles.Domain.Identifiers;
-
-namespace Articles.Application.Interfaces.Repositories;
+﻿namespace Articles.Application.Interfaces.Repositories;
 
 public interface IUsageLimitingRepository
 {
