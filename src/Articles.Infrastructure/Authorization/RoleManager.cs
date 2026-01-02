@@ -32,16 +32,16 @@ internal sealed class RoleManager : IRoleManager
 
 		foreach (var roleOption in options.Roles)
 		{
-			var forumPermissions = roleOption.Permissions.ForumPermissions.Select(name =>
-				new Permission { Id = (int)Enum.Parse<ForumPermissions>(name), Name = name }).ToImmutableList();
+			var blogPermissions = roleOption.Permissions.BlogPermissions.Select(name =>
+				new Permission { Id = (int)Enum.Parse<BlogPermissions>(name), Name = name }).ToImmutableList();
 
-			var topicPermissions = roleOption.Permissions.ForumPermissions.Select(name =>
-				new Permission { Id = (int)Enum.Parse<TopicPermissions>(name), Name = name }).ToImmutableList();
+			var articlePermissions = roleOption.Permissions.BlogPermissions.Select(name =>
+				new Permission { Id = (int)Enum.Parse<ArticlePermissions>(name), Name = name }).ToImmutableList();
 
-			var commentPermissions = roleOption.Permissions.ForumPermissions.Select(name =>
+			var commentPermissions = roleOption.Permissions.BlogPermissions.Select(name =>
 				new Permission { Id = (int)Enum.Parse<CommentPermissions>(name), Name = name }).ToImmutableList();
 
-			var adminPermissions = roleOption.Permissions.ForumPermissions.Select(name =>
+			var adminPermissions = roleOption.Permissions.BlogPermissions.Select(name =>
 				new Permission { Id = (int)Enum.Parse<AdminPermissions>(name), Name = name }).ToImmutableList();
 
 			var roleId = RoleId.Create((int)Enum.Parse<Roles>(roleOption.Name));
@@ -51,8 +51,8 @@ internal sealed class RoleManager : IRoleManager
 				Name = roleOption.Name,
 				Permissions =
 				[
-					..forumPermissions,
-					..topicPermissions,
+					..blogPermissions,
+					..articlePermissions,
 					..commentPermissions,
 					..adminPermissions
 				]

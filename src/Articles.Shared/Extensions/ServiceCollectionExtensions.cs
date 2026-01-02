@@ -11,7 +11,7 @@ namespace Articles.Shared.Extensions
 		{
 			return services.AddOptions<TOptions>()
 				.Bind(configuration.GetRequiredSection(typeof(TOptions).Name))
-				.ValidateDataAnnotations()
+				//.ValidateDataAnnotations() TODO
 				.ValidateOnStart()
 				.Services;
 		}

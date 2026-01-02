@@ -4,8 +4,8 @@
 			{
 				"Name" : "Guest",
 				"Permissions" : {
-					"ForumPermissions" : [],
-					"TopicPermissions": [],
+					"BlogPermissions" : [],
+					"ArticlePermissions": [],
 					"CommentPermissions" : [],
 					"AdminPermissions" : []
 				}
@@ -13,8 +13,8 @@
 			{
 				"Name": "User",
 				"Permissions": {
-					"ForumPermissions" : [],
-					"TopicPermissions": ["CreateTopic", "DeleteTopic", "LikeTopic", "UnlikeTopic"],
+					"BlogPermissions" : [],
+					"ArticlePermissions": ["CreateArticle", "DeleteTopic", "LikeTopic", "UnlikeTopic"],
 					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
 					"AdminPermissions" : []
 				}
@@ -22,8 +22,8 @@
 			{
 				"Name": "Manager",
 				"Permissions": {
-					"ForumPermissions" : ["CreateForum", "OpenForum", "CloseForum"],
-					"TopicPermissions": ["CreateTopic", "DeleteOwnTopic", "LikeTopic", "UnlikeTopic"],
+					"BlogPermissions" : ["CreateBlog"],
+					"ArticlePermissions": ["CreateArticle", "DeleteOwnTopic", "LikeTopic", "UnlikeTopic"],
 					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
 					"AdminPermissions" : []
 				}
@@ -31,8 +31,8 @@
 			{
 				"Name": "Admin",
 				"Permissions": {
-					"ForumPermissions" : ["CreateForum", "OpenForum", "CloseForum"],
-					"TopicPermissions": ["CreateTopic", "DeleteTopic", "LikeTopic", "UnlikeTopic"],
+					"BlogPermissions" : ["CreateBlog"],
+					"ArticlePermissions": ["CreateArticle", "DeleteTopic", "LikeTopic", "UnlikeTopic"],
 					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
 					"AdminPermissions" : ["BlockUser", "DeleteTopic", "DeleteComment"]
 				}

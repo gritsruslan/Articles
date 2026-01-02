@@ -2,9 +2,9 @@ namespace Articles.Shared.Options;
 
 public sealed class PermissionOptions
 {
-	public string[] ForumPermissions { get; init; } = [];
+	public string[] BlogPermissions { get; init; } = [];
 
-	public string[] TopicPermissions { get; init; } = [];
+	public string[] ArticlePermissions { get; init; } = [];
 
 	public string[] CommentPermissions { get; init; } = [];
 
