@@ -76,7 +76,7 @@ internal sealed class AccessTokenManager(
 		{
 			token = JsonConvert.DeserializeObject<AccessToken>(json);
 		}
-		catch (JsonException ex)
+		catch (Exception ex)
 		{
 			logger.LogWarning(
 				"Failed to deserialize json access token into AccessToken type, " +
