@@ -1,6 +1,4 @@
-﻿using Articles.Domain.ValueObjects;
-
-namespace Articles.Application.Interfaces.Mail;
+﻿namespace Articles.Application.Interfaces.Mail;
 
 public interface IMailSender
 {

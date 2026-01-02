@@ -1,6 +1,4 @@
-﻿using Articles.Shared.Result;
-
-namespace Articles.Application.Interfaces.Security;
+﻿namespace Articles.Application.Interfaces.Security;
 
 public interface IPasswordValidator
 {

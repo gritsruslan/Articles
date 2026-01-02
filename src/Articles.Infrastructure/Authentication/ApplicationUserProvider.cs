@@ -1,5 +1,4 @@
 ﻿using Articles.Application.Authentication;
-using Articles.Application.Interfaces.Authentication;
 
 namespace Articles.Infrastructure.Authentication;
 

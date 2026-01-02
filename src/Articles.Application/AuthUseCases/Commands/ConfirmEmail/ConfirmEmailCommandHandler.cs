@@ -1,8 +1,5 @@
 ﻿using Articles.Application.Interfaces.Repositories;
 using Articles.Application.Interfaces.Security;
-using Articles.Domain.Errors;
-using Articles.Shared.CQRS;
-using Articles.Shared.Result;
 
 namespace Articles.Application.AuthUseCases.Commands.ConfirmEmail;
 

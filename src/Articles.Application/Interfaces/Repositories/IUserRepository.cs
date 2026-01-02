@@ -1,8 +1,4 @@
-﻿using Articles.Domain.Identifiers;
-using Articles.Domain.Models;
-using Articles.Domain.ValueObjects;
-
-namespace Articles.Application.Interfaces.Repositories;
+﻿namespace Articles.Application.Interfaces.Repositories;
 
 public interface IUserRepository
 {

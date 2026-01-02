@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Moq" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="xunit"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+  </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Articles.Application\Articles.Application.csproj" />
+      <ProjectReference Include="..\..\src\Articles.Domain\Articles.Domain.csproj" />
+      <ProjectReference Include="..\..\src\Articles.Infrastructure\Articles.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\src\Articles.Shared\Articles.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

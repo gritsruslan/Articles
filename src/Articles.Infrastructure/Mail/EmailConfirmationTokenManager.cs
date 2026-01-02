@@ -1,10 +1,7 @@
 ﻿using System.Text;
 using Articles.Application.Authentication;
-using Articles.Application.Interfaces.Security;
-using Articles.Domain.Errors;
 using Articles.Shared.DefaultServices;
 using Articles.Shared.Options;
-using Articles.Shared.Result;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 

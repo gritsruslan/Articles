@@ -2,10 +2,6 @@
 using Articles.Application.Interfaces.Authentication;
 using Articles.Application.Interfaces.Repositories;
 using Articles.Application.Interfaces.Security;
-using Articles.Domain.Errors;
-using Articles.Domain.ValueObjects;
-using Articles.Shared.CQRS;
-using Articles.Shared.Result;
 
 namespace Articles.Application.AuthUseCases.Commands.Login;
 

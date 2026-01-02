@@ -1,5 +1,4 @@
 ﻿using Articles.Application.Authentication;
-using Articles.Shared.CQRS;
 
 namespace Articles.Application.AuthUseCases.Commands.RefreshTokens;
 

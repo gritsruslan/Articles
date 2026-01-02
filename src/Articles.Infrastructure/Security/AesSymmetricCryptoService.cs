@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using Articles.Application.Interfaces.Security;
 using Articles.Shared.DefaultServices;
 
 namespace Articles.Infrastructure.Security;

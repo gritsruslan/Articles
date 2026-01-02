@@ -3,9 +3,7 @@ using Articles.Application.Authorization;
 using Articles.Application.Interfaces.Authentication;
 using Articles.Application.Interfaces.Repositories;
 using Articles.Application.UsageLimiting;
-using Articles.Domain.Errors;
 using Articles.Shared.Options;
-using Articles.Shared.Result;
 using MediatR;
 using Microsoft.Extensions.Options;
 

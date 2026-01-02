@@ -1,8 +1,4 @@
-﻿using Articles.Domain.Identifiers;
-using Articles.Domain.Models;
-using Articles.Shared.Result;
-
-namespace Articles.Application.Interfaces.Authentication;
+﻿namespace Articles.Application.Interfaces.Authentication;
 
 public interface ISessionManager
 {

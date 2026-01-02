@@ -1,7 +1,5 @@
 ﻿using System.Collections.Immutable;
-using Articles.Application.Interfaces.Authentication;
 using Articles.Domain.Enums;
-using Articles.Domain.Identifiers;
 using Articles.Domain.Models;
 using Articles.Domain.Permissions;
 using Articles.Shared.Options;

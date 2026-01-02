@@ -1,7 +1,4 @@
-﻿using Articles.Domain.Identifiers;
-using Articles.Domain.Models;
-
-namespace Articles.Application.Interfaces.Repositories;
+﻿namespace Articles.Application.Interfaces.Repositories;
 
 public interface ISessionRepository
 {

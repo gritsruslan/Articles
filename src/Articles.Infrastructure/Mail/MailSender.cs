@@ -1,6 +1,5 @@
 ﻿using System.Net.Mail;
 using Articles.Application.Interfaces.Mail;
-using Articles.Domain.ValueObjects;
 using Articles.Shared.Options;
 
 namespace Articles.Infrastructure.Mail;
