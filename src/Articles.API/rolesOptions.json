@@ -14,7 +14,7 @@
 				"Name": "User",
 				"Permissions": {
 					"BlogPermissions" : [],
-					"ArticlePermissions": ["CreateArticle", "DeleteTopic", "LikeTopic", "UnlikeTopic"],
+					"ArticlePermissions": ["CreateArticle", "DeleteOwnArticle", "LikeArticle", "UnlikeArticle"],
 					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
 					"AdminPermissions" : []
 				}
@@ -23,7 +23,7 @@
 				"Name": "Manager",
 				"Permissions": {
 					"BlogPermissions" : ["CreateBlog"],
-					"ArticlePermissions": ["CreateArticle", "DeleteOwnTopic", "LikeTopic", "UnlikeTopic"],
+					"ArticlePermissions": ["CreateArticle", "DeleteOwnArticle", "LikeArticle", "UnlikeArticle"],
 					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
 					"AdminPermissions" : []
 				}
@@ -32,9 +32,9 @@
 				"Name": "Admin",
 				"Permissions": {
 					"BlogPermissions" : ["CreateBlog"],
-					"ArticlePermissions": ["CreateArticle", "DeleteTopic", "LikeTopic", "UnlikeTopic"],
+					"ArticlePermissions": ["CreateArticle", "DeleteOwnArticle", "LikeArticle", "UnlikeArticle"],
 					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
-					"AdminPermissions" : ["BlockUser", "DeleteTopic", "DeleteComment"]
+					"AdminPermissions" : ["BlockUser", "DeleteArticle", "DeleteComment"]
 				}
 			}
 		]

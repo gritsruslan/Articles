@@ -33,11 +33,17 @@ public static class DependencyInjection
 			.AddScoped<IAuthorizationService, AuthorizationService>()
 			.AddSingleton<ISessionManager, SessionManager>();
 
+		var options = configuration.GetRequiredSection(nameof(RolesOptions)).Get<RolesOptions>()!;
+		IRoleManager roleManager = RoleManager.ParseFromOptions(options);
+		services.AddSingleton(roleManager);
+
+		/*
 		services.AddSingleton<IRoleManager>(_ =>
 		{
 			var options = configuration.GetRequiredSection(nameof(RolesOptions)).Get<RolesOptions>()!;
 			return RoleManager.ParseFromOptions(options);
 		});
+		*/
 
 		services.AddTransient<IMailSender, MailSender>(static serviceProvider =>
 		{

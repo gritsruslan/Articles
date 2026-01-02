@@ -4,6 +4,6 @@
 public enum AdminPermissions
 {
 	BlockUser = 999_01,
-	DeleteTopic = 999_02,
+	DeleteArticle = 999_02,
 	DeleteComment = 999_03
 }

@@ -35,13 +35,13 @@ internal sealed class RoleManager : IRoleManager
 			var blogPermissions = roleOption.Permissions.BlogPermissions.Select(name =>
 				new Permission { Id = (int)Enum.Parse<BlogPermissions>(name), Name = name }).ToImmutableList();
 
-			var articlePermissions = roleOption.Permissions.BlogPermissions.Select(name =>
+			var articlePermissions = roleOption.Permissions.ArticlePermissions.Select(name =>
 				new Permission { Id = (int)Enum.Parse<ArticlePermissions>(name), Name = name }).ToImmutableList();
 
-			var commentPermissions = roleOption.Permissions.BlogPermissions.Select(name =>
+			var commentPermissions = roleOption.Permissions.CommentPermissions.Select(name =>
 				new Permission { Id = (int)Enum.Parse<CommentPermissions>(name), Name = name }).ToImmutableList();
 
-			var adminPermissions = roleOption.Permissions.BlogPermissions.Select(name =>
+			var adminPermissions = roleOption.Permissions.AdminPermissions.Select(name =>
 				new Permission { Id = (int)Enum.Parse<AdminPermissions>(name), Name = name }).ToImmutableList();
 
 			var roleId = RoleId.Create((int)Enum.Parse<Roles>(roleOption.Name));
