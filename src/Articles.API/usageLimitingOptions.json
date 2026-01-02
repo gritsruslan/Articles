@@ -1,0 +1,26 @@
+{
+	"UsageLimitingOptions" : {
+		"Policies" : [
+			{
+				"Name" : "create-article",
+				"OperationsCount" : 5,
+				"RefreshTime" : "1.00:00:00"
+			},
+			{
+				"Name" : "create-comment",
+				"OperationsCount" : 10,
+				"RefreshTime" : "0.00:02:00"
+			},
+			{
+				"Name" : "email-confirmation-message",
+				"OperationsCount" : 2,
+				"RefreshTime" : "1.00:00:00"
+			},
+			{
+				"Name" : "for-testing",
+				"OperationsCount" : 5,
+				"RefreshTime" : "0.00:01:00"
+			}
+		]
+	}
+}

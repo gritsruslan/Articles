@@ -1,0 +1,34 @@
+name: articles
+
+networks:
+  default:
+    name: articles
+
+volumes:
+  articles-postgres:
+
+services:
+  postgres:
+    container_name: articles-postgres
+    image: postgres:17
+    ports:
+      - '5432:5432'
+    volumes:
+      - articles-postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  mailhog:
+    container_name: 'mailhog'
+    image: 'mailhog/mailhog'
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
+  redis:
+    container_name: articles-redis
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - '6379:6379'

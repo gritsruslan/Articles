@@ -1,0 +1,42 @@
+{
+	"RolesOptions": {
+		"Roles": [
+			{
+				"Name" : "Guest",
+				"Permissions" : {
+					"BlogPermissions" : [],
+					"ArticlePermissions": [],
+					"CommentPermissions" : [],
+					"AdminPermissions" : []
+				}
+			},
+			{
+				"Name": "User",
+				"Permissions": {
+					"BlogPermissions" : [],
+					"ArticlePermissions": ["CreateArticle", "DeleteOwnArticle", "LikeArticle", "UnlikeArticle"],
+					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
+					"AdminPermissions" : []
+				}
+			},
+			{
+				"Name": "Manager",
+				"Permissions": {
+					"BlogPermissions" : ["CreateBlog"],
+					"ArticlePermissions": ["CreateArticle", "DeleteOwnArticle", "LikeArticle", "UnlikeArticle"],
+					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
+					"AdminPermissions" : []
+				}
+			},
+			{
+				"Name": "Admin",
+				"Permissions": {
+					"BlogPermissions" : ["CreateBlog"],
+					"ArticlePermissions": ["CreateArticle", "DeleteOwnArticle", "LikeArticle", "UnlikeArticle"],
+					"CommentPermissions" : ["CreateComment", "DeleteOwnComment"],
+					"AdminPermissions" : ["BlockUser", "DeleteArticle", "DeleteComment"]
+				}
+			}
+		]
+	}
+}

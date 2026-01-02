@@ -1,0 +1,56 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.yml]
+indent_style = space
+indent_size = 2
+
+[*json]
+indent_size = 2
+
+[*csproj]
+indent_style = space
+indent_size = 2
+
+[*props]
+indent_style = space
+indent_size = 2
+
+[*.cs]
+# Accessibility modifiers
+dotnet_style_require_accessibility_modifiers = always:error
+
+# Suggest more modern language features when available
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_explicit_tuple_names = true:suggestion
+
+# Nullability
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
+
+# Braces
+csharp_prefer_braces = true:suggestion
+
+# PascalCase for constants
+dotnet_naming_rule.constant_fields_should_be_pascalcase.severity = warning
+dotnet_naming_rule.constant_fields_should_be_pascalcase.symbols = constant_fields
+dotnet_naming_rule.constant_fields_should_be_pascalcase.style = pascalcase_style
+dotnet_naming_symbols.constant_fields.applicable_kinds = field
+dotnet_naming_symbols.constant_fields.required_modifiers = const
+dotnet_naming_style.pascalcase_style.capitalization = pascal_case
+
+
+
+
+
+
+

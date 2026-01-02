@@ -1,0 +1,51 @@
+using Articles.API.Authentication;
+using Articles.API.Endpoints;
+using Articles.API.Extensions;
+using Articles.API.Middlewares;
+using Articles.API.Monitoring;
+using Articles.Application;
+using Articles.Infrastructure;
+using Articles.Shared;
+using Articles.Storage.Postgres;
+using Articles.Storage.Redis;
+
+var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+var environment = builder.Environment;
+
+configuration.AddJsonFile("rolesOptions.json"); //all roles and their permissions
+configuration.AddJsonFile("usageLimitingOptions.json"); //all usage limiting policies
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddApiLogging(environment);
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();
+
+builder.Services
+	.AddDefaultServices()
+	.ConfigureOptions(configuration);
+
+builder.Services
+	.AddApplication()
+	.AddInfrastructure(configuration)
+	.AddPostgres(configuration)
+	.AddRedis(configuration);
+
+var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+await app.InitializeDatabaseAsync();
+
+app.UseMiddleware<GlobalExceptionHandler>()
+	.UseMiddleware<AuthenticationMiddleware>();
+
+app.MapAuthEndpoints();
+
+app.Run();
+
+public partial class Program;
