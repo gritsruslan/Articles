@@ -9,7 +9,6 @@ public class ConfirmEmailTests(ArticlesWebApplicationFactory factory, ITestOutpu
 	: IClassFixture<ArticlesWebApplicationFactory>
 {
 	[Fact]
-	// TODO : fix
 	private async Task SuccessfulConfirmEmail()
 	{
 		using var client = factory.CreateClient();

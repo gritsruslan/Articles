@@ -8,6 +8,8 @@ public sealed class ArticlesDbContext(DbContextOptions<ArticlesDbContext> option
 
 	public DbSet<SessionEntity> Sessions => Set<SessionEntity>();
 
+	public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		//modelBuilder.HasDefaultSchema("articles");
