@@ -49,7 +49,7 @@ dotnet_naming_symbols.constant_fields.required_modifiers = const
 dotnet_naming_style.pascalcase_style.capitalization = pascal_case
 
 
-
+resharper_arrange_type_member_modifiers_highlighting=none
 
 
 

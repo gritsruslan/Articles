@@ -44,7 +44,8 @@ await app.InitializeDatabaseAsync();
 app.UseMiddleware<GlobalExceptionHandler>()
 	.UseMiddleware<AuthenticationMiddleware>();
 
-app.MapAuthEndpoints();
+app.MapServiceEndpoints()
+	.MapAuthEndpoints();
 
 app.Run();
 
