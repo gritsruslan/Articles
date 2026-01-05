@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Articles.Storage.Postgres.Configurations;
 
-public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
+public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessageEntity>
 {
-	public void Configure(EntityTypeBuilder<OutboxMessage> builder)
+	public void Configure(EntityTypeBuilder<OutboxMessageEntity> builder)
 	{
 		builder.HasKey(o => o.Id);
 

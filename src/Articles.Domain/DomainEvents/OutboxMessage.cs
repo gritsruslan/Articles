@@ -1,4 +1,4 @@
-﻿namespace Articles.Storage.Postgres.Entities;
+﻿namespace Articles.Domain.DomainEvents;
 
 public sealed class OutboxMessage
 {

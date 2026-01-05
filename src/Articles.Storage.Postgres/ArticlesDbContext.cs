@@ -8,7 +8,7 @@ public sealed class ArticlesDbContext(DbContextOptions<ArticlesDbContext> option
 
 	public DbSet<SessionEntity> Sessions => Set<SessionEntity>();
 
-	public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+	public DbSet<OutboxMessageEntity> OutboxMessages => Set<OutboxMessageEntity>();
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
