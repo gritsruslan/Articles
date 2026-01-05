@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Articles.Storage.Postgres",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{51345533-EBA7-4DF1-8C3A-2591FAD847C6}"
 	ProjectSection(SolutionItems) = preProject
-		docker\docker-compose.yml = docker\docker-compose.yml
+		docker\docker-compose.yaml = docker\docker-compose.yaml
 		docker\loki-config.yml = docker\loki-config.yml
 	EndProjectSection
 EndProject
@@ -33,7 +33,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Articles.Storage.Redis", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "grafana", "grafana", "{F6F7FFB4-8FEA-4C45-AD5E-4631E8DD5E26}"
 	ProjectSection(SolutionItems) = preProject
-		docker\grafana\datasources.yml = docker\grafana\datasources.yml
+		docker\grafana\datasources.yaml = docker\grafana\datasources.yaml
 	EndProjectSection
 EndProject
 Global

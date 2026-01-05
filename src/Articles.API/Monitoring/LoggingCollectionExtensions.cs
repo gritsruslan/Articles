@@ -1,7 +1,9 @@
-﻿using Serilog;
+﻿using Articles.Shared.Extensions;
+using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Filters;
+using Serilog.Sinks.Grafana.Loki;
 
 namespace Articles.API.Monitoring;
 
@@ -9,6 +11,7 @@ internal static class LoggingCollectionExtensions
 {
 	public static IServiceCollection AddApiLogging(
 		this IServiceCollection services,
+		IConfiguration configuration,
 		IWebHostEnvironment environment)
 	{
 		var logLevelSwitch = new LoggingLevelSwitch(initialMinimumLevel: LogEventLevel.Warning);
@@ -22,7 +25,8 @@ internal static class LoggingCollectionExtensions
 				.WriteTo.Console()
 				.WriteTo.Logger(lc => lc.MinimumLevel.ControlledBy(logLevelSwitch)
 					.Filter.ByExcluding(Matching.FromSource("Microsoft"))
-					// write to LOKI
+					.WriteTo.GrafanaLoki(configuration.GetRequiredConnectionString("Loki"),
+						propertiesAsLabels: ["Application", "Environment"])
 				)
 				.CreateLogger()
 		));

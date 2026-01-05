@@ -19,7 +19,7 @@ configuration.AddJsonFile("usageLimitingOptions.json"); //all usage limiting pol
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddApiLogging(environment);
+builder.Services.AddApiLogging(configuration, environment);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();

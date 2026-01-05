@@ -13,6 +13,7 @@ internal static class ServiceEndpoints
 
 		group.MapGet("currentLogLevel", CurrentLogLevel);
 		group.MapPost("switchLogLevel", SwitchLogLevel);
+		group.MapGet("test", Test);
 
 		return app;
 	}
@@ -37,5 +38,16 @@ internal static class ServiceEndpoints
 		};
 
 		return  Results.Ok(new { CurrentLogLevel = loggingLevelSwitch.MinimumLevel.ToString() });
+	}
+
+	private static IResult Test([FromServices] ILoggerFactory loggerFactory)
+	{
+		var logger = loggerFactory.CreateLogger("Test");
+
+		logger.LogInformation("INFORMATION TEST LOG");
+		logger.LogWarning("WARNING TEST LOG");
+		logger.LogError("ERROR TEST LOG");
+
+		return Results.Ok();
 	}
 }
