@@ -1,7 +1,4 @@
-﻿using Articles.Domain.Identifiers;
-using Articles.Domain.Models;
-
-namespace Articles.Application.Interfaces.Authentication;
+﻿namespace Articles.Application.Interfaces.Authentication;
 
 public interface IRoleManager
 {

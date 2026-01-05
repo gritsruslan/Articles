@@ -1,6 +1,5 @@
 ﻿using Articles.Application.Authorization;
 using Articles.Domain.Permissions;
-using Articles.Shared.CQRS;
 
 namespace Articles.Application.AuthUseCases.Commands.Logout;
 

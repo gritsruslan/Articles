@@ -1,8 +1,6 @@
 ﻿using System.Net.Mail;
 using Articles.Application.Authorization;
-using Articles.Application.Interfaces.Authentication;
 using Articles.Application.Interfaces.Mail;
-using Articles.Application.Interfaces.Security;
 using Articles.Infrastructure.Authentication;
 using Articles.Infrastructure.Authorization;
 using Articles.Infrastructure.Mail;

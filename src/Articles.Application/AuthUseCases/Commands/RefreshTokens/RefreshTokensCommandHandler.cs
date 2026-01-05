@@ -1,10 +1,7 @@
 ﻿using Articles.Application.Authentication;
 using Articles.Application.Interfaces.Authentication;
 using Articles.Application.Interfaces.Repositories;
-using Articles.Domain.Errors;
-using Articles.Shared.CQRS;
 using Articles.Shared.DefaultServices;
-using Articles.Shared.Result;
 using Articles.Shared.UnitOfWork;
 
 namespace Articles.Application.AuthUseCases.Commands.RefreshTokens;

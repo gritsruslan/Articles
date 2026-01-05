@@ -1,7 +1,5 @@
 ﻿using Articles.Application.Authentication;
 using Articles.Application.Interfaces.Authentication;
-using Articles.Shared.CQRS;
-using Articles.Shared.Result;
 
 namespace Articles.Application.AuthUseCases.Commands.Me;
 
