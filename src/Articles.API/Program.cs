@@ -5,6 +5,7 @@ using Articles.API.Middlewares;
 using Articles.API.Monitoring;
 using Articles.Application;
 using Articles.Infrastructure;
+using Articles.Infrastructure.BackgroundService;
 using Articles.Shared;
 using Articles.Storage.Postgres;
 using Articles.Storage.Redis;
@@ -23,6 +24,7 @@ builder.Services.AddApiLogging(configuration, environment);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();
+builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
 
 builder.Services
 	.AddDefaultServices()
