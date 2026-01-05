@@ -26,9 +26,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{51345533-EBA7-4DF1-8C3A-2591FAD847C6}"
 	ProjectSection(SolutionItems) = preProject
 		docker\docker-compose.yml = docker\docker-compose.yml
+		docker\loki-config.yml = docker\loki-config.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Articles.Storage.Redis", "src\Articles.Storage.Redis\Articles.Storage.Redis.csproj", "{D30AEA82-EC53-48CA-808C-DB728E19F79F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "grafana", "grafana", "{F6F7FFB4-8FEA-4C45-AD5E-4631E8DD5E26}"
+	ProjectSection(SolutionItems) = preProject
+		docker\grafana\datasources.yml = docker\grafana\datasources.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +49,7 @@ Global
 		{F98F979C-6991-48C7-B8D0-32512A3E9694} = {D7A2BF73-B3D3-4503-B00A-752566F292C6}
 		{1505EE38-0992-4B0B-B70A-12AAA960219E} = {D7A2BF73-B3D3-4503-B00A-752566F292C6}
 		{D30AEA82-EC53-48CA-808C-DB728E19F79F} = {D7A2BF73-B3D3-4503-B00A-752566F292C6}
+		{F6F7FFB4-8FEA-4C45-AD5E-4631E8DD5E26} = {51345533-EBA7-4DF1-8C3A-2591FAD847C6}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D1B21C94-6F26-41B3-B7F7-87FB5DEAF371}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

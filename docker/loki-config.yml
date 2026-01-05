@@ -1,0 +1,29 @@
+auth_enabled : false # disable auth
+
+server:
+  http_listen_port: 3100  # port for http requests
+
+common:
+  path_prefix: /tmp/loki  # Data directory (int production change to /var/lib/loki)
+  storage:
+    filesystem:
+      chunks_directory: /tmp/loki/chunks
+      rules_directory: /tmp/loki/rules
+  replication_factor: 1  # single-node mode
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem  # Log source
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h  # Index rotation period
+
+ruler:
+  alertmanager_url: http://alertmanager:9093
+
+analytics:
+  reporting_enabled: false  # Disable telemetry
+

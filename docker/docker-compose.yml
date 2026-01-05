@@ -6,6 +6,8 @@ networks:
 
 volumes:
   articles-postgres:
+  articles-loki:
+  articles-grafana:
 
 services:
   postgres:
@@ -20,8 +22,8 @@ services:
       POSTGRES_PASSWORD: postgres
 
   mailhog:
-    container_name: 'mailhog'
-    image: 'mailhog/mailhog'
+    container_name: mailhog
+    image: mailhog/mailhog
     ports:
       - '1025:1025'
       - '8025:8025'
@@ -32,3 +34,23 @@ services:
     restart: unless-stopped
     ports:
       - '6379:6379'
+
+  loki:
+    container_name: 'articles-loki'
+    image: grafana/loki
+    ports:
+      - '3100:3100'
+    volumes:
+      - ./loki-config.yml:/etc/loki/local-config.yml
+      - articles-loki:/loki
+    command : --config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    container_name: articles-grafana
+    image: grafana/grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    volumes:
+      - articles-grafana:/var/lib/grafana
+      - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
