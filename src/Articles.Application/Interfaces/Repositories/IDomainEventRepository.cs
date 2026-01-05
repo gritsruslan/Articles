@@ -6,7 +6,9 @@ public interface IDomainEventRepository
 {
 	Task Add(DomainEvent domainEvent, CancellationToken cancellationToken);
 
-	Task<OutboxMessage> GetUnprocessed(int take, CancellationToken cancellationToken);
+	Task<IList<OutboxMessage>> GetUnprocessed(int take, CancellationToken cancellationToken);
 
-	Task MarkAsProcessed(Guid id, CancellationToken cancellationToken);
+	Task MarkAsProcessed(
+		IList<ProcessOutboxMessageResult> processResults,
+		CancellationToken cancellationToken);
 }
