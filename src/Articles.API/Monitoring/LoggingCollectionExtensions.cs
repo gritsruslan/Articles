@@ -25,6 +25,7 @@ internal static class LoggingCollectionExtensions
 				.WriteTo.Console()
 				.WriteTo.Logger(lc => lc.MinimumLevel.ControlledBy(logLevelSwitch)
 					.Filter.ByExcluding(Matching.FromSource("Microsoft"))
+					.Enrich.With<LogsEnricher>()
 					.WriteTo.GrafanaLoki(configuration.GetRequiredConnectionString("Loki"),
 						propertiesAsLabels: ["Application", "Environment"])
 				)
@@ -32,5 +33,14 @@ internal static class LoggingCollectionExtensions
 		));
 
 		return services;
+	}
+
+	private sealed class LogsEnricher : ILogEventEnricher
+	{
+		public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+		{
+			logEvent.AddPropertyIfAbsent(
+				propertyFactory.CreateProperty("timestamp", logEvent.Timestamp.UtcDateTime));
+		}
 	}
 }
