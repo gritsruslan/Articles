@@ -1,10 +1,10 @@
 ﻿namespace Articles.Domain.DomainEvents;
 
-public struct ProcessOutboxMessageResult(Guid id, DateTime processedAt, string? error = null)
+public struct ProcessOutboxMessageResult(OutboxMessage message, DateTime processedAt, string? error = null)
 {
-	public Guid Id { get; set; }
+	public OutboxMessage Message { get; set; } = message;
 
-	public DateTime ProcessedAt { get; set; }
+	public DateTime ProcessedAt { get; set; } = processedAt;
 
-	public string? Error { get; set; }
+	public string? Error { get; set; } = error;
 }

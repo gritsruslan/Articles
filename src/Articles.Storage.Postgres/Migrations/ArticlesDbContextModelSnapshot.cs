@@ -22,7 +22,7 @@ namespace Articles.Storage.Postgres.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Articles.Storage.Postgres.Entities.OutboxMessageEntity", b =>
+            modelBuilder.Entity("Articles.Domain.DomainEvents.OutboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

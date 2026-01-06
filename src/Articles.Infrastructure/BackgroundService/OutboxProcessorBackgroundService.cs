@@ -76,13 +76,13 @@ public class OutboxProcessorBackgroundService(
 		catch (Exception ex)
 		{
 			logger.LogError(ex, "Cannot parse outboxMessage with id={outboxMessageid} to domainEvent", outboxMessage.Id);
-			return new ProcessOutboxMessageResult(outboxMessage.Id, DateTime.UtcNow, ex.Message);
+			return new ProcessOutboxMessageResult(outboxMessage, DateTime.UtcNow, ex.Message);
 		}
 
 		if (domainEvent is null)
 		{
 			return new ProcessOutboxMessageResult(
-				outboxMessage.Id,
+				outboxMessage,
 				DateTime.UtcNow,
 				"Empty or invalid outbox message, cannot parse to domain Event");
 		}
@@ -112,6 +112,6 @@ public class OutboxProcessorBackgroundService(
 			logger.LogError(exception, "Failed handling OutboxMessage with id= {id}", outboxMessage.Id);
 		}
 
-		return new ProcessOutboxMessageResult(outboxMessage.Id, DateTime.UtcNow, exception?.ToString());
+		return new ProcessOutboxMessageResult(outboxMessage, DateTime.UtcNow, exception?.ToString());
 	}
 }

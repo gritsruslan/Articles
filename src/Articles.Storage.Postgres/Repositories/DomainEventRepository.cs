@@ -8,7 +8,7 @@ public sealed class DomainEventRepository(ArticlesDbContext dbContext) : IDomain
 {
 	public async Task Add(DomainEvent domainEvent, CancellationToken cancellationToken)
 	{
-		var outboxMessage = new OutboxMessageEntity
+		var outboxMessage = new OutboxMessage
 		{
 			Id = Guid.NewGuid(),
 			EmittedAt = DateTime.UtcNow,
@@ -23,39 +23,27 @@ public sealed class DomainEventRepository(ArticlesDbContext dbContext) : IDomain
 
 	public async Task<IList<OutboxMessage>> GetUnprocessed(int take, CancellationToken cancellationToken)
 	{
-		var messages = await dbContext.OutboxMessages
+		return await dbContext.OutboxMessages
+			.AsTracking() //enable tracking for batch update
 			.Where(m => m.ProcessedAt == null)
 			.OrderBy(m => m.EmittedAt)
 			.Take(take)
 			.ToListAsync(cancellationToken);
-
-		return messages.Select(m => new OutboxMessage
-		{
-			Id = m.Id,
-			EmittedAt = m.EmittedAt,
-			ProcessedAt = m.ProcessedAt,
-			ContentBlob = m.ContentBlob,
-			Type = m.Type,
-			Error = m.Error,
-		}).ToList();
 	}
 
-	// not the best
+	// batch update (not really)
 	public async Task MarkAsProcessed(
 		IList<ProcessOutboxMessageResult> processResults,
 		CancellationToken cancellationToken)
 	{
-		var ids = processResults.Select(p => p.Id);
+		foreach (var result in processResults)
+		{
+			var message = result.Message;
 
-		await dbContext.OutboxMessages.Where(m => ids.Contains(m.Id))
-			.ExecuteUpdateAsync(
-				s =>
-					s.SetProperty(
-						x => x.ProcessedAt,
-						x => processResults.First(r => r.Id == x.Id).ProcessedAt)
-					.SetProperty(
-						x => x.Error,
-						x => processResults.First(r => r.Id == x.Id).Error)
-				, cancellationToken);
+			message.ProcessedAt = result.ProcessedAt;
+			message.Error = result.Error;
+		}
+
+		await dbContext.SaveChangesAsync(cancellationToken);
 	}
 }

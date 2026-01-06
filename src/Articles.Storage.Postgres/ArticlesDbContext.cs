@@ -1,4 +1,5 @@
-﻿using Articles.Storage.Postgres.Entities;
+﻿using Articles.Domain.DomainEvents;
+using Articles.Storage.Postgres.Entities;
 
 namespace Articles.Storage.Postgres;
 
@@ -8,7 +9,7 @@ public sealed class ArticlesDbContext(DbContextOptions<ArticlesDbContext> option
 
 	public DbSet<SessionEntity> Sessions => Set<SessionEntity>();
 
-	public DbSet<OutboxMessageEntity> OutboxMessages => Set<OutboxMessageEntity>();
+	public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
