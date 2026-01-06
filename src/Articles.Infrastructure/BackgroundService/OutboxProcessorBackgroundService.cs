@@ -17,7 +17,7 @@ public class OutboxProcessorBackgroundService(
 
 	private const int MaxRetryCount = 3;
 
-	private readonly TimeSpan _wait = TimeSpan.FromSeconds(1);
+	private readonly TimeSpan _wait = TimeSpan.FromSeconds(5);
 
 	private static readonly ConcurrentDictionary<string, Type> DomainEventTypesDictionary = new();
 
@@ -48,11 +48,11 @@ public class OutboxProcessorBackgroundService(
 
 				foreach (var outboxMessage in outboxMessages)
 				{
-					var result = await ProcessOutboxMessage(outboxMessage, publisher);
+					var result = await ProcessOutboxMessage(outboxMessage, publisher, stoppingToken);
 					results.Add(result);
 				}
 
-				await repository.MarkAsProcessed(results, CancellationToken.None);
+				await repository.MarkAsProcessed(results, stoppingToken);
 			}
 			catch (Exception ex)
 			{
@@ -65,7 +65,8 @@ public class OutboxProcessorBackgroundService(
 
 	private async Task<ProcessOutboxMessageResult> ProcessOutboxMessage(
 		OutboxMessage outboxMessage,
-		IPublisher publisher)
+		IPublisher publisher,
+		CancellationToken stoppingToken)
 	{
 		DomainEvent? domainEvent;
 		try
@@ -95,7 +96,7 @@ public class OutboxProcessorBackgroundService(
 			try
 			{
 				retriesLeft--;
-				await publisher.Publish(domainEvent, CancellationToken.None);
+				await publisher.Publish(domainEvent, stoppingToken);
 				break;
 			}
 			catch (Exception ex)
