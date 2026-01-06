@@ -1,14 +1,21 @@
 ﻿using Articles.Application.AuthUseCases.Commands.Registration;
 using Articles.Application.Interfaces.Repositories;
+using Articles.Domain.DomainEvents;
 using Articles.Domain.Errors;
+using Articles.Shared.UnitOfWork;
 
 namespace Articles.UnitTests.UseCases;
 
 public class RegistrationCommandHandlerUnitTests
 {
+	// todo domainEvent check
 	private readonly RegistrationCommandHandler _registrationHandler;
 
 	private readonly Mock<IUserRepository> _userRepositoryMock;
+
+	private readonly Mock<IDomainEventRepository> _domainEventRepositoryMock;
+
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
 	private readonly ISetup<IUserRepository, Task<bool>> _userExistsByEmailSetup;
 
@@ -39,10 +46,15 @@ public class RegistrationCommandHandlerUnitTests
 			.Setup(r => r.ExistsByDomainId(It.IsAny<DomainId>(), It.IsAny<CancellationToken>()));
 		_userExistsByDomainIdSetup.Returns(Task.FromResult(false));
 
+		_domainEventRepositoryMock = new Mock<IDomainEventRepository>();
+		_unitOfWorkMock = new Mock<IUnitOfWork>();
+
 		_registrationHandler = new RegistrationCommandHandler(
 			passwordHasherMock.Object,
 			passwordValidatorMock.Object,
-			_userRepositoryMock.Object);
+			_userRepositoryMock.Object,
+			_domainEventRepositoryMock.Object,
+			_unitOfWorkMock.Object);
 	}
 
 	[Fact]

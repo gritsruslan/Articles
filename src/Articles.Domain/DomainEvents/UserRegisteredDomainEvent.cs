@@ -1,3 +1,3 @@
 ﻿namespace Articles.Domain.DomainEvents;
 
-public sealed class UserRegisteredDomainEvent(string Email, string Name) : DomainEvent;
+public sealed record UserRegisteredDomainEvent(string Email, string Name) : DomainEvent;

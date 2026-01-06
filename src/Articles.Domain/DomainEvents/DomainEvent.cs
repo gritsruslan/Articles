@@ -2,4 +2,4 @@
 
 namespace Articles.Domain.DomainEvents;
 
-public abstract class DomainEvent : INotification;
+public abstract record DomainEvent : INotification;

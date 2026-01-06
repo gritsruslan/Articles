@@ -1,13 +1,17 @@
 ﻿using Articles.Application.Interfaces.Repositories;
 using Articles.Application.Interfaces.Security;
+using Articles.Domain.DomainEvents;
 using Articles.Domain.Enums;
+using Articles.Shared.UnitOfWork;
 
 namespace Articles.Application.AuthUseCases.Commands.Registration;
 
 internal sealed class RegistrationCommandHandler(
 	IPasswordHasher passwordHasher,
 	IPasswordValidator passwordValidator,
-	IUserRepository repository) : ICommandHandler<RegistrationCommand>
+	IUserRepository repository,
+	IDomainEventRepository domainEventRepository,
+	IUnitOfWork unitOfWork) : ICommandHandler<RegistrationCommand>
 {
 	public async Task<Result> Handle(RegistrationCommand request, CancellationToken cancellationToken)
 	{
@@ -28,6 +32,7 @@ internal sealed class RegistrationCommandHandler(
 		{
 			return userNameResult.Error;
 		}
+		var name = userNameResult.Value;
 
 		var passwordValidationResult = passwordValidator.Validate(request.Password);
 		if (passwordValidationResult.IsFailure)
@@ -55,7 +60,7 @@ internal sealed class RegistrationCommandHandler(
 		var user = new User
 		{
 			Id = UserId.New(),
-			Name = userNameResult.Value,
+			Name = name,
 			Email = email,
 			RoleId = RoleId.Create((int)Roles.User),
 			DomainId = domainId,
@@ -64,9 +69,13 @@ internal sealed class RegistrationCommandHandler(
 			Salt = salt
 		};
 
-		await repository.Add(user, cancellationToken);
+		await using var scope = await unitOfWork.StartScope(cancellationToken);
 
-		//TODO add UserRegisteredDomainEvent
+		await repository.Add(user, cancellationToken);
+		await domainEventRepository.Add(
+			new UserRegisteredDomainEvent(email.Value, name.Value), cancellationToken);
+
+		await scope.Commit(cancellationToken);
 
 		return Result.Success();
 	}

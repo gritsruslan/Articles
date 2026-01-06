@@ -1,4 +1,4 @@
 ﻿namespace Articles.Domain.DomainEvents;
 
 // for testing
-public sealed class TestDomainEvent(Guid Id) : DomainEvent;
+public sealed record TestDomainEvent(Guid Id) : DomainEvent;

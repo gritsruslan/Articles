@@ -21,6 +21,7 @@ public class OutboxProcessorBackgroundService(
 
 	private static readonly ConcurrentDictionary<string, Type> DomainEventTypesDictionary = new();
 
+	// for caching
 	// needs AssemblyQualifiedName
 	private static Type GetOrAddDomainEventType(string typename)
 	{
@@ -30,6 +31,8 @@ public class OutboxProcessorBackgroundService(
 
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
+		logger.LogInformation("=== Starting OutboxProcessorBackgroundService ===");
+
 		await Task.Yield(); // not wait
 
 		while (!stoppingToken.IsCancellationRequested)
