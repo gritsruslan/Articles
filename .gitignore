@@ -12,3 +12,4 @@ riderModule.iml
 *.user
 launchSettings.json
 !MarketHistory.Db
+Migrations/
