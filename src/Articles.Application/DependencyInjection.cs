@@ -10,6 +10,7 @@ public static class DependencyInjection
 	{
 		services.AddMediatR(options =>
 		{
+			options.AddOpenBehavior(typeof(MetricsPipelineBehaviour<,>));
 			options.AddOpenBehavior(typeof(AuthorizationPipelineBehaviour<,>));
 			options.AddOpenBehavior(typeof(UsageLimitingPipelineBehaviour<,>));
 			options.RegisterServicesFromAssembly(AssemblyMarker.Assembly);
