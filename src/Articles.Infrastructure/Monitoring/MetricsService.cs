@@ -1,13 +1,14 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics.Metrics;
 using Articles.Application.Interfaces.Monitoring;
+using Articles.Domain.Constants;
 
 namespace Articles.Infrastructure.Monitoring;
 
 
-public class MetricsService(IMeterFactory meterFactory) : IMetricsService
+internal sealed class MetricsService(IMeterFactory meterFactory) : IMetricsService
 {
-	private readonly Meter _meter = meterFactory.Create("Articles");
+	private readonly Meter _meter = meterFactory.Create(OverallConstants.DomainName);
 
 	private readonly ConcurrentDictionary<string, Counter<long>> _counters = new();
 

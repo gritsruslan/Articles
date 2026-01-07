@@ -17,6 +17,7 @@ public static class MetricsCollectionExtensions
 					{
 						["environment"] = environment.EnvironmentName
 					}))
+				.AddMeter(OverallConstants.DomainName)
 				.AddAspNetCoreInstrumentation()
 				.AddPrometheusExporter());
 

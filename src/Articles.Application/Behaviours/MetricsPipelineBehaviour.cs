@@ -19,9 +19,10 @@ internal sealed class MetricsPipelineBehaviour<TRequest, TResponse>
 		}
 
 		var counterName = metricsRequest.CounterName;
+		TResponse result;
 		try
 		{
-			var result = await next(cancellationToken);
+			result = await next(cancellationToken);
 			var resultBase = result as ResultBase ??
 			                 throw new InvalidCastException($"Failed to convert the result to type ResultBase");
 
@@ -41,6 +42,6 @@ internal sealed class MetricsPipelineBehaviour<TRequest, TResponse>
 			throw;
 		}
 
-		return await next(cancellationToken);
+		return result;
 	}
 }

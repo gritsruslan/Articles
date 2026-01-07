@@ -1,4 +1,5 @@
-﻿using Articles.Shared.Extensions;
+﻿using Articles.Domain.Constants;
+using Articles.Shared.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,7 @@ public static class LoggingCollectionExtensions
 		services.AddLogging(lb => lb.AddSerilog(
 			new LoggerConfiguration()
 				.MinimumLevel.Information()
-				.Enrich.WithProperty("Application", "Articles.API")
+				.Enrich.WithProperty("Application", OverallConstants.ApiName)
 				.Enrich.WithProperty("Environment", environment.EnvironmentName)
 				.WriteTo.Console()
 				.WriteTo.Logger(lc => lc.MinimumLevel.ControlledBy(logLevelSwitch)
