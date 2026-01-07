@@ -1,4 +1,7 @@
 ﻿using System.Collections.Concurrent;
+using System.Data;
+using System.Diagnostics;
+using Articles.Application.Interfaces.Monitoring;
 using Articles.Application.Interfaces.Repositories;
 using Articles.Domain.DomainEvents;
 using MediatR;
@@ -10,7 +13,8 @@ namespace Articles.Infrastructure.BackgroundService;
 
 public class OutboxProcessorBackgroundService(
 	ILogger<OutboxProcessorBackgroundService> logger,
-	IServiceProvider serviceProvider
+	IServiceProvider serviceProvider,
+	IOutboxMetricsService metricsService
 	) : Microsoft.Extensions.Hosting.BackgroundService
 {
 	private const int BatchSize = 5;
@@ -44,6 +48,7 @@ public class OutboxProcessorBackgroundService(
 				var repository = scope.ServiceProvider.GetRequiredService<IDomainEventRepository>();
 
 				var outboxMessages = await repository.GetUnprocessed(BatchSize, stoppingToken);
+				var queueSize = await repository.QueueSize();
 				var results = new List<ProcessOutboxMessageResult>(outboxMessages.Count);
 
 				foreach (var outboxMessage in outboxMessages)
@@ -53,6 +58,7 @@ public class OutboxProcessorBackgroundService(
 				}
 
 				await repository.MarkAsProcessed(results, stoppingToken);
+				metricsService.MonitorQueueSize(queueSize);
 			}
 			catch (Exception ex)
 			{
@@ -68,25 +74,21 @@ public class OutboxProcessorBackgroundService(
 		IPublisher publisher,
 		CancellationToken stoppingToken)
 	{
-		DomainEvent? domainEvent;
-		try
+		var start = Stopwatch.GetTimestamp();
+
+		var result = ConvertOutboxMessageToDomainEvent(outboxMessage);
+		if (result.IsFailure)
 		{
-			Type type = GetOrAddDomainEventType(outboxMessage.Type);
-			domainEvent = JsonConvert.DeserializeObject(outboxMessage.ContentBlob, type) as DomainEvent;
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Cannot parse outboxMessage with id={outboxMessageid} to domainEvent", outboxMessage.Id);
-			return new ProcessOutboxMessageResult(outboxMessage, DateTime.UtcNow, ex.Message);
+			logger.LogError(
+				result.Error.Message, // template
+				result.Error.InvalidObjectValue); // property (OutboxMessageId)
+
+			metricsService.MonitorProcessedMessage(success: false);
+
+			return new ProcessOutboxMessageResult(outboxMessage, DateTime.UtcNow, result.Error.Message);
 		}
 
-		if (domainEvent is null)
-		{
-			return new ProcessOutboxMessageResult(
-				outboxMessage,
-				DateTime.UtcNow,
-				"Empty or invalid outbox message, cannot parse to domain Event");
-		}
+		var domainEvent = result.Value;
 
 		// retry logic
 		int retriesLeft = MaxRetryCount;
@@ -107,12 +109,47 @@ public class OutboxProcessorBackgroundService(
 				}
 			}
 		}
+		metricsService.MonitorRetries(MaxRetryCount - retriesLeft - 1);
+
+		var elapsedMs =
+			Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+		metricsService.MonitorMessageProcessingDuration(elapsedMs);
 
 		if (exception is not null)
 		{
-			logger.LogError(exception, "Failed handling OutboxMessage with id= {id}", outboxMessage.Id);
+			logger.LogError(exception, "Failed handling OutboxMessage with id = {id}", outboxMessage.Id);
+			metricsService.MonitorProcessedMessage(success: false);
+			return new ProcessOutboxMessageResult(outboxMessage, DateTime.UtcNow, exception.Message);
 		}
 
+		metricsService.MonitorProcessedMessage(success: true);
 		return new ProcessOutboxMessageResult(outboxMessage, DateTime.UtcNow, exception?.ToString());
+	}
+
+
+	private Result<DomainEvent> ConvertOutboxMessageToDomainEvent(OutboxMessage outboxMessage)
+	{
+		DomainEvent? domainEvent;
+		try
+		{
+			Type type = GetOrAddDomainEventType(outboxMessage.Type);
+			domainEvent = JsonConvert.DeserializeObject(outboxMessage.ContentBlob, type) as DomainEvent;
+		}
+		catch (Exception)
+		{
+			return new Error(ErrorType.Failure,
+				// template
+				message: "Cannot parse outboxMessage with id =\"{outboxMessageId}\" to domain event",
+				invalidObjectValueString: outboxMessage.Id.ToString());
+		}
+
+		if (domainEvent is null)
+		{
+			return new Error(ErrorType.Failure,
+				message: "Empty or invalid outbox message with id =\"{outboxMessageId}\", cannot parse to domain event",
+				invalidObjectValueString: outboxMessage.Id.ToString());
+		}
+
+		return domainEvent;
 	}
 }

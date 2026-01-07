@@ -8,6 +8,8 @@ public interface IDomainEventRepository
 
 	Task<IList<OutboxMessage>> GetUnprocessed(int take, CancellationToken cancellationToken);
 
+	Task<int> QueueSize();
+
 	Task MarkAsProcessed(
 		IList<ProcessOutboxMessageResult> processResults,
 		CancellationToken cancellationToken);

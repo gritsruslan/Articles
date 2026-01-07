@@ -1,4 +1,6 @@
 using Articles.API.Requests;
+using Articles.Application.Interfaces.Repositories;
+using Articles.Domain.DomainEvents;
 using Microsoft.AspNetCore.Mvc;
 using Serilog.Core;
 using Serilog.Events;
@@ -40,13 +42,12 @@ internal static class ServiceEndpoints
 		return  Results.Ok(new { CurrentLogLevel = loggingLevelSwitch.MinimumLevel.ToString() });
 	}
 
-	private static IResult Test([FromServices] ILoggerFactory loggerFactory)
+	private static async Task<IResult> Test(
+		[FromServices] ILoggerFactory loggerFactory,
+		[FromServices] IDomainEventRepository repository)
 	{
-		var logger = loggerFactory.CreateLogger("Test");
-
-		logger.LogInformation("INFORMATION TEST LOG");
-		logger.LogWarning("WARNING TEST LOG");
-		logger.LogError("ERROR TEST LOG");
+		var @event = new TestDomainEvent(Guid.NewGuid());
+		await repository.Add(@event, CancellationToken.None);
 
 		return Results.Ok();
 	}

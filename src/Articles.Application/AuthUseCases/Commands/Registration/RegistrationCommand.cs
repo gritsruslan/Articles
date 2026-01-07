@@ -9,5 +9,5 @@ public sealed record RegistrationCommand(
 	string DomainId,
 	string Password) : ICommand, IMetricsCommand
 {
-	public string CounterName => MetricsCounterNames.Registration;
+	public string CounterName => MetricNames.Registration;
 }

@@ -31,6 +31,9 @@ public sealed class DomainEventRepository(ArticlesDbContext dbContext) : IDomain
 			.ToListAsync(cancellationToken);
 	}
 
+	public async Task<int> QueueSize() =>
+		await dbContext.OutboxMessages.Where(m => m.ProcessedAt == null).CountAsync();
+
 	// batch update (not really)
 	public async Task MarkAsProcessed(
 		IList<ProcessOutboxMessageResult> processResults,

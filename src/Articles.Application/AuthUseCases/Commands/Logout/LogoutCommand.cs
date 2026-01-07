@@ -9,5 +9,5 @@ public sealed record LogoutCommand(string? RefreshToken) : ICommand, IAuthorized
 {
 	public int RequiredPermissionId => (int)DefaultPermissions.RequireAuthorization;
 
-	public string CounterName => MetricsCounterNames.Logout;
+	public string CounterName => MetricNames.Logout;
 }

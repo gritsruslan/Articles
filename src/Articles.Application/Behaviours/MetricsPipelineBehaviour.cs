@@ -5,7 +5,7 @@ using MediatR;
 namespace Articles.Application.Behaviours;
 
 internal sealed class MetricsPipelineBehaviour<TRequest, TResponse>
-	(IMetricsService metricsService)
+	(IUseCaseMetricsService useCaseMetricsService)
 	: IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
 	public async Task<TResponse> Handle(
@@ -28,17 +28,17 @@ internal sealed class MetricsPipelineBehaviour<TRequest, TResponse>
 
 			if (resultBase.IsSuccess)
 			{
-				metricsService.MonitorSuccess(counterName);
+				useCaseMetricsService.MonitorSuccess(counterName);
 			}
 			else
 			{
 				// request was processed correctly but the user entered invalid data.
-				metricsService.MonitorFailure(counterName);
+				useCaseMetricsService.MonitorFailure(counterName);
 			}
 		}
 		catch
 		{
-			metricsService.MonitorError(counterName);
+			useCaseMetricsService.MonitorError(counterName);
 			throw;
 		}
 

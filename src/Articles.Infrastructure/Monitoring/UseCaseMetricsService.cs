@@ -5,8 +5,8 @@ using Articles.Domain.Constants;
 
 namespace Articles.Infrastructure.Monitoring;
 
-
-internal sealed class MetricsService(IMeterFactory meterFactory) : IMetricsService
+// Metrics per-use-case
+internal sealed class UseCaseMetricsService(IMeterFactory meterFactory) : IUseCaseMetricsService
 {
 	private readonly Meter _meter = meterFactory.Create(OverallConstants.DomainName);
 

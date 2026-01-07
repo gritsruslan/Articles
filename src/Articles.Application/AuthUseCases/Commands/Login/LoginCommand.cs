@@ -10,5 +10,5 @@ public sealed record LoginCommand(
 	bool RememberMe,
 	string UserAgent) : ICommand<AuthTokenPair>, IMetricsCommand
 {
-	public string CounterName => MetricsCounterNames.Login;
+	public string CounterName => MetricNames.Login;
 }

@@ -54,7 +54,8 @@ public static class DependencyInjection
 		});
 
 		//monitoring
-		services.AddSingleton<IMetricsService, MetricsService>();
+		services.AddSingleton<IUseCaseMetricsService, UseCaseMetricsService>()
+			.AddSingleton<IOutboxMetricsService, OutboxMetricsService>();
 
 		return services;
 	}

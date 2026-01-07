@@ -1,6 +1,6 @@
 ﻿namespace Articles.Application.Interfaces.Monitoring;
 
-public interface IMetricsService
+public interface IUseCaseMetricsService
 {
 	void MonitorSuccess(string name);
 
