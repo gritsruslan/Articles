@@ -1,9 +1,11 @@
 ﻿using System.Net.Mail;
 using Articles.Application.Authorization;
 using Articles.Application.Interfaces.Mail;
+using Articles.Application.Interfaces.Monitoring;
 using Articles.Infrastructure.Authentication;
 using Articles.Infrastructure.Authorization;
 using Articles.Infrastructure.Mail;
+using Articles.Infrastructure.Monitoring;
 using Articles.Infrastructure.Security;
 using Articles.Shared.Options;
 using Microsoft.Extensions.Configuration;
@@ -50,6 +52,9 @@ public static class DependencyInjection
 			var smtpClient = new SmtpClient(smtpOptions.Host, smtpOptions.Port);
 			return new MailSender(mailingOptions, smtpClient);
 		});
+
+		//monitoring
+		services.AddSingleton<IMetricsService, MetricsService>();
 
 		return services;
 	}

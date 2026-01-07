@@ -46,6 +46,8 @@ await app.InitializeDatabaseAsync();
 app.UseMiddleware<GlobalExceptionHandler>()
 	.UseMiddleware<AuthenticationMiddleware>();
 
+app.MapPrometheusScrapingEndpoint();
+
 app.MapServiceEndpoints()
 	.MapAuthEndpoints();
 
