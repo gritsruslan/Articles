@@ -10,6 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation"/>
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Newtonsoft.Json"/>
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Sinks.Grafana.Loki" />
   </ItemGroup>
 
   <ItemGroup>

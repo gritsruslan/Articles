@@ -1,13 +1,16 @@
 ﻿using Articles.Shared.Extensions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Filters;
 using Serilog.Sinks.Grafana.Loki;
 
-namespace Articles.API.Monitoring;
+namespace Articles.Infrastructure.Monitoring;
 
-internal static class LoggingCollectionExtensions
+public static class LoggingCollectionExtensions
 {
 	public static IServiceCollection AddApiLogging(
 		this IServiceCollection services,
