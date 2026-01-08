@@ -18,7 +18,7 @@ public static class TracingCollectionExtensions
 		services.AddOpenTelemetry()
 			.WithTracing(b => b
 			.SetResourceBuilder(
-				ResourceBuilder.CreateDefault().AddService(OverallConstants.DomainName)
+				ResourceBuilder.CreateDefault().AddService(OverallConstants.ApiName)
 			)
 			.AddEntityFrameworkCoreInstrumentation()
 			.AddRedisInstrumentation()
@@ -28,7 +28,7 @@ public static class TracingCollectionExtensions
 					options.EnrichWithHttpResponse = EnrichWithHttpResponse;
 				}
 			)
-			.AddSource(OverallConstants.DomainName)
+			.AddSource(OverallConstants.ApiName)
 			.AddOtlpExporter(tpb => tpb.Endpoint =
 				new Uri(configuration.GetRequiredConnectionString("Jaeger")))
 		);

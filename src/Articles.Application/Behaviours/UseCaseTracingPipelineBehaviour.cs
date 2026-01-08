@@ -20,22 +20,15 @@ internal sealed class UseCaseTracingPipelineBehaviour<TRequest, TResponse>(
 		}
 
 		using var activity = tracingSource.ActivitySource
-			.StartActivity("usecase", ActivityKind.Internal, default(ActivityContext));
-		activity?.AddTag("articles.request", request.GetType().Name);
+			.StartActivity("Articles.UseCase", ActivityKind.Internal, default(ActivityContext));
+		activity?.AddTag("request.type", request.GetType().Name);
 
 		try
 		{
 			var overallResult = await next(cancellationToken);
 			var result = overallResult as ResultBase ?? throw new InvalidCastException();
 
-			if (result.IsSuccess)
-			{
-				activity?.AddTag("result", "success");
-			}
-			else
-			{
-				activity?.AddTag("result", "failure");
-			}
+			activity?.AddTag("result", result.IsSuccess ? "success" : "failure");
 
 			return overallResult;
 		}

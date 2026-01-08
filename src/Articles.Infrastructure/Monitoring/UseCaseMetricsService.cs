@@ -8,7 +8,7 @@ namespace Articles.Infrastructure.Monitoring;
 // Metrics per-use-case
 internal sealed class UseCaseMetricsService(IMeterFactory meterFactory) : IUseCaseMetricsService
 {
-	private readonly Meter _meter = meterFactory.Create(OverallConstants.DomainName);
+	private readonly Meter _meter = meterFactory.Create(OverallConstants.ApiName);
 
 	private readonly ConcurrentDictionary<string, Counter<long>> _counters = new();
 

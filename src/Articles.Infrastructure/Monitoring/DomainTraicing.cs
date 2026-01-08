@@ -6,5 +6,5 @@ namespace Articles.Infrastructure.Monitoring;
 
 public sealed class DomainTracing : ITracingSource
 {
-	public ActivitySource ActivitySource { get; } = new(OverallConstants.DomainName);
+	public ActivitySource ActivitySource { get; } = new(OverallConstants.ApiName);
 }
