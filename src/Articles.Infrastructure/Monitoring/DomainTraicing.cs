@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics;
+using Articles.Application.Interfaces.Monitoring;
 using Articles.Domain.Constants;
 
 namespace Articles.Infrastructure.Monitoring;
 
-public sealed class DomainTraicing
+public sealed class DomainTracing : ITracingSource
 {
-	public static readonly ActivitySource ActivitySource = new(OverallConstants.DomainName);
+	public ActivitySource ActivitySource { get; } = new(OverallConstants.DomainName);
 }

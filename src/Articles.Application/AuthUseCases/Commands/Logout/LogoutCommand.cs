@@ -5,7 +5,7 @@ using Articles.Shared.Monitoring;
 
 namespace Articles.Application.AuthUseCases.Commands.Logout;
 
-public sealed record LogoutCommand(string? RefreshToken) : ICommand, IAuthorizedCommand, IMetricsCommand
+public sealed record LogoutCommand(string? RefreshToken) : ICommand, IAuthorizedCommand, IMetricsCommand, ITracedCommand
 {
 	public int RequiredPermissionId => (int)DefaultPermissions.RequireAuthorization;
 

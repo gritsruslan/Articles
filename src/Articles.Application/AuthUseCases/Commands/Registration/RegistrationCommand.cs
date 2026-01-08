@@ -7,7 +7,7 @@ public sealed record RegistrationCommand(
 	string UserName,
 	string Email,
 	string DomainId,
-	string Password) : ICommand, IMetricsCommand
+	string Password) : ICommand, IMetricsCommand, ITracedCommand
 {
 	public string CounterName => MetricNames.Registration;
 }

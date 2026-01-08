@@ -57,6 +57,8 @@ public static class DependencyInjection
 		services.AddSingleton<IUseCaseMetricsService, UseCaseMetricsService>()
 			.AddSingleton<IOutboxMetricsService, OutboxMetricsService>();
 
+		services.AddSingleton<ITracingSource, DomainTracing>();
+
 		return services;
 	}
 }

@@ -8,7 +8,7 @@ public sealed record LoginCommand(
 	string Email,
 	string Password,
 	bool RememberMe,
-	string UserAgent) : ICommand<AuthTokenPair>, IMetricsCommand
+	string UserAgent) : ICommand<AuthTokenPair>, IMetricsCommand, ITracedCommand
 {
 	public string CounterName => MetricNames.Login;
 }
