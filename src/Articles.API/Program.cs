@@ -22,7 +22,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services
 	.AddApiLogging(configuration, environment)
-	.AddApiMetrics(environment);
+	.AddApiMetrics(environment)
+	.AddApiTracing(configuration);
 
 builder.Services.AddHttpContextAccessor();
 
