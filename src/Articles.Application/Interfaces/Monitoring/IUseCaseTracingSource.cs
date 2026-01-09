@@ -2,7 +2,12 @@
 
 namespace Articles.Application.Interfaces.Monitoring;
 
-public interface ITracingSource
+public interface IUseCaseTracingSource
+{
+	ActivitySource ActivitySource { get; }
+}
+
+public interface IOutboxTracingSource
 {
 	ActivitySource ActivitySource { get; }
 }

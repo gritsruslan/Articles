@@ -20,6 +20,11 @@ public static class TracingCollectionExtensions
 			.SetResourceBuilder(
 				ResourceBuilder.CreateDefault().AddService(OverallConstants.ApiName)
 			)
+			// collect only 10% of all traces
+			// child traces inherit from the parent
+			.SetSampler(
+				new ParentBasedSampler(
+					rootSampler: new TraceIdRatioBasedSampler(0.1)))
 			.AddEntityFrameworkCoreInstrumentation()
 			.AddRedisInstrumentation()
 			.AddAspNetCoreInstrumentation(options =>
@@ -29,6 +34,7 @@ public static class TracingCollectionExtensions
 				}
 			)
 			.AddSource(OverallConstants.ApiName)
+			.AddSource(OverallConstants.Outbox)
 			.AddOtlpExporter(tpb => tpb.Endpoint =
 				new Uri(configuration.GetRequiredConnectionString("Jaeger")))
 		);

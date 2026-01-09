@@ -6,7 +6,7 @@ using MediatR;
 namespace Articles.Application.Behaviours;
 
 internal sealed class UseCaseTracingPipelineBehaviour<TRequest, TResponse>(
-	ITracingSource tracingSource) :
+	IUseCaseTracingSource useCaseTracingSource) :
 	IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
 	public async Task<TResponse> Handle(
@@ -19,7 +19,7 @@ internal sealed class UseCaseTracingPipelineBehaviour<TRequest, TResponse>(
 			return await next(cancellationToken);
 		}
 
-		using var activity = tracingSource.ActivitySource
+		using var activity = useCaseTracingSource.ActivitySource
 			.StartActivity("Articles.UseCase", ActivityKind.Internal, default(ActivityContext));
 		activity?.AddTag("request.type", request.GetType().Name);
 

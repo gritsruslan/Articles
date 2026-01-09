@@ -20,11 +20,13 @@ internal static class ServiceEndpoints
 		return app;
 	}
 
+	// only for testing
 	private static IResult CurrentLogLevel([FromServices] LoggingLevelSwitch loggingLevelSwitch)
 	{
 		return Results.Ok(new { CurrentLogLevel = loggingLevelSwitch.MinimumLevel.ToString() });
 	}
 
+	// only for testing
 	private static IResult SwitchLogLevel(
 		[FromBody] SwitchLogLevelRequest request,
 		[FromServices] LoggingLevelSwitch loggingLevelSwitch)
@@ -42,6 +44,7 @@ internal static class ServiceEndpoints
 		return  Results.Ok(new { CurrentLogLevel = loggingLevelSwitch.MinimumLevel.ToString() });
 	}
 
+	// only for testing
 	private static async Task<IResult> Test(
 		[FromServices] ILoggerFactory loggerFactory,
 		[FromServices] IDomainEventRepository repository)

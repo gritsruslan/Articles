@@ -41,6 +41,16 @@ namespace Articles.Storage.Postgres.Migrations
                     b.Property<DateTime?>("ProcessedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("SpanId")
+                        .HasMaxLength(16)
+                        .HasColumnType("character(16)")
+                        .IsFixedLength();
+
+                    b.Property<string>("TraceId")
+                        .HasMaxLength(32)
+                        .HasColumnType("character(32)")
+                        .IsFixedLength();
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");

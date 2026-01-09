@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Data;
 using System.Diagnostics;
 using Articles.Application.Interfaces.Monitoring;
 using Articles.Application.Interfaces.Repositories;
@@ -14,7 +13,8 @@ namespace Articles.Infrastructure.BackgroundService;
 public class OutboxProcessorBackgroundService(
 	ILogger<OutboxProcessorBackgroundService> logger,
 	IServiceProvider serviceProvider,
-	IOutboxMetricsService metricsService
+	IOutboxMetricsService metricsService,
+	IOutboxTracingSource tracingSource
 	) : Microsoft.Extensions.Hosting.BackgroundService
 {
 	private const int BatchSize = 5;
@@ -75,6 +75,10 @@ public class OutboxProcessorBackgroundService(
 		CancellationToken stoppingToken)
 	{
 		var start = Stopwatch.GetTimestamp();
+		using var activity = tracingSource.ActivitySource.StartActivity(
+			"Outbox.MessageProcessing",
+			ActivityKind.Consumer,
+			RestoreActivityContext(outboxMessage) ?? default);
 
 		var result = ConvertOutboxMessageToDomainEvent(outboxMessage);
 		if (result.IsFailure)
@@ -118,10 +122,14 @@ public class OutboxProcessorBackgroundService(
 		if (exception is not null)
 		{
 			logger.LogError(exception, "Failed handling OutboxMessage with id = {id}", outboxMessage.Id);
+
 			metricsService.MonitorProcessedMessage(success: false);
+			activity?.AddTag("result", "error");
+
 			return new ProcessOutboxMessageResult(outboxMessage, DateTime.UtcNow, exception.Message);
 		}
 
+		activity?.AddTag("result", "success");
 		metricsService.MonitorProcessedMessage(success: true);
 		return new ProcessOutboxMessageResult(outboxMessage, DateTime.UtcNow, exception?.ToString());
 	}
@@ -151,5 +159,15 @@ public class OutboxProcessorBackgroundService(
 		}
 
 		return domainEvent;
+	}
+
+	private ActivityContext? RestoreActivityContext(OutboxMessage outboxMessage)
+	{
+		return new ActivityContext(
+			ActivityTraceId.CreateFromString(outboxMessage.TraceId),
+			ActivitySpanId.CreateFromString(outboxMessage.SpanId),
+			ActivityTraceFlags.Recorded,
+			isRemote: true
+		);
 	}
 }

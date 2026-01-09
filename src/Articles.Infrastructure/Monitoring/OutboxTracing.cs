@@ -4,7 +4,7 @@ using Articles.Domain.Constants;
 
 namespace Articles.Infrastructure.Monitoring;
 
-public sealed class DomainTracing : ITracingSource
+public sealed class OutboxTracing : IOutboxTracingSource
 {
-	public ActivitySource ActivitySource { get; } = new(OverallConstants.ApiName);
+	public ActivitySource ActivitySource { get; } = new(OverallConstants.Outbox);
 }
