@@ -22,7 +22,7 @@ internal static class AuthEndpoints
 		group.MapPost("login", Login);
 		group.MapPost("registration", Registration);
 		group.MapPost("logout", Logout);
-		group.MapPost("confirm-email", ConfirmEmail);
+		group.MapGet("confirm-email", ConfirmEmail);
 		group.MapPost("refresh", RefreshTokens);
 		group.MapGet("me", Me);
 

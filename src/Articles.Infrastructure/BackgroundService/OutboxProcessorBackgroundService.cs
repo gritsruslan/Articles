@@ -21,7 +21,7 @@ public class OutboxProcessorBackgroundService(
 
 	private const int MaxRetryCount = 3;
 
-	private readonly TimeSpan _wait = TimeSpan.FromSeconds(5);
+	private readonly TimeSpan _wait = TimeSpan.FromSeconds(30);
 
 	private static readonly ConcurrentDictionary<string, Type> DomainEventTypesDictionary = new();
 
