@@ -12,5 +12,9 @@ public sealed class OutboxMessage
 
 	public string ContentBlob { get; set; } = null!;
 
+	public string? TraceId { get; set; }
+
+	public string? SpanId { get; set; }
+
 	public string? Error { get; set; }
 }

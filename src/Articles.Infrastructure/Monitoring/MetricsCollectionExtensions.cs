@@ -13,12 +13,12 @@ public static class MetricsCollectionExtensions
 		services.AddOpenTelemetry()
 			.WithMetrics(b => b.SetResourceBuilder(
 					ResourceBuilder.CreateDefault()
-						.AddService(OverallConstants.DomainName)
+						.AddService(OverallConstants.ApiName)
 						.AddAttributes(new Dictionary<string, object>
 					{
 						["environment"] = environment.EnvironmentName
 					}))
-				.AddMeter(OverallConstants.DomainName)
+				.AddMeter(OverallConstants.ApiName)
 				.AddMeter(OverallConstants.Outbox)
 				.AddAspNetCoreInstrumentation()
 				.AddPrometheusExporter());

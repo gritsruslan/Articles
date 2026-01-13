@@ -57,9 +57,10 @@ internal sealed class RegistrationCommandHandler(
 		var salt = passwordHasher.GenerateSalt();
 		var passwordHash = passwordHasher.HashPassword(password, salt);
 
+		var id = UserId.New();
 		var user = new User
 		{
-			Id = UserId.New(),
+			Id = id,
 			Name = name,
 			Email = email,
 			RoleId = RoleId.Create((int)Roles.User),
@@ -73,7 +74,7 @@ internal sealed class RegistrationCommandHandler(
 
 		await repository.Add(user, cancellationToken);
 		await domainEventRepository.Add(
-			new UserRegisteredDomainEvent(email.Value, name.Value), cancellationToken);
+			new UserRegisteredDomainEvent(id.Value, email.Value, name.Value), cancellationToken);
 
 		await scope.Commit(cancellationToken);
 

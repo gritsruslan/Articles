@@ -1,4 +1,5 @@
-﻿using Articles.Domain.DomainEvents;
+﻿using System.Diagnostics;
+using Articles.Domain.DomainEvents;
 using Articles.Storage.Postgres.Entities;
 using Newtonsoft.Json;
 
@@ -14,7 +15,9 @@ public sealed class DomainEventRepository(ArticlesDbContext dbContext) : IDomain
 			EmittedAt = DateTime.UtcNow,
 			Type = domainEvent.GetType().AssemblyQualifiedName ??
 			       throw new ArgumentException("AssemblyQualifiedName of DomainEvent is null"),
-			ContentBlob = JsonConvert.SerializeObject(domainEvent)
+			ContentBlob = JsonConvert.SerializeObject(domainEvent),
+			TraceId = Activity.Current?.TraceId.ToHexString(),
+			SpanId = Activity.Current?.SpanId.ToHexString()
 		};
 
 		dbContext.OutboxMessages.Add(outboxMessage);
