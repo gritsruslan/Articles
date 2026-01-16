@@ -41,7 +41,7 @@ builder.Services
 	.AddInfrastructure(configuration)
 	.AddPostgres(configuration)
 	.AddRedis(configuration)
-	.AddMinio(configuration);
+	.AddMinio();
 
 var app = builder.Build();
 

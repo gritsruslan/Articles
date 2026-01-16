@@ -1,3 +1,4 @@
+using Articles.Storage.Minio.Initializer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -8,18 +9,20 @@ namespace Articles.Storage.Minio;
 public static class DependencyInjection
 {
 	public static IServiceCollection AddMinio(
-		this IServiceCollection services,
-		IConfiguration configuration)
+		this IServiceCollection services)
 	{
-		var minioOptions = configuration.GetRequiredSection("Minio").Get<MinioOptions>() ??
-		                   throw new Exception("Minio configuration is missing");
+		services.AddSingleton<IMinioClient, MinioClient>(sp =>
+		{
+			var minioOptions = sp.GetRequiredService<IOptions<MinioOptions>>().Value;
 
-		services.AddSingleton<IMinioClient, MinioClient>(_ =>
-			(MinioClient)new MinioClient()
+			return (MinioClient)new MinioClient()
 				.WithEndpoint(minioOptions.Endpoint)
 				.WithCredentials(minioOptions.AccessKey, minioOptions.SecretKey)
 				.WithSSL(false)
-				.Build());
+				.Build();
+		});
+
+		services.AddSingleton<IMinioBucketsInitializer, MinioBucketsInitializer>();
 
 		return services;
 	}
