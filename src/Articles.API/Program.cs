@@ -49,6 +49,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 await app.InitializeDatabaseAsync();
+await app.InitializeFileBucketsAsync();
 
 app.UseMiddleware<GlobalExceptionHandler>()
 	.UseMiddleware<AuthenticationMiddleware>();

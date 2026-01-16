@@ -1,6 +1,6 @@
 namespace Articles.Storage.Minio;
 
-public class BucketNames
+public static class BucketNames
 {
 	public const string Images = "images";
 

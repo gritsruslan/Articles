@@ -6,7 +6,7 @@ namespace Articles.API.Extensions;
 
 internal static class MinioBucketsInitializerExtensions
 {
-	public static async Task InitializeBucketsAsync(this WebApplication app)
+	public static async Task InitializeFileBucketsAsync(this WebApplication app)
 	{
 		var minioClient = app.Services.GetRequiredService<IMinioClient>();
 
