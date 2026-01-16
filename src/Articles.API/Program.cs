@@ -57,7 +57,8 @@ app.UseMiddleware<GlobalExceptionHandler>()
 app.MapPrometheusScrapingEndpoint();
 
 app.MapServiceEndpoints()
-	.MapAuthEndpoints();
+	.MapAuthEndpoints()
+	.MapFileEndpoints();
 
 app.Run();
 

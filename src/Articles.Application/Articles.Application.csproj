@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
         <PackageReference Include="MediatR"/>
+        <PackageReference Include="Microsoft.AspNetCore.Http" />
         <PackageReference Include="Newtonsoft.json"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions"/>
@@ -13,5 +14,9 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="Articles.UnitTests"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="FileUseCases\DeleteFile\" />
     </ItemGroup>
 </Project>

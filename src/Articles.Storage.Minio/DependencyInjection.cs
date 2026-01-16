@@ -1,4 +1,7 @@
+using Articles.Application.Interfaces.Repositories;
+using Articles.Shared.Options;
 using Articles.Storage.Minio.Initializer;
+using Articles.Storage.Minio.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -23,6 +26,8 @@ public static class DependencyInjection
 		});
 
 		services.AddSingleton<IMinioBucketsInitializer, MinioBucketsInitializer>();
+
+		services.AddScoped<IFileRepository, FileRepository>();
 
 		return services;
 	}

@@ -1,8 +1,10 @@
 using System.Net.Mime;
+using Articles.Domain.Errors;
+using Articles.Shared.Result;
 
-namespace Articles.Storage.Minio;
+namespace Articles.Domain.Constants;
 
-public static class SupportedFormats
+public static class SupportedFileFormats
 {
 	// images
 	public const string Jpeg = MediaTypeNames.Image.Jpeg;
@@ -16,8 +18,6 @@ public static class SupportedFormats
 	// videos
 	public const string Mp4 = "video/mp4";
 
-	public const string Mpeg = "video/mpeg";
-
 	public const string WebM = "video/webm";
 
 	public const string Mov = "video/mov";
@@ -29,4 +29,24 @@ public static class SupportedFormats
 	public const string Xml = MediaTypeNames.Text.Xml;
 
 	public const string Csv = MediaTypeNames.Text.Csv;
+
+
+
+	public static Result<string> FromExtension(string extension)
+	{
+		return extension switch
+		{
+			".jpeg" => Jpeg,
+			".png" => Png,
+			".gif" => Gif,
+			".bmp" => Bmp,
+			".mp4" => Mp4,
+			".webm" => WebM,
+			".mov" => Mov,
+			".json" => Json,
+			".xml" => Xml,
+			".csv" => Csv,
+			_ => FileErrors.UnsupportedFileFormat()
+		};
+	}
 }

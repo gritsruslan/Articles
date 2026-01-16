@@ -36,6 +36,8 @@ public static class DependencyInjection
 
 		services.AddOptionsWithValidation<UsageLimitingOptions>(configuration);
 
+		services.AddOptionsWithValidation<MinioOptions>(configuration);
+
 		return services;
 	}
 }

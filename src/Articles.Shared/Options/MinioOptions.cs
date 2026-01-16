@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Articles.Storage.Minio;
+namespace Articles.Shared.Options;
 
 public class MinioOptions
 {

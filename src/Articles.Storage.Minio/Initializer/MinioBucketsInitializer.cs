@@ -1,3 +1,4 @@
+using Articles.Domain.Constants;
 using Minio;
 using Minio.DataModel.Args;
 
@@ -7,7 +8,7 @@ public sealed class MinioBucketsInitializer : IMinioBucketsInitializer
 {
 	public async Task Initialize(IMinioClient minioClient)
 	{
-		string[] buckets = [BucketNames.Images, BucketNames.Videos, BucketNames.Other];
+		string[] buckets = [FileBucketNames.Images, FileBucketNames.Videos, FileBucketNames.Other];
 
 		foreach (var bucket in buckets)
 		{

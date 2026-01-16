@@ -1,4 +1,4 @@
-namespace Articles.Storage.Minio.Repositories;
+namespace Articles.Application.Interfaces.Repositories;
 
 public interface IFileRepository
 {

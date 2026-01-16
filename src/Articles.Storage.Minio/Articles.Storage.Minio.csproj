@@ -8,4 +8,8 @@
     <PackageReference Include="Minio" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Articles.Application\Articles.Application.csproj" />
+  </ItemGroup>
+
 </Project>

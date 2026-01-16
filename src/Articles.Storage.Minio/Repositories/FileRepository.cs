@@ -1,3 +1,4 @@
+using Articles.Application.Interfaces.Repositories;
 using Minio;
 using Minio.DataModel.Args;
 
