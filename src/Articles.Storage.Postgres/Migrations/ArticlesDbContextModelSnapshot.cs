@@ -3,7 +3,6 @@ using System;
 using Articles.Storage.Postgres;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,11 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Articles.Storage.Postgres.Migrations
 {
     [DbContext(typeof(ArticlesDbContext))]
-    [Migration("20260105135615_Outbox")]
-    partial class Outbox
+    partial class ArticlesDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +22,7 @@ namespace Articles.Storage.Postgres.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Articles.Storage.Postgres.Entities.OutboxMessageEntity", b =>
+            modelBuilder.Entity("Articles.Domain.DomainEvents.OutboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,6 +40,16 @@ namespace Articles.Storage.Postgres.Migrations
 
                     b.Property<DateTime?>("ProcessedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SpanId")
+                        .HasMaxLength(16)
+                        .HasColumnType("character(16)")
+                        .IsFixedLength();
+
+                    b.Property<string>("TraceId")
+                        .HasMaxLength(32)
+                        .HasColumnType("character(32)")
+                        .IsFixedLength();
 
                     b.Property<string>("Type")
                         .IsRequired()
