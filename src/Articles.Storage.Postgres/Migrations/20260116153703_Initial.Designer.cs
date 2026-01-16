@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Articles.Storage.Postgres.Migrations
 {
     [DbContext(typeof(ArticlesDbContext))]
-    [Migration("20260106112730_NewOutbox")]
-    partial class NewOutbox
+    [Migration("20260116153703_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,6 +43,16 @@ namespace Articles.Storage.Postgres.Migrations
 
                     b.Property<DateTime?>("ProcessedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SpanId")
+                        .HasMaxLength(16)
+                        .HasColumnType("character(16)")
+                        .IsFixedLength();
+
+                    b.Property<string>("TraceId")
+                        .HasMaxLength(32)
+                        .HasColumnType("character(32)")
+                        .IsFixedLength();
 
                     b.Property<string>("Type")
                         .IsRequired()
