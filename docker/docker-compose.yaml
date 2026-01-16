@@ -9,6 +9,7 @@ volumes:
   articles-loki:
   articles-grafana:
   articles-prometheus:
+  articles-minio:
 
 services:
   postgres:
@@ -79,3 +80,17 @@ services:
     volumes:
       - articles-grafana:/var/lib/grafana
       - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+
+  minio:
+    container_name: articles-minio
+    image: minio/minio
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    command: server --console-address ':9001' /data/
+    environment:
+      MINIO_ROOT_USER: 'admin'
+      MINIO_ROOT_PASSWORD: 'admin123'
+    volumes:
+      - articles-minio:/data
+

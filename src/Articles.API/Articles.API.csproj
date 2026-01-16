@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Articles.Storage.Minio\Articles.Storage.Minio.csproj" />
     <ProjectReference Include="..\Articles.Storage.Redis\Articles.Storage.Redis.csproj" />
     <ProjectReference Include="..\Articles.Application\Articles.Application.csproj" />
     <ProjectReference Include="..\Articles.Infrastructure\Articles.Infrastructure.csproj" />

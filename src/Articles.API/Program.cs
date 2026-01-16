@@ -7,6 +7,7 @@ using Articles.Infrastructure;
 using Articles.Infrastructure.BackgroundService;
 using Articles.Infrastructure.Monitoring;
 using Articles.Shared;
+using Articles.Storage.Minio;
 using Articles.Storage.Postgres;
 using Articles.Storage.Redis;
 
@@ -39,7 +40,8 @@ builder.Services
 	.AddApplication()
 	.AddInfrastructure(configuration)
 	.AddPostgres(configuration)
-	.AddRedis(configuration);
+	.AddRedis(configuration)
+	.AddMinio(configuration);
 
 var app = builder.Build();
 
