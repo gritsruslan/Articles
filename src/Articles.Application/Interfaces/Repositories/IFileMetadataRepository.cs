@@ -7,4 +7,8 @@ public interface IFileMetadataRepository
 	Task Add(FileMetadata fileMetadata, CancellationToken cancellationToken);
 
 	Task SoftDeleteByArticleId(Guid articleId, CancellationToken cancellationToken);
+
+	Task<List<FileMetadata>> GetUnlinked(CancellationToken cancellationToken);
+
+	Task BatchDeleteByIds(List<Guid> fileMetadataIds, CancellationToken cancellationToken);
 }

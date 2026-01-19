@@ -1,3 +1,4 @@
+using Articles.Domain.ValueObjects;
 using FileMetadata = Articles.Storage.Postgres.Entities.FileMetadata;
 
 namespace Articles.Storage.Postgres.Repositories;
@@ -27,5 +28,26 @@ public sealed class FileMetadataRepository(ArticlesDbContext dbContext) : IFileM
 		return dbContext.FileMetadata
 			.Where(f => f.ArticleId == articleId)
 			.ExecuteUpdateAsync(x => x.SetProperty(f => f.ArticleId, (Guid?)null), cancellationToken);
+	}
+
+	public Task<List<Articles.Domain.Models.FileMetadata>> GetUnlinked(CancellationToken cancellationToken)
+	{
+		return dbContext.FileMetadata
+			.Where(f => f.ArticleId == null)
+			.Select(f => new Articles.Domain.Models.FileMetadata()
+			{
+				Id = f.Id,
+				FileFormat = FileFormat.FromContentType(f.ContentType).Value,
+				ArticleId = f.ArticleId,
+				UploadedAt = f.UploadedAt
+			})
+			.ToListAsync(cancellationToken);
+	}
+
+	public Task BatchDeleteByIds(List<Guid> fileMetadataIds, CancellationToken cancellationToken)
+	{
+		return dbContext.FileMetadata
+			 .Where(f => fileMetadataIds.Contains(f.Id))
+			 .ExecuteDeleteAsync(cancellationToken: cancellationToken);
 	}
 }
