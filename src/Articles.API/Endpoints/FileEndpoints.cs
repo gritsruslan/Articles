@@ -14,7 +14,6 @@ internal static class FileEndpoints
 
 		group.MapGet(string.Empty, GetFile);
 		group.MapPost(string.Empty, UploadFile);
-		group.MapDelete(string.Empty, DeleteFile);
 
 		return app;
 	}
@@ -49,12 +48,5 @@ internal static class FileEndpoints
 		}
 
 		return Results.Ok();
-	}
-
-	private static Task<IResult> DeleteFile(
-		[FromServices] ISender sender,
-		CancellationToken cancellationToken)
-	{
-		throw new NotImplementedException();
 	}
 }

@@ -15,8 +15,4 @@
     <ItemGroup>
         <InternalsVisibleTo Include="Articles.UnitTests"/>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="FileUseCases\DeleteFile\" />
-    </ItemGroup>
 </Project>

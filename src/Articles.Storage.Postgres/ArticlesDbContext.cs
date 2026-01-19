@@ -1,5 +1,6 @@
 ﻿using Articles.Domain.DomainEvents;
 using Articles.Storage.Postgres.Entities;
+using FileMetadata = Articles.Storage.Postgres.Entities.FileMetadata;
 
 namespace Articles.Storage.Postgres;
 
@@ -12,7 +13,7 @@ public sealed class ArticlesDbContext(DbContextOptions<ArticlesDbContext> option
 	public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
 	public DbSet<FileMetadata> FileMetadata => Set<FileMetadata>();
-	
+
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		//modelBuilder.HasDefaultSchema("articles");

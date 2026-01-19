@@ -1,7 +1,6 @@
 using Articles.Domain.Constants;
-using Articles.Domain.ValueObjects;
-using Articles.Storage.Postgres.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using FileMetadata = Articles.Storage.Postgres.Entities.FileMetadata;
 
 namespace Articles.Storage.Postgres.Configurations;
 
@@ -11,8 +10,7 @@ public sealed class FileMetadataConfiguration : IEntityTypeConfiguration<FileMet
 	{
 		builder.HasKey(x => x.Id);
 
-		builder.Property(x => x.FileFormat)
-			.HasConversion(x => x.ContentType, contentType => FileFormat.FromContentType(contentType).Value)
+		builder.Property(x => x.ContentType)
 			.HasMaxLength(SupportedFileFormats.ContentTypeMaxLength);
 	}
 }
