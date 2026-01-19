@@ -14,10 +14,22 @@ internal sealed class UploadFileCommandHandler(IFileRepository fileRepository,
 		var file = request.File;
 		var fileNewName = Guid.NewGuid().ToString();
 
-		var bucketResult = FileBucketNames.FromContentType(file.ContentType);
+		var formatResult = FileFormat.FromContentType(file.ContentType);
+		if (formatResult.IsFailure)
+		{
+			return formatResult.Error;
+		}
+		var format = formatResult.Value;
+
+		var bucketResult = FileBucketNames.FromFormat(format);
 		if (bucketResult.IsFailure)
 		{
 			return bucketResult.Error;
+		}
+
+		if (file.Length > SupportedFileFormats.MaxFileSize)
+		{
+			return FileErrors.TooLargeFile();
 		}
 
 		await fileRepository.UploadFile(

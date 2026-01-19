@@ -11,6 +11,8 @@ public sealed class ArticlesDbContext(DbContextOptions<ArticlesDbContext> option
 
 	public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
+	public DbSet<FileMetadata> FileMetadata => Set<FileMetadata>();
+	
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		//modelBuilder.HasDefaultSchema("articles");

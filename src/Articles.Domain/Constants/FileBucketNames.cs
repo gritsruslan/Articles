@@ -1,4 +1,6 @@
+using System.Net.Mime;
 using Articles.Domain.Errors;
+using Articles.Domain.ValueObjects;
 using Articles.Shared.Result;
 
 namespace Articles.Domain.Constants;
@@ -11,14 +13,25 @@ public static class FileBucketNames
 
 	public const string Other = "other";
 
-	public static Result<string> FromContentType(string contentType)
+	public static Result<string> FromFormat(FileFormat format)
 	{
-		return contentType switch
+		Func<FileFormat, bool> predicate = f => f == format;
+
+		if (SupportedFileFormats.Images().Any(predicate))
 		{
-			SupportedFileFormats.Jpeg or SupportedFileFormats.Png or SupportedFileFormats.Gif or SupportedFileFormats.Bmp => Images,
-			SupportedFileFormats.Mp4 or SupportedFileFormats.WebM or SupportedFileFormats.Mov => Videos,
-			SupportedFileFormats.Json or SupportedFileFormats.Xml => Other,
-			_ => FileErrors.UnsupportedFileFormat()
-		};
+			return Images;
+		}
+
+		if (SupportedFileFormats.Videos().Any(predicate))
+		{
+			return Videos;
+		}
+
+		if (SupportedFileFormats.Other().Any(predicate))
+		{
+			return Other;
+		}
+
+		return FileErrors.UnsupportedFileFormat();
 	}
 }

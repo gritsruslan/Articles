@@ -9,17 +9,14 @@ internal sealed class GetFileQueryHandler(IFileRepository fileRepository) : IQue
 	{
 		//TODO : DB ?
 		var fullFileName = request.FileName;
-		var extension = Path.GetExtension(fullFileName);
-
-		var contentTypeQualify = SupportedFileFormats.FromExtension(extension);
-		if (contentTypeQualify.IsFailure)
+		var formatResult = FileFormat.FromExtension(Path.GetExtension(fullFileName));
+		if (formatResult.IsFailure)
 		{
-			return contentTypeQualify.Error;
+			return formatResult.Error;
 		}
-		var contentType = contentTypeQualify.Value;
+		var format = formatResult.Value;
 
-		var qualifyBucket = FileBucketNames.FromContentType(contentType);
-
+		var qualifyBucket = FileBucketNames.FromFormat(format);
 		if (qualifyBucket.IsFailure)
 		{
 			return qualifyBucket.Error;
@@ -28,6 +25,6 @@ internal sealed class GetFileQueryHandler(IFileRepository fileRepository) : IQue
 		var fileName = Path.GetFileNameWithoutExtension(fullFileName);
 
 		var stream = await fileRepository.GetFile(qualifyBucket.Value, fileName, cancellationToken);
-		return new GetFileResponse(stream, contentTypeQualify.Value);
+		return new GetFileResponse(stream, format.ContentType);
 	}
 }
