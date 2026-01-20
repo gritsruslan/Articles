@@ -14,6 +14,8 @@ public sealed class ArticlesDbContext(DbContextOptions<ArticlesDbContext> option
 
 	public DbSet<FileMetadata> FileMetadata => Set<FileMetadata>();
 
+	public DbSet<BlogEntity> Blogs => Set<BlogEntity>();
+
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		//modelBuilder.HasDefaultSchema("articles");
