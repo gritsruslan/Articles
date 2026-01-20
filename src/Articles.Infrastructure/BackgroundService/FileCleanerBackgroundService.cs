@@ -1,72 +1,62 @@
 using Articles.Application.Interfaces.Repositories;
 using Articles.Domain.Constants;
-using Articles.Shared.UnitOfWork;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Articles.Infrastructure.BackgroundService;
 
+// very simple file cleaner background service
+// maybe rewrite with domain events
 public sealed class FileCleanerBackgroundService(
 	ILogger<FileCleanerBackgroundService> logger,
-	IFileMetadataRepository metadataRepository,
-	IFileRepository fileRepository,
-	IUnitOfWork unitOfWork) : Microsoft.Extensions.Hosting.BackgroundService
+	IServiceProvider serviceProvider) : Microsoft.Extensions.Hosting.BackgroundService
 {
 	private readonly TimeSpan _delay = TimeSpan.FromHours(6);
 
+	private const int BatchSize = 10;
+
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
-		// TODO : refactoring
 		await Task.Yield();
+		logger.LogInformation("== Starting FileCleanerBackgroundService ==");
 
-		await using var scope = await unitOfWork.StartScope(stoppingToken);
-
-		var unlinkedMetadatas = await metadataRepository.GetUnlinked(stoppingToken);
-		// delete files that are unlinked and older than 6 hours
-		var forDelete = unlinkedMetadatas.Where(f =>
-			f.UploadedAt < DateTime.UtcNow.Add(TimeSpan.FromHours(-6)));
-		var forDeleteIds = forDelete.Select(f => f.Id).ToList();
-
-		// for every bucket
-		var imagesForDelete = forDelete.Where(f =>
+		while (!stoppingToken.IsCancellationRequested)
 		{
-			var bucket = FileBucketNames.FromFormat(f.FileFormat);
-			if (bucket.IsFailure)
+			try
 			{
-				return false;
-			}
-			return bucket.Value == FileBucketNames.Images;
-		}).Select(f => f.Id.ToString()).ToList();
+				using var serviceScope = serviceProvider.CreateScope();
+				var metadataRepository = serviceScope.ServiceProvider.GetRequiredService<IFileMetadataRepository>();
+				var fileRepository = serviceScope.ServiceProvider.GetRequiredService<IFileRepository>();
 
-		var videosForDelete = forDelete.Where(f =>
-		{
-			var bucket = FileBucketNames.FromFormat(f.FileFormat);
-			if (bucket.IsFailure)
+				var unlinkedFileMetadata = await metadataRepository.GetUnlinked(
+					BatchSize, TimeSpan.FromHours(6), stoppingToken);
+
+				int cleaned = 0;
+				foreach (var fileMetadata in unlinkedFileMetadata)
+				{
+					var bucketResult = FileBucketNames.FromFormat(fileMetadata.FileFormat);
+					if (bucketResult.IsFailure)
+					{
+						logger.LogError("Unable to resolve bucket for file {fileId} with content type {contentType}",
+							fileMetadata.Id, fileMetadata.FileFormat.ContentType );
+						continue;
+					}
+
+					await fileRepository.DeleteFile(bucketResult.Value, fileMetadata.Id.ToString(), stoppingToken);
+					await metadataRepository.DeleteById(fileMetadata.Id, stoppingToken);
+
+					cleaned++;
+				}
+
+				logger.LogInformation("Successfully cleaned {cleaned} unlinked files in FileCleanerBackgroundService", cleaned);
+			}
+			catch (Exception ex)
 			{
-				return false;
+				logger.LogError(ex, "Unhandled exception in FileCleanerBackgroundService");
+				throw;
 			}
-			return bucket.Value == FileBucketNames.Videos;
-		}).Select(f => f.Id.ToString()).ToList();
 
-		var otherForDelete = forDelete.Where(f =>
-		{
-			var bucket = FileBucketNames.FromFormat(f.FileFormat);
-			if (bucket.IsFailure)
-			{
-				return false;
-			}
-			return bucket.Value == FileBucketNames.Other;
-		}).Select(f => f.Id.ToString()).ToList();
-
-		await metadataRepository.BatchDeleteByIds(forDeleteIds, stoppingToken);
-
-		await fileRepository.DeleteFiles(FileBucketNames.Images,imagesForDelete, stoppingToken);
-		await fileRepository.DeleteFiles(FileBucketNames.Videos, videosForDelete, stoppingToken);
-		await fileRepository.DeleteFiles(FileBucketNames.Other, otherForDelete, stoppingToken);
-
-		await scope.Commit(stoppingToken);
-
-		logger.LogInformation("File Cleaner Service : cleaned");
-
-		await Task.Delay(_delay, stoppingToken);
+			await Task.Delay(_delay, stoppingToken);
+		}
 	}
 }

@@ -23,17 +23,17 @@ public sealed class FileMetadataRepository(ArticlesDbContext dbContext) : IFileM
 		await dbContext.SaveChangesAsync(cancellationToken);
 	}
 
-	public Task SoftDeleteByArticleId(Guid articleId, CancellationToken cancellationToken)
+	public Task<List<Domain.Models.FileMetadata>> GetUnlinked(int take, TimeSpan? olderThan, CancellationToken cancellationToken)
 	{
-		return dbContext.FileMetadata
-			.Where(f => f.ArticleId == articleId)
-			.ExecuteUpdateAsync(x => x.SetProperty(f => f.ArticleId, (Guid?)null), cancellationToken);
-	}
+		var query = dbContext.FileMetadata.Where(f => f.ArticleId == null);
 
-	public Task<List<Articles.Domain.Models.FileMetadata>> GetUnlinked(CancellationToken cancellationToken)
-	{
-		return dbContext.FileMetadata
-			.Where(f => f.ArticleId == null)
+		if (olderThan is not null)
+		{
+			query = query.Where(f => f.UploadedAt < DateTime.UtcNow - olderThan);
+		}
+
+		return query.OrderByDescending(f => f.UploadedAt)
+			.Take(take)
 			.Select(f => new Articles.Domain.Models.FileMetadata()
 			{
 				Id = f.Id,
@@ -44,10 +44,8 @@ public sealed class FileMetadataRepository(ArticlesDbContext dbContext) : IFileM
 			.ToListAsync(cancellationToken);
 	}
 
-	public Task BatchDeleteByIds(List<Guid> fileMetadataIds, CancellationToken cancellationToken)
+	public Task DeleteById(Guid fileId, CancellationToken cancellationToken)
 	{
-		return dbContext.FileMetadata
-			 .Where(f => fileMetadataIds.Contains(f.Id))
-			 .ExecuteDeleteAsync(cancellationToken: cancellationToken);
+		return dbContext.FileMetadata.Where(f => f.Id == fileId).ExecuteDeleteAsync(cancellationToken);
 	}
 }

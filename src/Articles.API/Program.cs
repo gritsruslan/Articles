@@ -30,7 +30,9 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();
 
-builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
+builder.Services
+	.AddHostedService<OutboxProcessorBackgroundService>()
+	.AddHostedService<FileCleanerBackgroundService>();
 
 builder.Services
 	.AddDefaultServices()

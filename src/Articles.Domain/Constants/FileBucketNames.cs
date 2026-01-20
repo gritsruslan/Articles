@@ -13,6 +13,13 @@ public static class FileBucketNames
 
 	public const string Other = "other";
 
+	public static IReadOnlyList<string> AllBuckets = new List<string>
+	{
+		Images,
+		Videos,
+		Other
+	};
+
 	public static Result<string> FromFormat(FileFormat format)
 	{
 		Func<FileFormat, bool> predicate = f => f == format;
