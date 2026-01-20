@@ -30,7 +30,8 @@ public static class DependencyInjection
 
 		services.AddScoped<IUserRepository, UserRepository>()
 			.AddScoped<ISessionRepository, SessionRepository>()
-			.AddScoped<IDomainEventRepository, DomainEventRepository>();
+			.AddScoped<IDomainEventRepository, DomainEventRepository>()
+			.AddScoped<IFileMetadataRepository, FileMetadataRepository>();
 
 		return services;
 	}

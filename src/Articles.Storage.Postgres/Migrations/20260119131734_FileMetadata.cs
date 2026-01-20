@@ -6,25 +6,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Articles.Storage.Postgres.Migrations
 {
     /// <inheritdoc />
-    public partial class Outbox : Migration
+    public partial class FileMetadata : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "OutboxMessages",
+                name: "FileMetadata",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    EmittedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ProcessedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Type = table.Column<string>(type: "text", nullable: false),
-                    ContentBlob = table.Column<string>(type: "json", nullable: false),
-                    Error = table.Column<string>(type: "text", nullable: true)
+                    ContentType = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    ArticleId = table.Column<Guid>(type: "uuid", nullable: true),
+                    UploadedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OutboxMessages", x => x.Id);
+                    table.PrimaryKey("PK_FileMetadata", x => x.Id);
                 });
         }
 
@@ -32,7 +30,7 @@ namespace Articles.Storage.Postgres.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OutboxMessages");
+                name: "FileMetadata");
         }
     }
 }

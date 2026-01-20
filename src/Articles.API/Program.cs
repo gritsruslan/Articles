@@ -7,6 +7,7 @@ using Articles.Infrastructure;
 using Articles.Infrastructure.BackgroundService;
 using Articles.Infrastructure.Monitoring;
 using Articles.Shared;
+using Articles.Storage.Minio;
 using Articles.Storage.Postgres;
 using Articles.Storage.Redis;
 
@@ -29,7 +30,9 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();
 
-builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
+builder.Services
+	.AddHostedService<OutboxProcessorBackgroundService>()
+	.AddHostedService<FileCleanerBackgroundService>();
 
 builder.Services
 	.AddDefaultServices()
@@ -39,7 +42,8 @@ builder.Services
 	.AddApplication()
 	.AddInfrastructure(configuration)
 	.AddPostgres(configuration)
-	.AddRedis(configuration);
+	.AddRedis(configuration)
+	.AddMinio();
 
 var app = builder.Build();
 
@@ -47,6 +51,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 await app.InitializeDatabaseAsync();
+await app.InitializeFileBucketsAsync();
 
 app.UseMiddleware<GlobalExceptionHandler>()
 	.UseMiddleware<AuthenticationMiddleware>();
@@ -54,7 +59,8 @@ app.UseMiddleware<GlobalExceptionHandler>()
 app.MapPrometheusScrapingEndpoint();
 
 app.MapServiceEndpoints()
-	.MapAuthEndpoints();
+	.MapAuthEndpoints()
+	.MapFileEndpoints();
 
 app.Run();
 

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Articles.Storage.Postgres.Migrations
 {
     [DbContext(typeof(ArticlesDbContext))]
-    [Migration("20260102125804_Initial")]
+    [Migration("20260116153703_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,44 @@ namespace Articles.Storage.Postgres.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Articles.Domain.DomainEvents.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ContentBlob")
+                        .IsRequired()
+                        .HasColumnType("json");
+
+                    b.Property<DateTime>("EmittedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SpanId")
+                        .HasMaxLength(16)
+                        .HasColumnType("character(16)")
+                        .IsFixedLength();
+
+                    b.Property<string>("TraceId")
+                        .HasMaxLength(32)
+                        .HasColumnType("character(32)")
+                        .IsFixedLength();
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutboxMessages");
+                });
 
             modelBuilder.Entity("Articles.Storage.Postgres.Entities.SessionEntity", b =>
                 {

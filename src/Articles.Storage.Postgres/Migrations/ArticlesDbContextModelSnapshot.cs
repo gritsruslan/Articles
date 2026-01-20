@@ -60,6 +60,28 @@ namespace Articles.Storage.Postgres.Migrations
                     b.ToTable("OutboxMessages");
                 });
 
+            modelBuilder.Entity("Articles.Storage.Postgres.Entities.FileMetadata", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ArticleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileMetadata");
+                });
+
             modelBuilder.Entity("Articles.Storage.Postgres.Entities.SessionEntity", b =>
                 {
                     b.Property<Guid>("Id")
