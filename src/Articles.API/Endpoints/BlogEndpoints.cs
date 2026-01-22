@@ -1,4 +1,9 @@
+using Articles.API.Extensions;
 using Articles.API.Requests;
+using Articles.Application.BlogUseCases.CreateBlog;
+using Articles.Application.BlogUseCases.GetBlog;
+using Articles.Application.BlogUseCases.GetBlogs;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Articles.API.Endpoints;
@@ -10,27 +15,57 @@ internal static class BlogEndpoints
 		var group = app.MapGroup("blogs");
 
 		group.MapPost(string.Empty, CreateBlog);
-		group.MapGet("{blogId:guid}", GetBlog);
+		group.MapGet("{blogId:int}", GetBlog);
 		group.MapGet(string.Empty, GetBlogs);
 
 		return group;
 	}
 
-	private static Task GetBlogs(CancellationToken cancellationToken)
-	{
-		throw new NotImplementedException();
-	}
-
 	// pagination
 	// read model
 	// sort by count of articles
-	private static Task GetBlog([FromRoute] Guid blogId, CancellationToken cancellationToken)
+	private static async Task<IResult> GetBlogs([FromServices] ISender sender, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var query = new GetBlogsQuery();
+		var result = await sender.Send(query, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok(result.Value);
 	}
 
-	private static Task CreateBlog([FromBody] CreateBlogRequest request, CancellationToken cancellationToken)
+	private static async Task<IResult> GetBlog(
+		[FromServices] ISender sender,
+		[FromRoute] int blogId,
+		CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var query = new GetBlogQuery(blogId);
+		var result = await sender.Send(query, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok(result.Value);
+	}
+
+	private static async Task<IResult> CreateBlog(
+		[FromServices] ISender sender,
+		[FromBody] CreateBlogRequest request,
+		CancellationToken cancellationToken)
+	{
+		var command = new CreateBlogCommand(request.Title);
+		var result = await sender.Send(command, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok();
 	}
 }

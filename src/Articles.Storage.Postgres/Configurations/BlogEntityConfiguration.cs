@@ -10,6 +10,8 @@ internal sealed class BlogEntityConfiguration : IEntityTypeConfiguration<BlogEnt
 	{
 		builder.HasKey(b => b.Id);
 
+		builder.Property(b => b.Id).ValueGeneratedOnAdd();
+
 		builder.Property(b => b.Title)
 			.HasMaxLength(BlogConstants.TitleMaxLength);
 	}

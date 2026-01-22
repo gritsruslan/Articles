@@ -4,13 +4,12 @@ namespace Articles.Domain.Errors;
 
 public static class AbstractErrors
 {
-	public static Error EmptyParameter(string parameterName, string parameterValue) =>
+	public static Error EmptyParameter(string parameterName) =>
 		new(
 			ErrorType.InvalidValue,
 			$"{parameterName} can't be empty",
 			$"empty.{parameterName.ToLower()}",
-			parameterName,
-			parameterValue);
+			parameterName);
 
 	public static Error InvalidParameterLength(
 		string parameterName,
