@@ -6,7 +6,7 @@ namespace Articles.Domain.Errors;
 public static class UserErrors
 {
 	public static Error EmptyEmail(string invalidEmail) =>
-		AbstractErrors.EmptyParameter("email", invalidEmail);
+		AbstractErrors.EmptyParameter("email");
 
 	public static Error InvalidEmailLength(string invalidEmail) =>
 		AbstractErrors.InvalidParameterLength(
@@ -20,7 +20,7 @@ public static class UserErrors
 			repeatedEmail);
 
 	public static Error EmptyDomainId(string invalidDomainId) =>
-		AbstractErrors.EmptyParameter("domain-id", invalidDomainId);
+		AbstractErrors.EmptyParameter("domain-id");
 
 	public static Error InvalidDomainIdLength(string invalidDomainId) =>
 		AbstractErrors.InvalidParameterLength(
@@ -34,7 +34,7 @@ public static class UserErrors
 			repeatedDomainId);
 
 	public static Error EmptyName(string invalidName) =>
-		AbstractErrors.EmptyParameter("name", invalidName);
+		AbstractErrors.EmptyParameter("name");
 
 	public static Error InvalidNameLength(string invalidName) =>
 		AbstractErrors.InvalidParameterLength(
