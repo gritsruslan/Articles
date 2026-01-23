@@ -30,14 +30,33 @@ internal sealed class BlogRepository(ArticlesDbContext dbContext) : IBlogReposit
 		}).FirstOrDefaultAsync(cancellationToken);
 	}
 
-	public async Task<IEnumerable<BlogReadModel>> GetReadModels(CancellationToken cancellationToken)
+	public async Task<IEnumerable<BlogReadModel>> GetReadModels(
+		int skip, int take, CancellationToken cancellationToken)
 	{
-		return await dbContext.Blogs.Select(b => new BlogReadModel
-		{
-			Id = b.Id,
-			Title = b.Title,
-			ArticlesCount = 0,
-			LastArticleCreatedAt = null
-		}).ToListAsync(cancellationToken);
+		FormattableString query =
+			$"""
+			SELECT
+				b."Id",
+				b."Title",
+				ArticlesCount,
+				LastArticleCreatedAt
+			FROM (
+				SELECT
+					b."Id",
+					b."Title",
+					COUNT(a."Id") OVER (PARTITION BY a."BlogId")      AS ArticlesCount,
+					MAX(a."CreatedAt") OVER (PARTITION BY a."BlogId") AS LastArticleCreatedAt
+				FROM "Blogs" b
+				LEFT JOIN "Articles" a ON a."BlogId" = b."Id"
+			) b
+			GROUP BY b."Id", b."Title", ArticlesCount, LastArticleCreatedAt
+			ORDER BY ArticlesCount DESC, b."Title"
+			LIMIT {take}
+			OFFSET {skip};
+			""";
+
+		return await dbContext.Database
+			.SqlQuery<BlogReadModel>(query)
+			.ToListAsync(cancellationToken);
 	}
 }

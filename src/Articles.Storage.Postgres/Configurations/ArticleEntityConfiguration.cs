@@ -22,5 +22,10 @@ internal sealed class ArticleEntityConfiguration : IEntityTypeConfiguration<Arti
 			.HasOne(x => x.Creator)
 			.WithMany()
 			.HasForeignKey(x => x.CreatorId);
+
+		builder
+			.HasOne(x => x.Blog)
+			.WithMany()
+			.HasForeignKey(x => x.BlogId);
 	}
 }

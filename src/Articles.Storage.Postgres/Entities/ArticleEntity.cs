@@ -10,6 +10,10 @@ public sealed class ArticleEntity : BaseAuditableEntity
 
 	public string Data { get; set; } = null!;
 
+	public int BlogId { get; set; }
+
+	public BlogEntity Blog { get; set; } = null!;
+
 	public Guid CreatorId { get; set; }
 
 	public UserEntity Creator { get; set; } = null!;
