@@ -1,19 +1,22 @@
 using Articles.Application.Interfaces.Repositories;
 using Articles.Domain.ReadModels;
+using Articles.Shared.Abstraction;
 
 namespace Articles.Application.BlogUseCases.GetBlogs;
 
-internal sealed class GetBlogsQueryHandler(IBlogRepository repository) : IQueryHandler<GetBlogsQuery, IEnumerable<BlogReadModel>>
+internal sealed class GetBlogsQueryHandler(IBlogRepository repository) : IQueryHandler<GetBlogsQuery, PagedData<BlogReadModel>>
 {
-	public async Task<Result<IEnumerable<BlogReadModel>>>
+	public async Task<Result<PagedData<BlogReadModel>>>
 		Handle(GetBlogsQuery request, CancellationToken cancellationToken)
 	{
 		int skip = (request.Page - 1) * request.PageSize;
 		int take = request.PageSize;
 
-		var blogs = await repository.GetReadModels(skip, take, cancellationToken);
+		var (readModels, totalCount) = await repository.GetReadModels(skip, take, cancellationToken);
+
+		var paged = new PagedData<BlogReadModel>(readModels, totalCount, request.Page, request.PageSize);
 
 		// idk why implicit cast is not working
-		return Result<IEnumerable<BlogReadModel>>.Success(blogs);
+		return Result<PagedData<BlogReadModel>>.Success(paged);
 	}
 }

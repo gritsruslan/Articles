@@ -30,7 +30,7 @@ internal sealed class BlogRepository(ArticlesDbContext dbContext) : IBlogReposit
 		}).FirstOrDefaultAsync(cancellationToken);
 	}
 
-	public async Task<IEnumerable<BlogReadModel>> GetReadModels(
+	public async Task<(IEnumerable<BlogReadModel> readModels, int totalCount)> GetReadModels(
 		int skip, int take, CancellationToken cancellationToken)
 	{
 		FormattableString query =
@@ -55,8 +55,12 @@ internal sealed class BlogRepository(ArticlesDbContext dbContext) : IBlogReposit
 			OFFSET {skip};
 			""";
 
-		return await dbContext.Database
+		var readModels =  await dbContext.Database
 			.SqlQuery<BlogReadModel>(query)
 			.ToListAsync(cancellationToken);
+
+		var totalCount = await dbContext.Blogs.CountAsync(cancellationToken);
+
+		return (readModels, totalCount);
 	}
 }
