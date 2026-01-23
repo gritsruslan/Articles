@@ -24,9 +24,13 @@ internal static class BlogEndpoints
 	// pagination
 	// read model
 	// sort by count of articles
-	private static async Task<IResult> GetBlogs([FromServices] ISender sender, CancellationToken cancellationToken)
+	private static async Task<IResult> GetBlogs(
+		[FromServices] ISender sender,
+		[FromQuery] int page,
+		[FromQuery] int pageSize,
+		CancellationToken cancellationToken)
 	{
-		var query = new GetBlogsQuery();
+		var query = new GetBlogsQuery(page, pageSize);
 		var result = await sender.Send(query, cancellationToken);
 
 		if (result.IsFailure)

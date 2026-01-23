@@ -9,6 +9,8 @@ public sealed class Article
 
 	public UserId AuthorId { get; set; }
 
+	public BlogId BlogId { get; set; }
+
 	public ArticleTitle Title { get; set; }
 
 	public ArticleData Data { get; set; }

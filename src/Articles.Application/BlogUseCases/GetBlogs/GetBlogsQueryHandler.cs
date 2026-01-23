@@ -8,9 +8,12 @@ internal sealed class GetBlogsQueryHandler(IBlogRepository repository) : IQueryH
 	public async Task<Result<IEnumerable<BlogReadModel>>>
 		Handle(GetBlogsQuery request, CancellationToken cancellationToken)
 	{
-		var blogs = await repository.GetReadModels(cancellationToken);
+		int skip = (request.Page - 1) * request.PageSize;
+		int take = request.PageSize;
 
-		// idk why implicit
+		var blogs = await repository.GetReadModels(skip, take, cancellationToken);
+
+		// idk why implicit cast is not working
 		return Result<IEnumerable<BlogReadModel>>.Success(blogs);
 	}
 }

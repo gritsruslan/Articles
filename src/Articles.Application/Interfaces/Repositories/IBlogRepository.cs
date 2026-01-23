@@ -8,5 +8,5 @@ public interface IBlogRepository
 
 	Task<Blog?> GetById(BlogId id, CancellationToken cancellationToken);
 
-	Task<IEnumerable<BlogReadModel>> GetReadModels(CancellationToken cancellationToken);
+	Task<IEnumerable<BlogReadModel>> GetReadModels(int skip, int take, CancellationToken cancellationToken);
 }
