@@ -9,6 +9,7 @@ internal sealed class GetBlogsQueryHandler(IBlogRepository repository) : IQueryH
 	public async Task<Result<PagedData<BlogReadModel>>>
 		Handle(GetBlogsQuery request, CancellationToken cancellationToken)
 	{
+		// TODO validate page and pageSize
 		int skip = (request.Page - 1) * request.PageSize;
 		int take = request.PageSize;
 

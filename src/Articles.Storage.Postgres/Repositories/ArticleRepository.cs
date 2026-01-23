@@ -1,4 +1,5 @@
 using Articles.Domain.ReadModels;
+using Articles.Storage.Postgres.Helpers;
 
 namespace Articles.Storage.Postgres.Repositories;
 
@@ -7,17 +8,22 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 	public async Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
 		GetReadModels(string? searchQuery, int skip, int take, CancellationToken cancellationToken)
 	{
-		//TODO допилить
+		var query = dbContext.Articles
+			.Include(a => a.Blog)
+			.AsQueryable();
 
-		var query = dbContext.Articles.Include(a => a.Blog);
-
-		if (searchQuery is not null)
+		string? searchPattern = null;
+		if (!string.IsNullOrWhiteSpace(searchQuery))
 		{
-			// create safe pattern
+			searchPattern = LikeStatementHelper.Normalize(searchQuery);
+			searchPattern = $"%{searchPattern}%";
+
+			query = query.Where(a =>
+				EF.Functions.ILike(a.Title, searchPattern, LikeStatementHelper.EscapeCharacter));
 		}
 
 		var readModels = await query.Select(a =>
-			new ArticleReadModel()
+			new ArticleReadModel
 			{
 				Id = a.Id,
 				Title = a.Title,
@@ -30,8 +36,13 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 			.Take(take)
 			.ToListAsync(cancellationToken);
 
-		// redo with searchQuery
-		var totalCount = await dbContext.Articles.CountAsync(cancellationToken);
+		var totalCountQuery = dbContext.Articles.AsQueryable();
+		if (!string.IsNullOrWhiteSpace(searchQuery))
+		{
+			totalCountQuery = totalCountQuery.Where(a =>
+				EF.Functions.ILike(a.Title, searchPattern!, LikeStatementHelper.EscapeCharacter));
+		}
+		var totalCount = await totalCountQuery.CountAsync(cancellationToken);
 
 		return (readModels, totalCount);
 	}

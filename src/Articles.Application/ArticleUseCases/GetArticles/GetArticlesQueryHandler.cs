@@ -9,6 +9,7 @@ internal sealed class GetArticlesQueryHandler(IArticleRepository repository) : I
 	public async Task<Result<PagedData<ArticleReadModel>>> Handle(
 		GetArticlesQuery request, CancellationToken cancellationToken)
 	{
+		// TODO validate page and pageSize
 		var page = request.Page;
 		var pageSize = request.PageSize;
 		var skip = (page - 1) * pageSize;
