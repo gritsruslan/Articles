@@ -61,7 +61,8 @@ app.MapPrometheusScrapingEndpoint();
 app.MapServiceEndpoints()
 	.MapAuthEndpoints()
 	.MapFileEndpoints()
-	.MapBlogEndpoints();
+	.MapBlogEndpoints()
+	.MapArticleEndpoints();
 
 app.Run();
 

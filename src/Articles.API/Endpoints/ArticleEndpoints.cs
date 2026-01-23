@@ -1,3 +1,5 @@
+using Articles.API.Extensions;
+using Articles.Application.ArticleUseCases.GetArticles;
 using Articles.Domain.Identifiers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +17,25 @@ internal static class ArticleEndpoints
 		group.MapGet("{blogId:guid}", GetArticlesByBlog);
 		group.MapGet(string.Empty, GetArticles);
 
-		return group;
+		return app;
 	}
 
-	private static Task GetArticles(
-		[FromQuery] string? query,
+	private static async Task<IResult> GetArticles(
+		[FromQuery] string? searchQuery,
 		[FromQuery] int page,
 		[FromQuery] int pageSize,
 		[FromServices] ISender sender,
 		CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var query = new GetArticlesQuery(searchQuery, page, pageSize);
+		var result = await sender.Send(query, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok(result.Value);
 	}
 
 	private static Task GetArticlesByBlog()
