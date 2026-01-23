@@ -16,6 +16,8 @@ public sealed class ArticlesDbContext(DbContextOptions<ArticlesDbContext> option
 
 	public DbSet<BlogEntity> Blogs => Set<BlogEntity>();
 
+	public DbSet<ArticleEntity> Articles => Set<ArticleEntity>();
+
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		//modelBuilder.HasDefaultSchema("articles");

@@ -13,7 +13,7 @@ public static class AbstractErrors
 
 	public static Error InvalidParameterLength(
 		string parameterName,
-		string parameterValue,
+		string? parameterValue,
 		int minLength,
 		int maxLength)
 	{
