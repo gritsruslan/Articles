@@ -18,7 +18,7 @@ internal static class BlogEndpoints
 		group.MapGet("{blogId:int}", GetBlog);
 		group.MapGet(string.Empty, GetBlogs);
 
-		return group;
+		return app;
 	}
 
 	// pagination
