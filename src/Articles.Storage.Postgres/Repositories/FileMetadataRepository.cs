@@ -50,6 +50,13 @@ public sealed class FileMetadataRepository(ArticlesDbContext dbContext) : IFileM
 			.ExecuteUpdateAsync(c => c.SetProperty(f => f.ArticleId, articleId.Value), cancellationToken);
 	}
 
+	public Task UnlinkFromArticle(ArticleId articleId, CancellationToken cancellationToken)
+	{
+		return dbContext.FileMetadata
+			.Where(f => f.ArticleId == articleId.Value)
+			.ExecuteUpdateAsync(c => c.SetProperty(f => f.ArticleId, (Guid?) null), cancellationToken);
+	}
+
 	public Task DeleteById(Guid fileId, CancellationToken cancellationToken)
 	{
 		return dbContext.FileMetadata.Where(f => f.Id == fileId).ExecuteDeleteAsync(cancellationToken);

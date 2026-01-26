@@ -13,6 +13,9 @@ public static class ArticleErrors
 			"ArticleId",
 			id.Value.ToString());
 
+	public static Error NotAnAuthor() =>
+		new(ErrorType.Forbidden, "You are not an author of this article");
+
 	public static Error EmptyTitle() =>
 		AbstractErrors.EmptyParameter("ArticleTitle");
 

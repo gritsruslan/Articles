@@ -1,6 +1,7 @@
 using Articles.API.Extensions;
 using Articles.API.Requests;
 using Articles.Application.ArticleUseCases.CreateArticle;
+using Articles.Application.ArticleUseCases.DeleteArticle;
 using Articles.Application.ArticleUseCases.GetArticleById;
 using Articles.Application.ArticleUseCases.GetArticles;
 using Articles.Application.ArticleUseCases.GetArticlesByBlog;
@@ -19,6 +20,7 @@ internal static class ArticleEndpoints
 		group.MapGet("{articleId:guid}", GetArticleById);
 		group.MapGet("by-blog/{blogId:int}", GetArticlesByBlog);
 		group.MapGet(string.Empty, GetArticles);
+		group.MapDelete("{articleId:guid}", DeleteArticle);
 
 		return app;
 	}
@@ -90,4 +92,21 @@ internal static class ArticleEndpoints
 
 		return Results.Ok(result.Value);
 	}
+
+	private static async Task<IResult> DeleteArticle(
+		[FromRoute] Guid articleId,
+		[FromServices] ISender sender,
+		CancellationToken cancellationToken)
+	{
+		var command = new DeleteArticleCommand(articleId);
+		var result = await sender.Send(command, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok();
+	}
+
 }

@@ -10,5 +10,7 @@ public interface IFileMetadataRepository
 
 	Task LinkToArticle(IEnumerable<Guid> fileIds, ArticleId articleId, CancellationToken cancellationToken);
 
+	Task UnlinkFromArticle(ArticleId articleId, CancellationToken cancellationToken);
+
 	Task DeleteById(Guid fileId, CancellationToken cancellationToken);
 }

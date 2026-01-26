@@ -10,6 +10,10 @@ public interface IArticleRepository
 
 	Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken);
 
+	Task<bool> Exists(ArticleId articleId, CancellationToken cancellationToken);
+
+	Task Delete(ArticleId articleId, CancellationToken cancellationToken);
+
 	Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
 		GetReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken);
 }
