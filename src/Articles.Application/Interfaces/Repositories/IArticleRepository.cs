@@ -11,5 +11,5 @@ public interface IArticleRepository
 	Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken);
 
 	Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
-		GetReadModels(string? searchQuery, PagedRequest pagedRequest, CancellationToken cancellationToken);
+		GetReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken);
 }

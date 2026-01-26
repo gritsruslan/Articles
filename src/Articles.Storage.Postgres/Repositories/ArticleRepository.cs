@@ -42,11 +42,16 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 	}
 
 	public async Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
-		GetReadModels(string? searchQuery, PagedRequest pagedRequest, CancellationToken cancellationToken)
+		GetReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var query = dbContext.Articles
 			.Include(a => a.Blog)
 			.AsQueryable();
+
+		if (blogId is not null)
+		{
+			query = query.Where(a => a.BlogId == ((BlogId) blogId).Value);
+		}
 
 		string? searchPattern = null;
 		if (!string.IsNullOrWhiteSpace(searchQuery))

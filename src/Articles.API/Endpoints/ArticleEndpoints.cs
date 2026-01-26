@@ -3,6 +3,7 @@ using Articles.API.Requests;
 using Articles.Application.ArticleUseCases.CreateArticle;
 using Articles.Application.ArticleUseCases.GetArticleById;
 using Articles.Application.ArticleUseCases.GetArticles;
+using Articles.Application.ArticleUseCases.GetArticlesByBlog;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ internal static class ArticleEndpoints
 
 		group.MapPost(string.Empty, CreateArticle);
 		group.MapGet("{articleId:guid}", GetArticleById);
-		group.MapGet("{blogId:guid}", GetArticlesByBlog);
+		group.MapGet("by-blog/{blogId:int}", GetArticlesByBlog);
 		group.MapGet(string.Empty, GetArticles);
 
 		return app;
@@ -56,13 +57,26 @@ internal static class ArticleEndpoints
 		return Results.Ok(result.Value);
 	}
 
-	private static Task GetArticlesByBlog()
+	private static async Task<IResult> GetArticlesByBlog(
+		[FromRoute] int blogId,
+		[FromQuery] int page,
+		[FromQuery] int pageSize,
+		[FromServices] ISender sender,
+		CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var query = new GetArticlesByBlogQuery(blogId, page, pageSize);
+		var result = await sender.Send(query, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok(result.Value);
 	}
 
 	private static async Task<IResult> GetArticleById(
-		[FromQuery] Guid articleId,
+		[FromRoute] Guid articleId,
 		[FromServices] ISender sender,
 		CancellationToken cancellationToken)
 	{
