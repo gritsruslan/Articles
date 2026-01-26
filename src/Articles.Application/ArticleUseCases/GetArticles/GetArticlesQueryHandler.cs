@@ -9,15 +9,16 @@ internal sealed class GetArticlesQueryHandler(IArticleRepository repository) : I
 	public async Task<Result<PagedData<ArticleReadModel>>> Handle(
 		GetArticlesQuery request, CancellationToken cancellationToken)
 	{
-		// TODO validate page and pageSize
-		var page = request.Page;
-		var pageSize = request.PageSize;
-		var skip = (page - 1) * pageSize;
-		var take = pageSize;
+		var paginationValidation= PagedRequest.Create(request.Page, request.PageSize);
+		if (paginationValidation.IsFailure)
+		{
+			return paginationValidation.Error;
+		}
+		var pagedRequest = paginationValidation.Value;
 
 		var (readModels, totalCount) =
-			await repository.GetReadModels(request.SearchQuery, skip, take, cancellationToken);
-		var paged = new PagedData<ArticleReadModel>(readModels, totalCount, page, pageSize);
+			await repository.GetReadModels(request.SearchQuery, pagedRequest, cancellationToken);
+		var paged = new PagedData<ArticleReadModel>(readModels, totalCount,  pagedRequest.Page, pagedRequest.PageSize);
 
 		return paged;
 	}

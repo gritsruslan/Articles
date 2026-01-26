@@ -1,5 +1,6 @@
 using Articles.Domain.ReadModels;
 using Articles.Domain.ValueObjects;
+using Articles.Shared.Abstraction;
 using Articles.Storage.Postgres.Entities;
 
 namespace Articles.Storage.Postgres.Repositories;
@@ -31,7 +32,7 @@ internal sealed class BlogRepository(ArticlesDbContext dbContext) : IBlogReposit
 	}
 
 	public async Task<(IEnumerable<BlogReadModel> readModels, int totalCount)> GetReadModels(
-		int skip, int take, CancellationToken cancellationToken)
+		PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		FormattableString query =
 			$"""
@@ -51,8 +52,8 @@ internal sealed class BlogRepository(ArticlesDbContext dbContext) : IBlogReposit
 			) b
 			GROUP BY b."Id", b."Title", ArticlesCount, LastArticleCreatedAt
 			ORDER BY ArticlesCount DESC, b."Title"
-			LIMIT {take}
-			OFFSET {skip};
+			LIMIT {pagedRequest.Take}
+			OFFSET {pagedRequest.Skip};
 			""";
 
 		var readModels =  await dbContext.Database

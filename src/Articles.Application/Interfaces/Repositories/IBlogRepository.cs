@@ -1,4 +1,5 @@
 using Articles.Domain.ReadModels;
+using Articles.Shared.Abstraction;
 
 namespace Articles.Application.Interfaces.Repositories;
 
@@ -8,5 +9,5 @@ public interface IBlogRepository
 
 	Task<Blog?> GetById(BlogId id, CancellationToken cancellationToken);
 
-	Task<(IEnumerable<BlogReadModel> readModels, int totalCount)> GetReadModels(int skip, int take, CancellationToken cancellationToken);
+	Task<(IEnumerable<BlogReadModel> readModels, int totalCount)> GetReadModels(PagedRequest pagedRequest, CancellationToken cancellationToken);
 }
