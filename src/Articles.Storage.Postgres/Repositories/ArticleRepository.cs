@@ -1,4 +1,5 @@
 using Articles.Domain.ReadModels;
+using Articles.Shared.Abstraction;
 using Articles.Storage.Postgres.Helpers;
 
 namespace Articles.Storage.Postgres.Repositories;
@@ -6,7 +7,7 @@ namespace Articles.Storage.Postgres.Repositories;
 internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleRepository
 {
 	public async Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
-		GetReadModels(string? searchQuery, int skip, int take, CancellationToken cancellationToken)
+		GetReadModels(string? searchQuery, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var query = dbContext.Articles
 			.Include(a => a.Blog)
@@ -32,8 +33,8 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 				BlogTitle = a.Blog.Title,
 				CreatedAt = a.CreatedAt
 			})
-			.Skip(skip)
-			.Take(take)
+			.Skip(pagedRequest.Skip)
+			.Take(pagedRequest.Take)
 			.ToListAsync(cancellationToken);
 
 		var totalCountQuery = dbContext.Articles.AsQueryable();

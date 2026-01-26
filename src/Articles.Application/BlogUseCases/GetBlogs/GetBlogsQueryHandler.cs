@@ -9,11 +9,14 @@ internal sealed class GetBlogsQueryHandler(IBlogRepository repository) : IQueryH
 	public async Task<Result<PagedData<BlogReadModel>>>
 		Handle(GetBlogsQuery request, CancellationToken cancellationToken)
 	{
-		// TODO validate page and pageSize
-		int skip = (request.Page - 1) * request.PageSize;
-		int take = request.PageSize;
+		var paginationValidation = PagedRequest.Create(request.Page, request.PageSize);
+		if (paginationValidation.IsFailure)
+		{
+			return paginationValidation.Error;
+		}
+		var pagedRequest = paginationValidation.Value;
 
-		var (readModels, totalCount) = await repository.GetReadModels(skip, take, cancellationToken);
+		var (readModels, totalCount) = await repository.GetReadModels(pagedRequest, cancellationToken);
 
 		var paged = new PagedData<BlogReadModel>(readModels, totalCount, request.Page, request.PageSize);
 
