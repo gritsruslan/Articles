@@ -41,6 +41,20 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 			.FirstOrDefaultAsync(cancellationToken);
 	}
 
+	public Task<bool> Exists(ArticleId articleId, CancellationToken cancellationToken)
+	{
+		return dbContext.Articles
+			.Where(a => a.Id == articleId.Value)
+			.AnyAsync(cancellationToken);
+	}
+
+	public Task Delete(ArticleId articleId, CancellationToken cancellationToken)
+	{
+		return dbContext.Articles
+			.Where(a => a.Id == articleId.Value)
+			.ExecuteDeleteAsync(cancellationToken);
+	}
+
 	public async Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
 		GetReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
