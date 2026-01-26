@@ -31,6 +31,12 @@ internal sealed class BlogRepository(ArticlesDbContext dbContext) : IBlogReposit
 		}).FirstOrDefaultAsync(cancellationToken);
 	}
 
+	public Task<bool> Exists(BlogId id, CancellationToken cancellationToken)
+	{
+		return dbContext.Blogs.AnyAsync(b => b.Id == id.Value, cancellationToken);
+	}
+
+
 	public async Task<(IEnumerable<BlogReadModel> readModels, int totalCount)> GetReadModels(
 		PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{

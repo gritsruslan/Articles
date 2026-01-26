@@ -14,7 +14,7 @@ public sealed class ArticleEntity : BaseAuditableEntity
 
 	public BlogEntity Blog { get; set; } = null!;
 
-	public Guid CreatorId { get; set; }
+	public Guid AuthorId { get; set; }
 
-	public UserEntity Creator { get; set; } = null!;
+	public UserEntity Author { get; set; } = null!;
 }
