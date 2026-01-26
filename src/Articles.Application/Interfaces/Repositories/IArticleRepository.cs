@@ -8,6 +8,8 @@ public interface IArticleRepository
 {
 	Task Add(Article article, CancellationToken cancellationToken);
 
+	Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken);
+
 	Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
 		GetReadModels(string? searchQuery, PagedRequest pagedRequest, CancellationToken cancellationToken);
 }
