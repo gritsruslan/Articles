@@ -1,4 +1,6 @@
 using Articles.API.Extensions;
+using Articles.API.Requests;
+using Articles.Application.ArticleUseCases.CreateArticle;
 using Articles.Application.ArticleUseCases.GetArticles;
 using Articles.Domain.Identifiers;
 using MediatR;
@@ -38,17 +40,28 @@ internal static class ArticleEndpoints
 		return Results.Ok(result.Value);
 	}
 
+	private static async Task<IResult> CreateArticle(
+		[FromBody] CreateArticleRequest request,
+		[FromServices] ISender sender,
+		CancellationToken cancellationToken)
+	{
+		var command = new CreateArticleCommand(request.BlogId, request.Title, request.Data, request.AttachedFiles);
+		var result = await sender.Send(command, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok(result.Value);
+	}
+
 	private static Task GetArticlesByBlog()
 	{
 		throw new NotImplementedException();
 	}
 
 	private static Task GetArticleById()
-	{
-		throw new NotImplementedException();
-	}
-
-	private static Task CreateArticle()
 	{
 		throw new NotImplementedException();
 	}

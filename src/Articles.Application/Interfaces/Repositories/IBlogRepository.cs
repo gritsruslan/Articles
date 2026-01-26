@@ -9,5 +9,7 @@ public interface IBlogRepository
 
 	Task<Blog?> GetById(BlogId id, CancellationToken cancellationToken);
 
+	Task<bool> Exists(BlogId id, CancellationToken cancellationToken);
+
 	Task<(IEnumerable<BlogReadModel> readModels, int totalCount)> GetReadModels(PagedRequest pagedRequest, CancellationToken cancellationToken);
 }

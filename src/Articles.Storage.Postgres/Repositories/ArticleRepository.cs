@@ -1,11 +1,28 @@
 using Articles.Domain.ReadModels;
 using Articles.Shared.Abstraction;
+using Articles.Storage.Postgres.Entities;
 using Articles.Storage.Postgres.Helpers;
 
 namespace Articles.Storage.Postgres.Repositories;
 
 internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleRepository
 {
+	public Task Add(Article article, CancellationToken cancellationToken)
+	{
+		var entity = new ArticleEntity()
+		{
+			Id = article.Id.Value,
+			Title = article.Title.Value,
+			Data = article.Data.Value,
+			BlogId = article.BlogId.Value,
+			AuthorId = article.AuthorId.Value
+		};
+
+		dbContext.Articles.Add(entity);
+
+		return dbContext.SaveChangesAsync(cancellationToken);
+	}
+
 	public async Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
 		GetReadModels(string? searchQuery, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{

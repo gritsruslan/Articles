@@ -19,9 +19,9 @@ internal sealed class ArticleEntityConfiguration : IEntityTypeConfiguration<Arti
 			.HasMaxLength(ArticleConstants.DataMaxLength);
 
 		builder
-			.HasOne(x => x.Creator)
+			.HasOne(x => x.Author)
 			.WithMany()
-			.HasForeignKey(x => x.CreatorId);
+			.HasForeignKey(x => x.AuthorId);
 
 		builder
 			.HasOne(x => x.Blog)
