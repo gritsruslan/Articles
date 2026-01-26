@@ -1,8 +1,8 @@
 using Articles.API.Extensions;
 using Articles.API.Requests;
 using Articles.Application.ArticleUseCases.CreateArticle;
+using Articles.Application.ArticleUseCases.GetArticleById;
 using Articles.Application.ArticleUseCases.GetArticles;
-using Articles.Domain.Identifiers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -61,8 +61,19 @@ internal static class ArticleEndpoints
 		throw new NotImplementedException();
 	}
 
-	private static Task GetArticleById()
+	private static async Task<IResult> GetArticleById(
+		[FromQuery] Guid articleId,
+		[FromServices] ISender sender,
+		CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var query = new GetArticleByIdQuery(articleId);
+		var result = await sender.Send(query, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok(result.Value);
 	}
 }

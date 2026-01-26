@@ -1,4 +1,5 @@
 using Articles.Domain.ReadModels;
+using Articles.Domain.ValueObjects;
 using Articles.Shared.Abstraction;
 using Articles.Storage.Postgres.Entities;
 using Articles.Storage.Postgres.Helpers;
@@ -9,7 +10,7 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 {
 	public Task Add(Article article, CancellationToken cancellationToken)
 	{
-		var entity = new ArticleEntity()
+		var entity = new ArticleEntity
 		{
 			Id = article.Id.Value,
 			Title = article.Title.Value,
@@ -21,6 +22,23 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 		dbContext.Articles.Add(entity);
 
 		return dbContext.SaveChangesAsync(cancellationToken);
+	}
+
+	public Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken)
+	{
+		return dbContext.Articles
+			.Where(a => a.Id == articleId.Value)
+			.Select(a => new Article
+			{
+				Id = ArticleId.Create(a.Id),
+				AuthorId = UserId.Create(a.AuthorId),
+				BlogId = BlogId.Create(a.BlogId),
+				Title = ArticleTitle.CreateVerified(a.Title),
+				Data = ArticleData.CreateVerified(a.Title),
+				CreatedAt = a.CreatedAt,
+				UpdatedAt = a.UpdatedAt
+			})
+			.FirstOrDefaultAsync(cancellationToken);
 	}
 
 	public async Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
