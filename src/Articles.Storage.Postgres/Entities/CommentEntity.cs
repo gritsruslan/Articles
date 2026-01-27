@@ -1,6 +1,8 @@
+using Articles.Shared.Abstraction;
+
 namespace Articles.Storage.Postgres.Entities;
 
-public class CommentEntity
+public class CommentEntity : BaseAuditableEntity
 {
 	public Guid Id { get; set; }
 

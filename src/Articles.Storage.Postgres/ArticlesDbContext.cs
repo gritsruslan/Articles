@@ -18,6 +18,8 @@ public sealed class ArticlesDbContext(DbContextOptions<ArticlesDbContext> option
 
 	public DbSet<ArticleEntity> Articles => Set<ArticleEntity>();
 
+	public DbSet<CommentEntity> Comments => Set<CommentEntity>();
+
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		//modelBuilder.HasDefaultSchema("articles");

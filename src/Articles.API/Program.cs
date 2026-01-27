@@ -62,7 +62,8 @@ app.MapServiceEndpoints()
 	.MapAuthEndpoints()
 	.MapFileEndpoints()
 	.MapBlogEndpoints()
-	.MapArticleEndpoints();
+	.MapArticleEndpoints()
+	.MapCommentEndpoints();
 
 app.Run();
 

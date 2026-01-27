@@ -17,4 +17,6 @@ public sealed class ArticleEntity : BaseAuditableEntity
 	public Guid AuthorId { get; set; }
 
 	public UserEntity Author { get; set; } = null!;
+
+	public ICollection<CommentEntity> Comments { get; set; } = null!;
 }
