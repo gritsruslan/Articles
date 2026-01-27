@@ -1,7 +1,7 @@
 namespace Articles.Domain.ReadModels;
 
 // maybe add ViewsCount
-public sealed class ArticleReadModel
+public sealed class ArticleSearchReadModel
 {
 	public Guid Id { get; set; }
 

@@ -7,9 +7,9 @@ namespace Articles.Application.ArticleUseCases.GetArticlesByBlog;
 internal sealed class GetArticlesByBlogQueryHandler(
 	IBlogRepository blogRepository,
 	IArticleRepository articleRepository)
-	: IQueryHandler<GetArticlesByBlogQuery, PagedData<ArticleReadModel>>
+	: IQueryHandler<GetArticlesByBlogQuery, PagedData<ArticleSearchReadModel>>
 {
-	public async Task<Result<PagedData<ArticleReadModel>>> Handle(
+	public async Task<Result<PagedData<ArticleSearchReadModel>>> Handle(
 		GetArticlesByBlogQuery request,
 		CancellationToken cancellationToken)
 	{
@@ -35,7 +35,7 @@ internal sealed class GetArticlesByBlogQueryHandler(
 			pagedRequest,
 			cancellationToken);
 
-		var pagedData = new PagedData<ArticleReadModel>
+		var pagedData = new PagedData<ArticleSearchReadModel>
 			(readModels, totalCount, pagedRequest.Page, pagedRequest.PageSize);
 
 		return pagedData;

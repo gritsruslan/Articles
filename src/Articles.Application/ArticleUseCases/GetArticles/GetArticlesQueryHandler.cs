@@ -4,9 +4,9 @@ using Articles.Shared.Abstraction;
 
 namespace Articles.Application.ArticleUseCases.GetArticles;
 
-internal sealed class GetArticlesQueryHandler(IArticleRepository repository) : IQueryHandler<GetArticlesQuery, PagedData<ArticleReadModel>>
+internal sealed class GetArticlesQueryHandler(IArticleRepository repository) : IQueryHandler<GetArticlesQuery, PagedData<ArticleSearchReadModel>>
 {
-	public async Task<Result<PagedData<ArticleReadModel>>> Handle(
+	public async Task<Result<PagedData<ArticleSearchReadModel>>> Handle(
 		GetArticlesQuery request, CancellationToken cancellationToken)
 	{
 		var paginationValidation= PagedRequest.Create(request.Page, request.PageSize);
@@ -18,7 +18,7 @@ internal sealed class GetArticlesQueryHandler(IArticleRepository repository) : I
 
 		var (readModels, totalCount) =
 			await repository.GetReadModels(request.SearchQuery, blogId : null, pagedRequest, cancellationToken);
-		var paged = new PagedData<ArticleReadModel>(readModels, totalCount,  pagedRequest.Page, pagedRequest.PageSize);
+		var paged = new PagedData<ArticleSearchReadModel>(readModels, totalCount,  pagedRequest.Page, pagedRequest.PageSize);
 
 		return paged;
 	}

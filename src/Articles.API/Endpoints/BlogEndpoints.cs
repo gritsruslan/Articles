@@ -21,9 +21,6 @@ internal static class BlogEndpoints
 		return app;
 	}
 
-	// pagination
-	// read model
-	// sort by count of articles
 	private static async Task<IResult> GetBlogs(
 		[FromServices] ISender sender,
 		[FromQuery] int page,

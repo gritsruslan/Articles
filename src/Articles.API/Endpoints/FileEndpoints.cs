@@ -10,7 +10,7 @@ internal static class FileEndpoints
 {
 	public static IEndpointRouteBuilder MapFileEndpoints(this IEndpointRouteBuilder app)
 	{
-		var group = app.MapGroup("file").DisableAntiforgery();
+		var group = app.MapGroup("files").DisableAntiforgery();
 
 		group.MapGet(string.Empty, GetFile);
 		group.MapPost(string.Empty, UploadFile);
