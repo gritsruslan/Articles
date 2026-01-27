@@ -1,6 +1,7 @@
 using Articles.API.Extensions;
 using Articles.API.Requests;
 using Articles.Application.CommentUseCases.CreateComment;
+using Articles.Application.CommentUseCases.DeleteComment;
 using Articles.Application.CommentUseCases.GetCommentsByArticle;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +16,31 @@ internal static class CommentEndpoints
 
 		group.MapGet(string.Empty, Get);
 		group.MapPost(string.Empty, Create);
-		group.MapDelete(string.Empty, Delete);
+		group.MapPatch("{commentId:guid}", Update);
+		group.MapDelete("{commentId:guid}", Delete);
 
 		return app;
 	}
 
-	private static Task Delete(HttpContext context)
+	private static Task Update(HttpContext context)
 	{
 		throw new NotImplementedException();
+	}
+
+	private static async Task<IResult> Delete(
+		[FromRoute] Guid commentId,
+		[FromServices] ISender sender,
+		CancellationToken cancellationToken)
+	{
+		var command = new DeleteCommentCommand(commentId);
+		var result = await sender.Send(command, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok();
 	}
 
 	private static async Task<IResult> Create(
