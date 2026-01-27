@@ -1,4 +1,5 @@
 using Articles.Domain.ReadModels;
+using Articles.Domain.ValueObjects;
 using Articles.Shared.Abstraction;
 using Articles.Storage.Postgres.Entities;
 
@@ -18,6 +19,35 @@ internal sealed class CommentRepository(ArticlesDbContext dbContext) : ICommentR
 		});
 
 		return dbContext.SaveChangesAsync(cancellationToken);
+	}
+
+	public Task<bool> Exists(CommentId commentId, CancellationToken cancellationToken)
+	{
+		return dbContext.Comments
+			.Where(c => c.Id == commentId.Value)
+			.AnyAsync(cancellationToken);
+	}
+
+	public Task<Comment?> Get(CommentId commentId, CancellationToken cancellationToken)
+	{
+		return dbContext.Comments
+			.Where(c => c.Id == commentId.Value)
+			.Select(c => new Comment
+			{
+				Id = CommentId.Create(c.Id),
+				Content = CommentContent.CreateVerified(c.Content),
+				AuthorId = UserId.Create(c.AuthorId),
+				ArticleId = ArticleId.Create(c.ArticleId),
+				CreatedAt = c.CreatedAt,
+				UpdatedAt = c.UpdatedAt
+			}).FirstOrDefaultAsync(cancellationToken);
+	}
+
+	public Task Delete(CommentId commentId, CancellationToken cancellationToken)
+	{
+		return dbContext.Comments
+			.Where(c => c.Id == commentId.Value)
+			.ExecuteDeleteAsync(cancellationToken);
 	}
 
 	public async Task<(IEnumerable<CommentReadModel> readModels, int totalCount)>
