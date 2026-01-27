@@ -1,11 +1,13 @@
 using Articles.Application.Interfaces.Authentication;
 using Articles.Application.Interfaces.Repositories;
+using Articles.Shared.DefaultServices;
 
 namespace Articles.Application.CommentUseCases.CreateComment;
 
 internal sealed class CreateCommentCommandHandler(
 	IArticleRepository articleRepository,
 	ICommentRepository commentRepository,
+	IDateTimeProvider dateTimeProvider,
 	IApplicationUserProvider userProvider) : ICommandHandler<CreateCommentCommand>
 {
 	public async Task<Result> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
@@ -30,7 +32,8 @@ internal sealed class CreateCommentCommandHandler(
 			Id = newCommentId,
 			ArticleId = articleId,
 			AuthorId = userProvider.CurrentUser.Id,
-			Content = contentResult.Value
+			Content = contentResult.Value,
+			CreatedAt = dateTimeProvider.UtcNow
 		};
 
 		await commentRepository.Add(comment, cancellationToken);
