@@ -9,6 +9,10 @@ public sealed class Comment
 
 	public CommentContent Content { get; set; }
 
+	public DateTime CreatedAt { get; set; }
+
+	public DateTime? UpdatedAt { get; set; }
+
 	public UserId AuthorId { get; set; }
 
 	public ArticleId ArticleId { get; set; }
