@@ -13,6 +13,8 @@ public interface ICommentRepository
 
 	Task Delete(CommentId commentId, CancellationToken cancellationToken);
 
+	Task UpdateContent(CommentId commentId, CommentContent content, CancellationToken cancellationToken);
+
 	Task<(IEnumerable<CommentReadModel> readModels, int totalCount)>
 		GetReadModels(ArticleId articleId, PagedRequest pagedRequest, CancellationToken cancellationToken);
 }
