@@ -50,6 +50,14 @@ internal sealed class CommentRepository(ArticlesDbContext dbContext) : ICommentR
 			.ExecuteDeleteAsync(cancellationToken);
 	}
 
+	public Task UpdateContent(CommentId commentId, CommentContent content, CancellationToken cancellationToken)
+	{
+		return dbContext.Comments
+			.Where(c => c.Id == commentId.Value)
+			.ExecuteUpdateAsync(s =>
+				s.SetProperty(c => c.Content, content.Value), cancellationToken);
+	}
+
 	public async Task<(IEnumerable<CommentReadModel> readModels, int totalCount)>
 		GetReadModels(ArticleId articleId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
