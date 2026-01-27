@@ -55,7 +55,7 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 			.ExecuteDeleteAsync(cancellationToken);
 	}
 
-	public async Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
+	public async Task<(IEnumerable<ArticleSearchReadModel> readModels, int totalCount)>
 		GetReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var query = dbContext.Articles
@@ -78,7 +78,7 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 		}
 
 		var readModels = await query.Select(a =>
-			new ArticleReadModel
+			new ArticleSearchReadModel
 			{
 				Id = a.Id,
 				Title = a.Title,

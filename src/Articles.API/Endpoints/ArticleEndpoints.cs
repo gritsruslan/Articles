@@ -77,6 +77,7 @@ internal static class ArticleEndpoints
 		return Results.Ok(result.Value);
 	}
 
+	// TODO ReadModel + Sort by likes count
 	private static async Task<IResult> GetArticleById(
 		[FromRoute] Guid articleId,
 		[FromServices] ISender sender,

@@ -14,6 +14,6 @@ public interface IArticleRepository
 
 	Task Delete(ArticleId articleId, CancellationToken cancellationToken);
 
-	Task<(IEnumerable<ArticleReadModel> readModels, int totalCount)>
+	Task<(IEnumerable<ArticleSearchReadModel> readModels, int totalCount)>
 		GetReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken);
 }
