@@ -9,7 +9,7 @@ public sealed class Comment
 
 	public CommentContent Content { get; set; }
 
-	public UserId Author { get; set; }
+	public UserId AuthorId { get; set; }
 
-	public ArticleId Article { get; set; }
+	public ArticleId ArticleId { get; set; }
 }
