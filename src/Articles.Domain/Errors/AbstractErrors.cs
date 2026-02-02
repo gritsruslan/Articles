@@ -6,7 +6,7 @@ public static class AbstractErrors
 {
 	public static Error EmptyParameter(string parameterName) =>
 		new(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			$"{parameterName} can't be empty",
 			$"empty.{parameterName.ToLower()}",
 			parameterName);
@@ -20,7 +20,7 @@ public static class AbstractErrors
 		var message = $"Invalid {parameterName} length. Min length is {minLength}, max length is {maxLength}";
 
 		return new Error(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			message,
 			$"invalid.{parameterName.ToLower()}.length",
 			parameterValue);
@@ -28,7 +28,7 @@ public static class AbstractErrors
 
 	public static Error InvalidParameter(string parameterName, string parameterValue) =>
 		new(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			$"Invalid {parameterName}",
 			$"invalid.{parameterName.ToLower()}",
 			parameterName.ToLower(),

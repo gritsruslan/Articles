@@ -13,7 +13,7 @@ public static class BlogErrors
 			"BlogId",
 			id.Value.ToString());
 
-	public static Error EmptyTitle(string invalidTitle) =>
+	public static Error EmptyTitle() =>
 		AbstractErrors.EmptyParameter("BlogTitle");
 
 	public static Error InvalidTitleLength(string invalidTitle) =>

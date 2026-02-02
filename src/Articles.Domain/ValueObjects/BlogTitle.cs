@@ -18,7 +18,7 @@ public record struct BlogTitle
 	{
 		if (string.IsNullOrWhiteSpace(blogTitleStr))
 		{
-			return BlogErrors.EmptyTitle(blogTitleStr);
+			return BlogErrors.EmptyTitle();
 		}
 
 		if (blogTitleStr.Length is < BlogConstants.TitleMinLength or > BlogConstants.TitleMaxLength)

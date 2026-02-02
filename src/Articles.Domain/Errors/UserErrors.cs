@@ -5,7 +5,7 @@ namespace Articles.Domain.Errors;
 
 public static class UserErrors
 {
-	public static Error EmptyEmail(string invalidEmail) =>
+	public static Error EmptyEmail() =>
 		AbstractErrors.EmptyParameter("email");
 
 	public static Error InvalidEmailLength(string invalidEmail) =>
@@ -16,10 +16,10 @@ public static class UserErrors
 		AbstractErrors.InvalidParameter("email", invalidEmail);
 
 	public static Error UserWithThisEmailAlreadyExists(string repeatedEmail) =>
-		new(ErrorType.Conflict, "User with this email already exists", "email.exists", "email",
+		new(ErrorType.Validation, "User with this email already exists", "email.exists", "email",
 			repeatedEmail);
 
-	public static Error EmptyDomainId(string invalidDomainId) =>
+	public static Error EmptyDomainId() =>
 		AbstractErrors.EmptyParameter("domain-id");
 
 	public static Error InvalidDomainIdLength(string invalidDomainId) =>
@@ -33,7 +33,7 @@ public static class UserErrors
 		new(ErrorType.Conflict, "User with this domain id already exists", "domain-id.exists", "domain-id",
 			repeatedDomainId);
 
-	public static Error EmptyName(string invalidName) =>
+	public static Error EmptyName() =>
 		AbstractErrors.EmptyParameter("name");
 
 	public static Error InvalidNameLength(string invalidName) =>
