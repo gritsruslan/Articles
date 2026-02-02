@@ -55,7 +55,7 @@ internal static class ServiceEndpoints
 
 		if (result.IsFailure)
 		{
-			return  Results.BadRequest(result.Error);
+			return Results.BadRequest(result.Error);
 		}
 
 		return Results.Ok();

@@ -10,9 +10,9 @@ internal sealed class UploadFileCommandHandler(
 	ILogger<UploadFileCommandHandler> logger,
 	IFileMetadataRepository metadataRepository,
 	IUnitOfWork unitOfWork) :
-	ICommandHandler<UploadFileCommand>
+	ICommandHandler<UploadFileCommand, string>
 {
-	public async Task<Result> Handle(UploadFileCommand request, CancellationToken cancellationToken)
+	public async Task<Result<string>> Handle(UploadFileCommand request, CancellationToken cancellationToken)
 	{
 		var file = request.File;
 		var fileNewName = Guid.NewGuid().ToString();
@@ -51,6 +51,6 @@ internal sealed class UploadFileCommandHandler(
 
 		logger.LogInformation("File Uploaded : {fileNewName}", fileNewName);
 
-		return Result.Success();
+		return string.Join(fileNewName, format.Extension);
 	}
 }

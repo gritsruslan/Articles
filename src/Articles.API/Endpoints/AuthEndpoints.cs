@@ -53,7 +53,7 @@ internal static class AuthEndpoints
 		tokenStorage.StoreAccessToken(result.Value.AccessToken);
 		tokenStorage.StoreRefreshToken(result.Value.RefreshToken);
 
-		return Results.Ok(); //redirect
+		return Results.Ok();
 	}
 
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -72,7 +72,7 @@ internal static class AuthEndpoints
 			return result.Error.ToResponse();
 		}
 
-		return Results.Ok();
+		return Results.Created();
 	}
 
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -112,7 +112,7 @@ internal static class AuthEndpoints
 		tokenStorage.RemoveAccessToken();
 		tokenStorage.RemoveRefreshToken();
 
-		return Results.Ok();
+		return Results.NoContent();
 	}
 
 

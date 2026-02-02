@@ -67,6 +67,7 @@ internal static class BlogEndpoints
 			return result.Error.ToResponse();
 		}
 
-		return Results.Ok();
+		var blogId = result.Value;
+		return Results.CreatedAtRoute($"blogs/{blogId}");
 	}
 }

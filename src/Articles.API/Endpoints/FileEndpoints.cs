@@ -47,6 +47,7 @@ internal static class FileEndpoints
 			return result.Error.ToResponse();
 		}
 
-		return Results.Ok();
+		var fileName = result.Value;
+		return Results.CreatedAtRoute($"files/{fileName}");
 	}
 }

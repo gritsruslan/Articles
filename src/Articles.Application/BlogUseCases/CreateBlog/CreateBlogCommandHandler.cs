@@ -2,9 +2,9 @@ using Articles.Application.Interfaces.Repositories;
 
 namespace Articles.Application.BlogUseCases.CreateBlog;
 
-internal sealed class CreateBlogCommandHandler(IBlogRepository repository) : ICommandHandler<CreateBlogCommand>
+internal sealed class CreateBlogCommandHandler(IBlogRepository repository) : ICommandHandler<CreateBlogCommand, int>
 {
-	public async Task<Result> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
+	public async Task<Result<int>> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
 	{
 		var titleResult = BlogTitle.Create(request.BlogTitle);
 		if (titleResult.IsFailure)
@@ -12,8 +12,8 @@ internal sealed class CreateBlogCommandHandler(IBlogRepository repository) : ICo
 			return titleResult.Error;
 		}
 
-		await repository.CreateBlog(titleResult.Value, cancellationToken);
+		var blogId = await repository.CreateBlog(titleResult.Value, cancellationToken);
 
-		return Result.Success();
+		return blogId.Value;
 	}
 }
