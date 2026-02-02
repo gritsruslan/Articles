@@ -7,10 +7,10 @@ namespace Articles.Domain.Errors;
 public static class CommentErrors
 {
 	public static Error NotFound(CommentId commentId) =>
-		new(ErrorType.InvalidValue, $"Comment with id {commentId.Value} was not found");
+		new(ErrorType.NotFound, $"Comment with id {commentId.Value} was not found");
 
 	public static Error EmptyContent() =>
-		new(ErrorType.InvalidValue, "Comment content cant be empty");
+		AbstractErrors.EmptyParameter("Content");
 
 	public static Error InvalidContentLength(string invalidContent) =>
 		AbstractErrors.InvalidParameterLength(

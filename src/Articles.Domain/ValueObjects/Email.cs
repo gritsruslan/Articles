@@ -15,7 +15,7 @@ public partial record struct Email
 	{
 		if (string.IsNullOrWhiteSpace(emailStr))
 		{
-			return UserErrors.EmptyEmail(emailStr);
+			return UserErrors.EmptyEmail();
 		}
 
 		if (emailStr.Length is < UserConstants.EmailMinLength or > UserConstants.EmailMaxLength)

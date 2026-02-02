@@ -18,7 +18,7 @@ public record struct UserName
 	{
 		if (string.IsNullOrWhiteSpace(userNameStr))
 		{
-			return UserErrors.EmptyName(userNameStr);
+			return UserErrors.EmptyName();
 		}
 
 		if (userNameStr.Length is < UserConstants.NameMinLength or > UserConstants.NameMaxLength)

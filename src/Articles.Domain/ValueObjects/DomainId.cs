@@ -15,7 +15,7 @@ public partial record struct DomainId
 	{
 		if (string.IsNullOrWhiteSpace(domainIdStr))
 		{
-			return UserErrors.EmptyDomainId(domainIdStr);
+			return UserErrors.EmptyDomainId();
 		}
 
 		if (domainIdStr.Length is < UserConstants.DomainIdMinLength or > UserConstants.DomainIdMaxLength)

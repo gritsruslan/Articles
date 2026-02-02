@@ -14,7 +14,7 @@ public static class SecurityErrors
 
 	public static Error EmailConfirmationTokenExpired() =>
 		new(
-			ErrorType.Failure,
+			ErrorType.Gone,
 			"Email confirmation token has expired",
 			"expired.email-confirmation-token",
 			"email.confirmation.token"
@@ -24,11 +24,11 @@ public static class SecurityErrors
 		new(ErrorType.Conflict, "Email already confirmed", "email.already.confirmed");
 
 	public static Error PasswordIsEmpty() =>
-		new(ErrorType.InvalidValue, "Password can't be empty", "empty.password", "password");
+		AbstractErrors.EmptyParameter("password");
 
 	public static Error PasswordIsTooShort(int minLength, int currentLength) =>
 		new(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			$"Password is too short. Min length is {minLength}. Current length is {currentLength}",
 			"short.password",
 			"password"
@@ -36,14 +36,14 @@ public static class SecurityErrors
 
 	public static Error PasswordIsTooLong(int maxLength, int currentLength) =>
 		new(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			$"Password is too long. Max length is {maxLength}. Current length is {currentLength}",
 			"long.password",
 			"password");
 
 	public static Error PasswordMustContainUpperLetter() =>
 		new(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			"Password must contain at least one upper case letter",
 			"password.must.contain.upper.letter",
 			"password"
@@ -51,7 +51,7 @@ public static class SecurityErrors
 
 	public static Error PasswordMustContainLowerLetter() =>
 		new(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			"Password must contain at least one lower case letter",
 			"password.must.contain.lower.letter",
 			"password"
@@ -59,7 +59,7 @@ public static class SecurityErrors
 
 	public static Error PasswordMustContainDigit() =>
 		new(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			"Password must contain at least one digit",
 			"password.must.contain.digit",
 			"password"
