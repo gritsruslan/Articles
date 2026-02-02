@@ -56,7 +56,8 @@ internal static class ArticleEndpoints
 			return result.Error.ToResponse();
 		}
 
-		return Results.Ok(result.Value);
+		var articleId = result.Value;
+		return Results.CreatedAtRoute($"articles/{articleId}");
 	}
 
 	private static async Task<IResult> GetArticlesByBlog(
@@ -107,7 +108,6 @@ internal static class ArticleEndpoints
 			return result.Error.ToResponse();
 		}
 
-		return Results.Ok();
+		return Results.NoContent();
 	}
-
 }

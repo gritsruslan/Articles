@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Articles.Application.FileUseCases.UploadFile;
 
-public sealed record UploadFileCommand(IFormFile File) : ICommand, IAuthorizedCommand
+public sealed record UploadFileCommand(IFormFile File) : ICommand<string>, IAuthorizedCommand
 {
 	public int RequiredPermissionId => (int) DefaultPermissions.RequireAuthorization;
 }

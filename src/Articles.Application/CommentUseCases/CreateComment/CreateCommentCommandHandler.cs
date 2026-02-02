@@ -8,9 +8,9 @@ internal sealed class CreateCommentCommandHandler(
 	IArticleRepository articleRepository,
 	ICommentRepository commentRepository,
 	IDateTimeProvider dateTimeProvider,
-	IApplicationUserProvider userProvider) : ICommandHandler<CreateCommentCommand>
+	IApplicationUserProvider userProvider) : ICommandHandler<CreateCommentCommand, Comment>
 {
-	public async Task<Result> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
+	public async Task<Result<Comment>> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
 	{
 		var articleId = ArticleId.Create(request.ArticleId);
 		var newCommentId = CommentId.New();
@@ -38,6 +38,6 @@ internal sealed class CreateCommentCommandHandler(
 
 		await commentRepository.Add(comment, cancellationToken);
 
-		return Result.Success();
+		return comment;
 	}
 }

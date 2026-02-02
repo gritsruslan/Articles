@@ -52,7 +52,7 @@ internal static class CommentEndpoints
 			return result.Error.ToResponse();
 		}
 
-		return Results.Ok();
+		return Results.NoContent();
 	}
 
 	private static async Task<IResult> Create(
@@ -68,7 +68,8 @@ internal static class CommentEndpoints
 			return result.Error.ToResponse();
 		}
 
-		return Results.Ok();
+		var comment = result.Value;
+		return Results.Ok(comment);
 	}
 
 	private static async Task<IResult> Get(
