@@ -1,10 +1,10 @@
 using Articles.API.Extensions;
 using Articles.API.Requests;
-using Articles.Application.ArticleUseCases.CreateArticle;
 using Articles.Application.ArticleUseCases.DeleteArticle;
 using Articles.Application.ArticleUseCases.GetArticleById;
 using Articles.Application.ArticleUseCases.GetArticles;
-using Articles.Application.ArticleUseCases.GetArticlesByBlog;
+using Articles.Application.CommentUseCases.CreateComment;
+using Articles.Application.CommentUseCases.GetCommentsByArticle;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,13 +16,49 @@ internal static class ArticleEndpoints
 	{
 		var group = app.MapGroup("articles");
 
-		group.MapPost(string.Empty, CreateArticle);
-		group.MapGet("{articleId:guid}", GetArticleById);
-		group.MapGet("by-blog/{blogId:int}", GetArticlesByBlog);
-		group.MapGet(string.Empty, GetArticles);
+		group.MapGet("{articleId:guid}", GetArticle);
+		group.MapGet("search", GetArticles);
 		group.MapDelete("{articleId:guid}", DeleteArticle);
+		group.MapPost("{articleId:guid}/comments", CreateComment);
+		group.MapGet("{articleId:guid}/comments", GetArticleComments);
 
 		return app;
+	}
+
+	private static async Task<IResult> GetArticleComments(
+		[FromRoute] Guid articleId,
+		[FromQuery] int page,
+		[FromQuery] int pageSize,
+		[FromServices] ISender sender,
+		CancellationToken cancellationToken)
+	{
+		var query = new GetCommentsByArticleQuery(articleId, page, pageSize);
+		var result = await sender.Send(query, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok(result.Value);
+	}
+
+	private static async Task<IResult> CreateComment(
+		[FromRoute] Guid articleId,
+		[FromBody] CreateCommentRequest request,
+		[FromServices] ISender sender,
+		CancellationToken cancellationToken)
+	{
+		var command = new CreateCommentCommand(articleId, request.Content);
+		var result = await sender.Send(command, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		var comment = result.Value;
+		return Results.Ok(comment);
 	}
 
 	private static async Task<IResult> GetArticles(
@@ -43,43 +79,8 @@ internal static class ArticleEndpoints
 		return Results.Ok(result.Value);
 	}
 
-	private static async Task<IResult> CreateArticle(
-		[FromBody] CreateArticleRequest request,
-		[FromServices] ISender sender,
-		CancellationToken cancellationToken)
-	{
-		var command = new CreateArticleCommand(request.BlogId, request.Title, request.Data, request.AttachedFiles);
-		var result = await sender.Send(command, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		var articleId = result.Value;
-		return Results.CreatedAtRoute($"articles/{articleId}");
-	}
-
-	private static async Task<IResult> GetArticlesByBlog(
-		[FromRoute] int blogId,
-		[FromQuery] int page,
-		[FromQuery] int pageSize,
-		[FromServices] ISender sender,
-		CancellationToken cancellationToken)
-	{
-		var query = new GetArticlesByBlogQuery(blogId, page, pageSize);
-		var result = await sender.Send(query, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Ok(result.Value);
-	}
-
 	// TODO ReadModel + Sort by likes count
-	private static async Task<IResult> GetArticleById(
+	private static async Task<IResult> GetArticle(
 		[FromRoute] Guid articleId,
 		[FromServices] ISender sender,
 		CancellationToken cancellationToken)
