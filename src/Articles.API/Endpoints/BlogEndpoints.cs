@@ -1,7 +1,9 @@
 using Articles.API.Extensions;
 using Articles.API.Requests;
+using Articles.Application.ArticleUseCases.CreateArticle;
 using Articles.Application.BlogUseCases.CreateBlog;
 using Articles.Application.BlogUseCases.GetBlog;
+using Articles.Application.BlogUseCases.GetBlogArticles;
 using Articles.Application.BlogUseCases.GetBlogs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,49 @@ internal static class BlogEndpoints
 	{
 		var group = app.MapGroup("blogs");
 
-		group.MapPost(string.Empty, CreateBlog);
 		group.MapGet("{blogId:int}", GetBlog);
 		group.MapGet(string.Empty, GetBlogs);
+		group.MapPost(string.Empty, CreateBlog);
+		group.MapGet("{blogId:int}/articles", GetBlogArticles);
+		group.MapPost("{blogId:int}/articles", CreateArticle);
 
 		return app;
+	}
+
+	private static async Task<IResult> CreateArticle(
+		[FromRoute] int blogId,
+		[FromBody] CreateArticleRequest request,
+		[FromServices] ISender sender,
+		CancellationToken cancellationToken)
+	{
+		var command = new CreateArticleCommand(blogId, request.Title, request.Data, request.AttachedFiles);
+		var result = await sender.Send(command, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		var articleId = result.Value;
+		return Results.CreatedAtRoute($"articles/{articleId}");
+	}
+
+	private static async Task<IResult> GetBlogArticles(
+		[FromRoute] int blogId,
+		[FromQuery] int page,
+		[FromQuery] int pageSize,
+		[FromServices] ISender sender,
+		CancellationToken cancellationToken)
+	{
+		var query = new GetBlogArticlesQuery(blogId, page, pageSize);
+		var result = await sender.Send(query, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result.Error.ToResponse();
+		}
+
+		return Results.Ok(result.Value);
 	}
 
 	private static async Task<IResult> GetBlogs(
