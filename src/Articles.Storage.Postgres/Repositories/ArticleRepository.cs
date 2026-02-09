@@ -16,6 +16,7 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 			Title = article.Title.Value,
 			Data = article.Data.Value,
 			BlogId = article.BlogId.Value,
+			ViewsCount = 0,
 			AuthorId = article.AuthorId.Value
 		};
 
@@ -55,11 +56,18 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 			.ExecuteDeleteAsync(cancellationToken);
 	}
 
+	public Task IncrementViewsCount(ArticleId articleId, CancellationToken cancellationToken)
+	{
+		return dbContext.Articles.Where(a => a.Id == articleId.Value)
+			.ExecuteUpdateAsync(s => s.SetProperty(a => a.ViewsCount, a => a.ViewsCount + 1), cancellationToken);
+	}
+
 	public async Task<(IEnumerable<ArticleSearchReadModel> readModels, int totalCount)>
 		GetReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var query = dbContext.Articles
 			.Include(a => a.Blog)
+			.Include(a => a.Author)
 			.AsQueryable();
 
 		if (blogId is not null)
@@ -85,8 +93,12 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 				StartOfData = a.Data.Substring(0, 200),
 				BlogId = a.BlogId,
 				BlogTitle = a.Blog.Title,
-				CreatedAt = a.CreatedAt
+				ViewsCount = a.ViewsCount,
+				CreatedAt = a.CreatedAt,
+				AuthorId = a.AuthorId,
+				AuthorName = a.Author.Name
 			})
+			.OrderByDescending(a => a.ViewsCount)
 			.Skip(pagedRequest.Skip)
 			.Take(pagedRequest.Take)
 			.ToListAsync(cancellationToken);
