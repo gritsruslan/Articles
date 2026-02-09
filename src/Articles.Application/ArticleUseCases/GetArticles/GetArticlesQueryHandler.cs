@@ -16,10 +16,6 @@ internal sealed class GetArticlesQueryHandler(IArticleRepository repository) : I
 		}
 		var pagedRequest = paginationValidation.Value;
 
-		var (readModels, totalCount) =
-			await repository.GetReadModels(request.SearchQuery, blogId : null, pagedRequest, cancellationToken);
-		var paged = new PagedData<ArticleSearchReadModel>(readModels, totalCount,  pagedRequest.Page, pagedRequest.PageSize);
-
-		return paged;
+		return await repository.GetReadModels(request.SearchQuery, blogId : null, pagedRequest, cancellationToken);
 	}
 }
