@@ -40,7 +40,7 @@ internal static class BlogEndpoints
 		}
 
 		var articleId = result.Value;
-		return Results.CreatedAtRoute($"articles/{articleId}");
+		return Results.Created($"articles/{articleId}", null);
 	}
 
 	private static async Task<IResult> GetBlogArticles(
@@ -108,6 +108,6 @@ internal static class BlogEndpoints
 		}
 
 		var blogId = result.Value;
-		return Results.CreatedAtRoute($"blogs/{blogId}");
+		return Results.Created($"blogs/{blogId}", null);
 	}
 }

@@ -14,5 +14,11 @@ public sealed class ArticleSearchReadModel
 
 	public string BlogTitle { get; set; } = null!;
 
+	public Guid AuthorId { get; set; }
+
+	public string AuthorName { get; set; }
+
+	public long ViewsCount { get; set; }
+
 	public DateTime CreatedAt { get; set; }
 }

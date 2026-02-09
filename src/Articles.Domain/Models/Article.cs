@@ -15,6 +15,8 @@ public sealed class Article
 
 	public ArticleData Data { get; set; }
 
+	public long ViewsCount { get; set; }
+
 	public DateTime CreatedAt { get; set; }
 
 	public DateTime? UpdatedAt { get; set; }

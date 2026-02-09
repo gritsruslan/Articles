@@ -12,6 +12,8 @@ public sealed class ArticleEntity : BaseAuditableEntity
 
 	public int BlogId { get; set; }
 
+	public long ViewsCount {get; set;}
+
 	public BlogEntity Blog { get; set; } = null!;
 
 	public Guid AuthorId { get; set; }

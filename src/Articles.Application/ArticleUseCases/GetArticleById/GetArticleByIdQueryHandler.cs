@@ -15,6 +15,8 @@ internal sealed class GetArticleByIdQueryHandler(IArticleRepository articleRepos
 			return ArticleErrors.ArticleNotFound(articleId);
 		}
 
+		await articleRepository.IncrementViewsCount(articleId, cancellationToken);
+
 		return article;
 	}
 }
