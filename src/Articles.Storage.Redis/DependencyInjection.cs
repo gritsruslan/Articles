@@ -1,9 +1,11 @@
 ﻿using Articles.Application.Interfaces.Repositories;
 using Articles.Shared.Extensions;
+using Articles.Storage.Redis.Decorators;
 using Articles.Storage.Redis.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
+using Scrutor;
 
 namespace Articles.Storage.Redis;
 
@@ -19,6 +21,7 @@ public static class DependencyInjection
 			sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
 
 		services.AddScoped<IUsageLimitingRepository, UsageLimitingRepository>();
+		services.Decorate<IBlogRepository, CachingBlogRepositoryDecorator>();
 
 		return services;
 	}
