@@ -16,11 +16,6 @@ internal sealed class GetBlogsQueryHandler(IBlogRepository repository) : IQueryH
 		}
 		var pagedRequest = paginationValidation.Value;
 
-		var (readModels, totalCount) = await repository.GetReadModels(pagedRequest, cancellationToken);
-
-		var paged = new PagedData<BlogReadModel>(readModels, totalCount, request.Page, request.PageSize);
-
-		// idk why implicit cast is not working
-		return Result<PagedData<BlogReadModel>>.Success(paged);
+		return await repository.GetReadModels(pagedRequest, cancellationToken);;
 	}
 }

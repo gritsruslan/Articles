@@ -62,7 +62,7 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 			.ExecuteUpdateAsync(s => s.SetProperty(a => a.ViewsCount, a => a.ViewsCount + 1), cancellationToken);
 	}
 
-	public async Task<(IEnumerable<ArticleSearchReadModel> readModels, int totalCount)>
+	public async Task<PagedData<ArticleSearchReadModel>>
 		GetReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var query = dbContext.Articles
@@ -111,6 +111,7 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 		}
 		var totalCount = await totalCountQuery.CountAsync(cancellationToken);
 
-		return (readModels, totalCount);
+		return new PagedData<ArticleSearchReadModel>(
+			readModels, totalCount, pagedRequest.Page, pagedRequest.PageSize);
 	}
 }

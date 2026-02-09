@@ -25,9 +25,7 @@ internal sealed class GetCommentsByArticleQueryHandler(
 			return pagedResult.Error;
 		}
 
-		var (readModels, totalCount) = await commentRepository
-			.GetReadModels(articleId, pagedResult.Value, cancellationToken);
-
-		return new PagedData<CommentReadModel>(readModels, totalCount, request.Page, request.PageSize);
+		return await commentRepository
+			.GetReadModels(articleId, pagedResult.Value, cancellationToken);;
 	}
 }

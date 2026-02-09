@@ -58,7 +58,7 @@ internal sealed class CommentRepository(ArticlesDbContext dbContext) : ICommentR
 				s.SetProperty(c => c.Content, content.Value), cancellationToken);
 	}
 
-	public async Task<(IEnumerable<CommentReadModel> readModels, int totalCount)>
+	public async Task<PagedData<CommentReadModel>>
 		GetReadModels(ArticleId articleId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var readModels = await dbContext.Comments
@@ -79,6 +79,6 @@ internal sealed class CommentRepository(ArticlesDbContext dbContext) : ICommentR
 			.Where(c => c.ArticleId == articleId.Value)
 			.CountAsync(cancellationToken);
 
-		return (readModels, totalCount);
+		return new PagedData<CommentReadModel>(readModels, totalCount, pagedRequest.Page, pagedRequest.PageSize);
 	}
 }

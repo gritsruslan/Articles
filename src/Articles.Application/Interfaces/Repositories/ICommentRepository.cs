@@ -15,6 +15,6 @@ public interface ICommentRepository
 
 	Task UpdateContent(CommentId commentId, CommentContent content, CancellationToken cancellationToken);
 
-	Task<(IEnumerable<CommentReadModel> readModels, int totalCount)>
-		GetReadModels(ArticleId articleId, PagedRequest pagedRequest, CancellationToken cancellationToken);
+	Task<PagedData<CommentReadModel>> GetReadModels(
+		ArticleId articleId, PagedRequest pagedRequest, CancellationToken cancellationToken);
 }
