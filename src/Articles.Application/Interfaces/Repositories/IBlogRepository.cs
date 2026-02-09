@@ -11,5 +11,5 @@ public interface IBlogRepository
 
 	Task<bool> Exists(BlogId id, CancellationToken cancellationToken);
 
-	Task<(IEnumerable<BlogReadModel> readModels, int totalCount)> GetReadModels(PagedRequest pagedRequest, CancellationToken cancellationToken);
+	Task<PagedData<BlogReadModel>> GetReadModels(PagedRequest pagedRequest, CancellationToken cancellationToken);
 }

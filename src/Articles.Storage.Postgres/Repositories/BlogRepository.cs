@@ -37,7 +37,7 @@ internal sealed class BlogRepository(ArticlesDbContext dbContext) : IBlogReposit
 	}
 
 
-	public async Task<(IEnumerable<BlogReadModel> readModels, int totalCount)> GetReadModels(
+	public async Task<PagedData<BlogReadModel>> GetReadModels(
 		PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		FormattableString query =
@@ -68,6 +68,7 @@ internal sealed class BlogRepository(ArticlesDbContext dbContext) : IBlogReposit
 
 		var totalCount = await dbContext.Blogs.CountAsync(cancellationToken);
 
-		return (readModels, totalCount);
+		return new PagedData<BlogReadModel>(
+			readModels, totalCount, pagedRequest.Page, pagedRequest.PageSize);
 	}
 }
