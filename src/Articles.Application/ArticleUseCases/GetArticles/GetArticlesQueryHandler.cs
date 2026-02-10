@@ -9,6 +9,7 @@ internal sealed class GetArticlesQueryHandler(IArticleRepository repository) : I
 	public async Task<Result<PagedData<ArticleSearchReadModel>>> Handle(
 		GetArticlesQuery request, CancellationToken cancellationToken)
 	{
+		// TODO : validate searchQuery
 		var paginationValidation= PagedRequest.Create(request.Page, request.PageSize);
 		if (paginationValidation.IsFailure)
 		{
@@ -16,6 +17,6 @@ internal sealed class GetArticlesQueryHandler(IArticleRepository repository) : I
 		}
 		var pagedRequest = paginationValidation.Value;
 
-		return await repository.SearchReadModels(request.SearchQuery, blogId : null, pagedRequest, cancellationToken);
+		return await repository.SearchReadModels(request.SearchQuery, pagedRequest, cancellationToken);
 	}
 }

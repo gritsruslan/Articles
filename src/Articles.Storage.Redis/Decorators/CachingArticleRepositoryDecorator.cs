@@ -3,6 +3,7 @@ using Articles.Domain.Identifiers;
 using Articles.Domain.Models;
 using Articles.Domain.ReadModels;
 using Articles.Shared.Abstraction;
+using Articles.Shared.DefaultServices;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
@@ -17,11 +18,15 @@ internal sealed class CachingArticleRepositoryDecorator(
 
 	private static readonly TimeSpan ArticlesTtl = TimeSpan.FromMinutes(5);
 
-	private static RedisKey GenerateArticleKey(ArticleId articleId) => $"articles.articles.{articleId.Value}";
+	private static RedisKey GenerateArticleKey(ArticleId articleId) =>
+		$"articles.articles.{articleId.Value}";
 
 	private static readonly TimeSpan ReadModelsTtl = TimeSpan.FromMinutes(5);
 	private static RedisKey GenerateReadModelsByBlogKey(BlogId blogId, int page, int pageSize) =>
-		$"articles.articles.search.{blogId.Value}.{page}.{pageSize}";
+		$"articles.articles.byblog.{blogId.Value}.{page}.{pageSize}";
+
+	private static RedisKey GenerateSearchArticlesKey(string searchPattern, int page, int pageSize) =>
+		$"articles.articles.search.{searchPattern}.{page}.{pageSize}";
 
 	public async Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken)
 	{
@@ -72,7 +77,29 @@ internal sealed class CachingArticleRepositoryDecorator(
 		return readModels;
 	}
 
-	public Task<PagedData<ArticleSearchReadModel>> SearchReadModels(
-		string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken) =>
-		inner.SearchReadModels(searchQuery, blogId, pagedRequest, cancellationToken);
+	public async Task<PagedData<ArticleSearchReadModel>> SearchReadModels(
+		string searchQuery, PagedRequest pagedRequest, CancellationToken cancellationToken)
+	{
+		var normalized = SearchPatternHelper.Normalize(searchQuery);
+
+		// cache only first 3 pages
+		if (pagedRequest.Page >= 3 || normalized.Length < 3)
+		{
+			return await inner.SearchReadModels(searchQuery, pagedRequest, cancellationToken);
+		}
+
+		var key = GenerateSearchArticlesKey(normalized, pagedRequest.Page, pagedRequest.PageSize);
+
+		string? json = await database.StringGetAsync(key);
+		if (json is not null)
+		{
+			return JsonConvert.DeserializeObject<PagedData<ArticleSearchReadModel>>(json)!;
+		}
+
+		var readModels = await inner.SearchReadModels(searchQuery, pagedRequest, cancellationToken);
+
+		await database.StringSetAsync(key, JsonConvert.SerializeObject(readModels), ReadModelsTtl);
+
+		return readModels;
+	}
 }

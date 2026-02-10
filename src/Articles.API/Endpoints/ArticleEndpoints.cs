@@ -62,7 +62,7 @@ internal static class ArticleEndpoints
 	}
 
 	private static async Task<IResult> GetArticles(
-		[FromQuery] string? searchQuery,
+		[FromQuery] string searchQuery,
 		[FromQuery] int page,
 		[FromQuery] int pageSize,
 		[FromServices] ISender sender,
