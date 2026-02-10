@@ -21,7 +21,9 @@ public static class DependencyInjection
 			sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
 
 		services.AddScoped<IUsageLimitingRepository, UsageLimitingRepository>();
-		services.Decorate<IBlogRepository, CachingBlogRepositoryDecorator>();
+
+		services.Decorate<IBlogRepository, CachingBlogRepositoryDecorator>()
+			.Decorate<IArticleRepository, CachingArticleRepositoryDecorator>();
 
 		return services;
 	}

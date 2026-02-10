@@ -20,5 +20,5 @@ public interface IArticleRepository
 		BlogId blogId, PagedRequest pagedRequest, CancellationToken cancellationToken);
 
 	Task<PagedData<ArticleSearchReadModel>>
-		SearchReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken);
+		SearchReadModels(string searchQuery, PagedRequest pagedRequest, CancellationToken cancellationToken);
 }

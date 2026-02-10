@@ -1,8 +1,8 @@
 using Articles.Domain.ReadModels;
 using Articles.Domain.ValueObjects;
 using Articles.Shared.Abstraction;
+using Articles.Shared.DefaultServices;
 using Articles.Storage.Postgres.Entities;
-using Articles.Storage.Postgres.Helpers;
 
 namespace Articles.Storage.Postgres.Repositories;
 
@@ -96,27 +96,17 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 
 
 	public async Task<PagedData<ArticleSearchReadModel>>
-		SearchReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)
+		SearchReadModels(string searchQuery, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var query = dbContext.Articles
 			.Include(a => a.Blog)
 			.Include(a => a.Author)
 			.AsQueryable();
 
-		if (blogId is not null)
-		{
-			query = query.Where(a => a.BlogId == ((BlogId) blogId).Value);
-		}
-
-		string? searchPattern = null;
-		if (!string.IsNullOrWhiteSpace(searchQuery))
-		{
-			searchPattern = LikeStatementHelper.Normalize(searchQuery);
-			searchPattern = $"%{searchPattern}%";
-
-			query = query.Where(a =>
-				EF.Functions.ILike(a.Title, searchPattern, LikeStatementHelper.EscapeCharacter));
-		}
+		string searchPattern = SearchPatternHelper.Normalize(searchQuery);
+		searchPattern = $"%{searchPattern}%";
+		query = query.Where(a =>
+			EF.Functions.ILike(a.Title, searchPattern, SearchPatternHelper.EscapeCharacter));
 
 		var readModels = await query.Select(a =>
 			new ArticleSearchReadModel
@@ -140,7 +130,7 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 		if (!string.IsNullOrWhiteSpace(searchQuery))
 		{
 			totalCountQuery = totalCountQuery.Where(a =>
-				EF.Functions.ILike(a.Title, searchPattern!, LikeStatementHelper.EscapeCharacter));
+				EF.Functions.ILike(a.Title, searchPattern!, SearchPatternHelper.EscapeCharacter));
 		}
 		var totalCount = await totalCountQuery.CountAsync(cancellationToken);
 
