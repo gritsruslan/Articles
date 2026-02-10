@@ -22,8 +22,10 @@ public static class DependencyInjection
 
 		services.AddScoped<IUsageLimitingRepository, UsageLimitingRepository>();
 
-		services.Decorate<IBlogRepository, CachingBlogRepositoryDecorator>()
-			.Decorate<IArticleRepository, CachingArticleRepositoryDecorator>();
+		services
+			.Decorate<IBlogRepository, CachingBlogRepositoryDecorator>()
+			.Decorate<IArticleRepository, CachingArticleRepositoryDecorator>()
+			.Decorate<ICommentRepository, CachingCommentRepositoryDecorator>();
 
 		return services;
 	}
