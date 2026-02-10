@@ -29,6 +29,6 @@ internal sealed class GetBlogArticlesQueryHandler(
 
 		var pagedRequest = createPagedRequestResult.Value;
 
-		return await articleRepository.GetReadModels(searchQuery: null, blogId, pagedRequest, cancellationToken);
+		return await articleRepository.GetReadModelsByBlog(blogId, pagedRequest, cancellationToken);
 	}
 }

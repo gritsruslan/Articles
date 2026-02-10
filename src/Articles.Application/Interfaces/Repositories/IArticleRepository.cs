@@ -16,6 +16,9 @@ public interface IArticleRepository
 
 	Task IncrementViewsCount(ArticleId articleId, CancellationToken cancellationToken);
 
+	Task<PagedData<ArticleSearchReadModel>> GetReadModelsByBlog(
+		BlogId blogId, PagedRequest pagedRequest, CancellationToken cancellationToken);
+
 	Task<PagedData<ArticleSearchReadModel>>
-		GetReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken);
+		SearchReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken);
 }

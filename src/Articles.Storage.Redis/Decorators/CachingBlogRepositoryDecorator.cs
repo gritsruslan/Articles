@@ -19,7 +19,9 @@ internal sealed class CachingBlogRepositoryDecorator(
 	private static RedisKey GenerateReadModelsKey(int page, int pageSize) =>
 		$"articles.blogs.search.page.{page}.pageSize.{pageSize}";
 
-	private readonly TimeSpan _readModelsTtl = TimeSpan.FromSeconds(30);
+	private static readonly TimeSpan ReadModelsTtl = TimeSpan.FromSeconds(30);
+
+	private static readonly TimeSpan BlogsTtl = TimeSpan.FromSeconds(30);
 
 	public Task<BlogId> CreateBlog(BlogTitle title, CancellationToken cancellationToken) =>
 		inner.CreateBlog(title, cancellationToken);
@@ -35,28 +37,17 @@ internal sealed class CachingBlogRepositoryDecorator(
 		}
 
 		var blog = await inner.GetById(id, cancellationToken);
-
 		if (blog is not null)
 		{
 			blogJson = JsonConvert.SerializeObject(blog);
-			await database.StringSetAsync(key, blogJson);
+			await database.StringSetAsync(key, blogJson, BlogsTtl);
 		}
 
 		return blog;
 	}
 
-	public async Task<bool> Exists(BlogId id, CancellationToken cancellationToken)
-	{
-		var key = GenerateBlogKey(id);
-		bool exists = await database.KeyExistsAsync(key);
-
-		if (!exists)
-		{
-			return await inner.Exists(id, cancellationToken);
-		}
-
-		return exists;
-	}
+	public Task<bool> Exists(BlogId id, CancellationToken cancellationToken) =>
+		inner.Exists(id, cancellationToken);
 
 	public async Task<PagedData<BlogReadModel>>
 		GetReadModels(PagedRequest pagedRequest, CancellationToken cancellationToken)
@@ -77,7 +68,7 @@ internal sealed class CachingBlogRepositoryDecorator(
 		// cache only the first 10 pages
 		if (pagedRequest.Page <= 10)
 		{
-			await database.StringSetAsync(key, JsonConvert.SerializeObject(readModels), _readModelsTtl);
+			await database.StringSetAsync(key, JsonConvert.SerializeObject(readModels), ReadModelsTtl);
 		}
 
 		return readModels;
