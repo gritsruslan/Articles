@@ -62,8 +62,41 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 			.ExecuteUpdateAsync(s => s.SetProperty(a => a.ViewsCount, a => a.ViewsCount + 1), cancellationToken);
 	}
 
+	public async Task<PagedData<ArticleSearchReadModel>> GetReadModelsByBlog(
+		BlogId blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)
+	{
+		var readModels = await dbContext.Articles
+			.Include(a => a.Blog)
+			.Include(a => a.Author)
+			.Where(a => a.BlogId == blogId.Value)
+			.Select(a => new ArticleSearchReadModel
+			{
+				Id = a.Id,
+				Title = a.Title,
+				StartOfData = a.Data.Substring(0, 200),
+				BlogId = a.BlogId,
+				BlogTitle = a.Blog.Title,
+				ViewsCount = a.ViewsCount,
+				CreatedAt = a.CreatedAt,
+				AuthorId = a.AuthorId,
+				AuthorName = a.Author.Name
+			})
+			.OrderByDescending(s => s.ViewsCount)
+			.Skip(pagedRequest.Skip)
+			.Take(pagedRequest.Take)
+			.ToListAsync(cancellationToken);
+
+		var totalCount = await dbContext.Articles
+			.Where(a => a.BlogId == blogId.Value)
+			.CountAsync(cancellationToken);
+
+		return new PagedData<ArticleSearchReadModel>(
+			readModels, totalCount, pagedRequest.Page, pagedRequest.PageSize);
+	}
+
+
 	public async Task<PagedData<ArticleSearchReadModel>>
-		GetReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)
+		SearchReadModels(string? searchQuery, BlogId? blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var query = dbContext.Articles
 			.Include(a => a.Blog)
