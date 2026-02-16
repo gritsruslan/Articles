@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using Articles.API.Authentication;
 using Articles.API.Endpoints;
 using Articles.API.Extensions;
@@ -11,7 +12,6 @@ using Articles.Shared.Options;
 using Articles.Storage.Minio;
 using Articles.Storage.Postgres;
 using Articles.Storage.Redis;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -19,6 +19,22 @@ var environment = builder.Environment;
 
 configuration.AddJsonFile("rolesOptions.json"); //all roles and their permissions
 configuration.AddJsonFile("usageLimitingOptions.json"); //all usage limiting policies
+
+builder.Services.AddRateLimiter(options =>
+{
+	options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+	options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+	{
+		var ipAddress = httpContext.Connection.RemoteIpAddress!.ToString();
+		return RateLimitPartition.GetFixedWindowLimiter(ipAddress, _ =>
+			new FixedWindowRateLimiterOptions()
+			{
+				PermitLimit = 10,
+				Window = TimeSpan.FromSeconds(10)
+			});
+	});
+});
 
 builder.Services
 	.AddSwagger()
@@ -62,9 +78,9 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseRateLimiter();
 app.UseHttpsRedirection();
 app.UseSwaggerWithUI();
-
 
 app.UseCors("DefaultPolicy");
 
