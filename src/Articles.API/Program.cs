@@ -47,6 +47,8 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
