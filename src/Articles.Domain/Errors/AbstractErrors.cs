@@ -4,24 +4,23 @@ namespace Articles.Domain.Errors;
 
 public static class AbstractErrors
 {
-	public static Error EmptyParameter(string parameterName, string parameterValue) =>
+	public static Error EmptyParameter(string parameterName) =>
 		new(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			$"{parameterName} can't be empty",
 			$"empty.{parameterName.ToLower()}",
-			parameterName,
-			parameterValue);
+			parameterName);
 
 	public static Error InvalidParameterLength(
 		string parameterName,
-		string parameterValue,
+		string? parameterValue,
 		int minLength,
 		int maxLength)
 	{
 		var message = $"Invalid {parameterName} length. Min length is {minLength}, max length is {maxLength}";
 
 		return new Error(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			message,
 			$"invalid.{parameterName.ToLower()}.length",
 			parameterValue);
@@ -29,7 +28,7 @@ public static class AbstractErrors
 
 	public static Error InvalidParameter(string parameterName, string parameterValue) =>
 		new(
-			ErrorType.InvalidValue,
+			ErrorType.Validation,
 			$"Invalid {parameterName}",
 			$"invalid.{parameterName.ToLower()}",
 			parameterName.ToLower(),

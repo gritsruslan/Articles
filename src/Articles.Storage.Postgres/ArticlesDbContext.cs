@@ -14,6 +14,12 @@ public sealed class ArticlesDbContext(DbContextOptions<ArticlesDbContext> option
 
 	public DbSet<FileMetadata> FileMetadata => Set<FileMetadata>();
 
+	public DbSet<BlogEntity> Blogs => Set<BlogEntity>();
+
+	public DbSet<ArticleEntity> Articles => Set<ArticleEntity>();
+
+	public DbSet<CommentEntity> Comments => Set<CommentEntity>();
+
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		//modelBuilder.HasDefaultSchema("articles");

@@ -8,5 +8,9 @@ public interface IFileMetadataRepository
 
 	Task<List<FileMetadata>> GetUnlinked(int take, TimeSpan? olderThan, CancellationToken cancellationToken);
 
+	Task LinkToArticle(IEnumerable<Guid> fileIds, ArticleId articleId, CancellationToken cancellationToken);
+
+	Task UnlinkFromArticle(ArticleId articleId, CancellationToken cancellationToken);
+
 	Task DeleteById(Guid fileId, CancellationToken cancellationToken);
 }

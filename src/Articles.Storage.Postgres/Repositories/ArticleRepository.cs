@@ -1,0 +1,140 @@
+using Articles.Domain.ReadModels;
+using Articles.Domain.ValueObjects;
+using Articles.Shared.Abstraction;
+using Articles.Shared.DefaultServices;
+using Articles.Storage.Postgres.Entities;
+
+namespace Articles.Storage.Postgres.Repositories;
+
+internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleRepository
+{
+	public Task Add(Article article, CancellationToken cancellationToken)
+	{
+		var entity = new ArticleEntity
+		{
+			Id = article.Id.Value,
+			Title = article.Title.Value,
+			Data = article.Data.Value,
+			BlogId = article.BlogId.Value,
+			ViewsCount = 0,
+			AuthorId = article.AuthorId.Value
+		};
+
+		dbContext.Articles.Add(entity);
+
+		return dbContext.SaveChangesAsync(cancellationToken);
+	}
+
+	public Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken)
+	{
+		return dbContext.Articles
+			.Where(a => a.Id == articleId.Value)
+			.Select(a => new Article
+			{
+				Id = ArticleId.Create(a.Id),
+				AuthorId = UserId.Create(a.AuthorId),
+				BlogId = BlogId.Create(a.BlogId),
+				Title = ArticleTitle.CreateVerified(a.Title),
+				Data = ArticleData.CreateVerified(a.Title),
+				CreatedAt = a.CreatedAt,
+				UpdatedAt = a.UpdatedAt
+			})
+			.FirstOrDefaultAsync(cancellationToken);
+	}
+
+	public Task<bool> Exists(ArticleId articleId, CancellationToken cancellationToken)
+	{
+		return dbContext.Articles
+			.Where(a => a.Id == articleId.Value)
+			.AnyAsync(cancellationToken);
+	}
+
+	public Task Delete(ArticleId articleId, CancellationToken cancellationToken)
+	{
+		return dbContext.Articles
+			.Where(a => a.Id == articleId.Value)
+			.ExecuteDeleteAsync(cancellationToken);
+	}
+
+	public Task IncrementViewsCount(ArticleId articleId, CancellationToken cancellationToken)
+	{
+		return dbContext.Articles.Where(a => a.Id == articleId.Value)
+			.ExecuteUpdateAsync(s => s.SetProperty(a => a.ViewsCount, a => a.ViewsCount + 1), cancellationToken);
+	}
+
+	public async Task<PagedData<ArticleSearchReadModel>> GetReadModelsByBlog(
+		BlogId blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)
+	{
+		var readModels = await dbContext.Articles
+			.Include(a => a.Blog)
+			.Include(a => a.Author)
+			.Where(a => a.BlogId == blogId.Value)
+			.Select(a => new ArticleSearchReadModel
+			{
+				Id = a.Id,
+				Title = a.Title,
+				StartOfData = a.Data.Substring(0, 200),
+				BlogId = a.BlogId,
+				BlogTitle = a.Blog.Title,
+				ViewsCount = a.ViewsCount,
+				CreatedAt = a.CreatedAt,
+				AuthorId = a.AuthorId,
+				AuthorName = a.Author.Name
+			})
+			.OrderByDescending(s => s.ViewsCount)
+			.Skip(pagedRequest.Skip)
+			.Take(pagedRequest.Take)
+			.ToListAsync(cancellationToken);
+
+		var totalCount = await dbContext.Articles
+			.Where(a => a.BlogId == blogId.Value)
+			.CountAsync(cancellationToken);
+
+		return new PagedData<ArticleSearchReadModel>(
+			readModels, totalCount, pagedRequest.Page, pagedRequest.PageSize);
+	}
+
+
+	public async Task<PagedData<ArticleSearchReadModel>>
+		SearchReadModels(string searchQuery, PagedRequest pagedRequest, CancellationToken cancellationToken)
+	{
+		var query = dbContext.Articles
+			.Include(a => a.Blog)
+			.Include(a => a.Author)
+			.AsQueryable();
+
+		string searchPattern = SearchPatternHelper.Normalize(searchQuery);
+		searchPattern = $"%{searchPattern}%";
+		query = query.Where(a =>
+			EF.Functions.ILike(a.Title, searchPattern, SearchPatternHelper.EscapeCharacter));
+
+		var readModels = await query.Select(a =>
+			new ArticleSearchReadModel
+			{
+				Id = a.Id,
+				Title = a.Title,
+				StartOfData = a.Data.Substring(0, 200),
+				BlogId = a.BlogId,
+				BlogTitle = a.Blog.Title,
+				ViewsCount = a.ViewsCount,
+				CreatedAt = a.CreatedAt,
+				AuthorId = a.AuthorId,
+				AuthorName = a.Author.Name
+			})
+			.OrderByDescending(a => a.ViewsCount)
+			.Skip(pagedRequest.Skip)
+			.Take(pagedRequest.Take)
+			.ToListAsync(cancellationToken);
+
+		var totalCountQuery = dbContext.Articles.AsQueryable();
+		if (!string.IsNullOrWhiteSpace(searchQuery))
+		{
+			totalCountQuery = totalCountQuery.Where(a =>
+				EF.Functions.ILike(a.Title, searchPattern!, SearchPatternHelper.EscapeCharacter));
+		}
+		var totalCount = await totalCountQuery.CountAsync(cancellationToken);
+
+		return new PagedData<ArticleSearchReadModel>(
+			readModels, totalCount, pagedRequest.Page, pagedRequest.PageSize);
+	}
+}

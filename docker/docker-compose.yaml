@@ -10,6 +10,7 @@ volumes:
   articles-grafana:
   articles-prometheus:
   articles-minio:
+  articles-redis-insight:
 
 services:
   postgres:
@@ -36,6 +37,15 @@ services:
     restart: unless-stopped
     ports:
       - '6379:6379'
+
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    container_name: rtwitter-redis-insight
+    restart: unless-stopped
+    ports:
+      - "5540:5540"
+    volumes:
+      - articles-redis-insight:/data
 
   loki:
     container_name: 'articles-loki'
