@@ -18,8 +18,7 @@ var environment = builder.Environment;
 configuration.AddJsonFile("rolesOptions.json"); //all roles and their permissions
 configuration.AddJsonFile("usageLimitingOptions.json"); //all usage limiting policies
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwagger();
 
 builder.Services
 	.AddApiLogging(configuration, environment)
@@ -48,9 +47,7 @@ builder.Services
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerWithUI();
 
 await app.InitializeDatabaseAsync();
 await app.InitializeFileBucketsAsync();
