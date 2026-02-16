@@ -12,10 +12,16 @@ using Articles.Shared.Options;
 using Articles.Storage.Minio;
 using Articles.Storage.Postgres;
 using Articles.Storage.Redis;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var environment = builder.Environment;
+
+builder.WebHost.ConfigureKestrel(options =>
+	options.Limits.MaxRequestBodySize = 100_000_000);
+builder.Services.Configure<FormOptions>(options =>
+	options.MultipartBodyLengthLimit = 100_000_000);
 
 configuration.AddJsonFile("rolesOptions.json"); //all roles and their permissions
 configuration.AddJsonFile("usageLimitingOptions.json"); //all usage limiting policies
