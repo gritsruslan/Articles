@@ -22,7 +22,8 @@ public static class DependencyInjection
 		this IServiceCollection services,
 		IConfiguration configuration)
 	{
-		services.AddOptionsWithValidation<SupervisorUserOptions>(configuration);
+		services.AddOptionsWithValidation<SupervisorUserOptions>(configuration)
+			.AddOptionsWithValidation<IntegrationOptions>(configuration);
 
 		services.AddOptionsWithValidation<MailingOptions>(configuration)
 			.AddOptionsWithValidation<SmtpClientOptions>(configuration);

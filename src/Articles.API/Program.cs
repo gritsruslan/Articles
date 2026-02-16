@@ -7,9 +7,11 @@ using Articles.Infrastructure;
 using Articles.Infrastructure.BackgroundService;
 using Articles.Infrastructure.Monitoring;
 using Articles.Shared;
+using Articles.Shared.Options;
 using Articles.Storage.Minio;
 using Articles.Storage.Postgres;
 using Articles.Storage.Redis;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -18,7 +20,21 @@ var environment = builder.Environment;
 configuration.AddJsonFile("rolesOptions.json"); //all roles and their permissions
 configuration.AddJsonFile("usageLimitingOptions.json"); //all usage limiting policies
 
-builder.Services.AddSwagger();
+builder.Services
+	.AddSwagger()
+	.AddCors(options =>
+	options.AddPolicy("DefaultPolicy", policyBuilder =>
+	{
+		var integrationOptions = builder.Configuration
+			.GetRequiredSection(nameof(IntegrationOptions)).Get<IntegrationOptions>()!;
+
+		policyBuilder
+			.WithOrigins(integrationOptions.AllowedOrigins)
+			.AllowAnyMethod()
+			.AllowAnyHeader()
+			.Build();
+	})
+);
 
 builder.Services
 	.AddApiLogging(configuration, environment)
@@ -48,6 +64,9 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseSwaggerWithUI();
+
+
+app.UseCors("DefaultPolicy");
 
 await app.InitializeDatabaseAsync();
 await app.InitializeFileBucketsAsync();
