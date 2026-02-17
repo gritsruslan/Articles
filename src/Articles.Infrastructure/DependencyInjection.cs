@@ -8,8 +8,10 @@ using Articles.Infrastructure.Mail;
 using Articles.Infrastructure.Monitoring;
 using Articles.Infrastructure.Security;
 using Articles.Shared.Options;
+using Articles.Storage.Postgres;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace Articles.Infrastructure;
 
@@ -59,6 +61,10 @@ public static class DependencyInjection
 
 		services.AddSingleton<IUseCaseTracingSource, UseCaseTracing>();
 		services.AddSingleton<IOutboxTracingSource, OutboxTracing>();
+
+		services.AddHealthChecks()
+			.AddRedis(sp => sp.GetRequiredService<IConnectionMultiplexer>())
+			.AddDbContextCheck<ArticlesDbContext>();
 
 		return services;
 	}

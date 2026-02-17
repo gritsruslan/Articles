@@ -10,6 +10,8 @@ using Articles.Shared;
 using Articles.Storage.Minio;
 using Articles.Storage.Postgres;
 using Articles.Storage.Redis;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -75,6 +77,11 @@ app.MapServiceEndpoints()
 	.MapBlogEndpoints()
 	.MapArticleEndpoints()
 	.MapCommentEndpoints();
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+	ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();
 

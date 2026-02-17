@@ -3,11 +3,15 @@
     <ProjectReference Include="..\Articles.Application\Articles.Application.csproj" />
     <ProjectReference Include="..\Articles.Domain\Articles.Domain.csproj" />
     <ProjectReference Include="..\Articles.Shared\Articles.Shared.csproj" />
+    <ProjectReference Include="..\Articles.Storage.Postgres\Articles.Storage.Postgres.csproj" />
   </ItemGroup>
     
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.Prometheus.Metrics" />
+    <PackageReference Include="AspNetCore.HealthChecks.Redis" />
     <PackageReference Include="Microsoft.AspNetCore.Http"/>
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation"/>
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Newtonsoft.Json"/>
     <PackageReference Include="OpenTelemetry" />
