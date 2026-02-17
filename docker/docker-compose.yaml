@@ -104,3 +104,25 @@ services:
     volumes:
       - articles-minio:/data
 
+  api:
+    build:
+      context: .
+    container_name: articles-api
+    image: articles-api:latest
+    ports:
+      - '7777:7777'
+    environment:
+      ASPNETCORE_URLS: 'http://+:7777'
+      ConnectionStrings__Postgres: "User ID=postgres;Password=postgres;Host=articles-postgres;Port=5432;Database=postgres;"
+      ConnectionStrings__Redis: "articles-redis:6379"
+      ConnectionStrings__Loki: "http://articles-loki:3100"
+      ConnectionStrings__Jaeger: "http://articles-jaeger:4317"
+      HealthCheckOptions__PrometheusEndpoint: "http://articles-prometheus:9090/-/healthy"
+      HealthCheckOptions__LokiEndpoint: "http://articles-loki:3100/ready"
+      HealthCheckOptions__JaegerEndpoint: "http://articles-jaeger:16686"
+      HealthCheckOptions__MinioEndpoint: "http://articles-minio:9000/minio/health/ready"
+      SmtpClientOptions__Host: "mailhog"
+      MinioOptions__Endpoint: "articles-minio:9000"
+
+
+

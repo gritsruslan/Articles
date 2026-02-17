@@ -54,6 +54,9 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionHandler>()
+	.UseMiddleware<AuthenticationMiddleware>();
+
 if (environment.IsProduction())
 {
 	app.UseRateLimiter();
@@ -66,9 +69,6 @@ app.UseCors(SecurityExtensions.DefaultCorsPolicy);
 
 await app.InitializeDatabaseAsync();
 await app.InitializeFileBucketsAsync();
-
-app.UseMiddleware<GlobalExceptionHandler>()
-	.UseMiddleware<AuthenticationMiddleware>();
 
 app.MapPrometheusScrapingEndpoint();
 
