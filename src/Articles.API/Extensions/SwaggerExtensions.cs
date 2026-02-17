@@ -14,7 +14,7 @@ internal static class SwaggerExtensions
 			{
 				Title = "Articles.API",
 				Version = "v1",
-				Description = "Main backend Articles API",
+				Description = "Articles API v1",
 			});
 
 			var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -25,7 +25,7 @@ internal static class SwaggerExtensions
 		return services;
 	}
 
-	public static WebApplication UseSwaggerWithUI(this WebApplication app)
+	public static WebApplication UseSwaggerWithUi(this WebApplication app)
 	{
 		app.UseSwagger();
 		app.UseSwaggerUI(options =>

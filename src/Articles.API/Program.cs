@@ -22,8 +22,8 @@ configuration.AddJsonFile("usageLimitingOptions.json"); //all usage limiting pol
 
 builder.Services
 	.AddSwagger()
-	.AddRateLimiting()
-	.ConfigureCors(configuration);
+	.ConfigureCors(configuration)
+	.AddRateLimiting();
 
 builder.Services
 	.AddApiLogging(configuration, environment)
@@ -51,9 +51,13 @@ builder.Services
 
 var app = builder.Build();
 
-app.UseRateLimiter();
+if (environment.IsProduction())
+{
+	app.UseRateLimiter();
+}
+
 app.UseHttpsRedirection();
-app.UseSwaggerWithUI();
+app.UseSwaggerWithUi();
 
 app.UseCors(SecurityExtensions.DefaultCorsPolicy);
 

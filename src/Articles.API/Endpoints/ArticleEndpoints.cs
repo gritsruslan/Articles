@@ -14,7 +14,8 @@ internal static class ArticleEndpoints
 {
 	public static IEndpointRouteBuilder MapArticleEndpoints(this IEndpointRouteBuilder app)
 	{
-		var group = app.MapGroup("articles");
+		var group = app.MapGroup("articles")
+			.RequireRateLimiting(SecurityExtensions.ApiRateLimitingPolicy);
 
 		group.MapGet("{articleId:guid}", GetArticle);
 		group.MapGet("search", GetArticles);
