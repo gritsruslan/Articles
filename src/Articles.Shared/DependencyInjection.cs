@@ -39,6 +39,8 @@ public static class DependencyInjection
 
 		services.AddOptionsWithValidation<MinioOptions>(configuration);
 
+		services.AddOptionsWithValidation<HealthCheckOptions>(configuration);
+
 		return services;
 	}
 }

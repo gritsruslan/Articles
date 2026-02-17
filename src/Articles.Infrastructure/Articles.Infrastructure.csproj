@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation"/>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="NetEvolve.HealthChecks.Minio" />
     <PackageReference Include="Newtonsoft.Json"/>
     <PackageReference Include="OpenTelemetry" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />

@@ -33,6 +33,7 @@ builder.Services
 	.AddApiTracing(configuration);
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();
 
