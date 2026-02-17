@@ -1,4 +1,3 @@
-using System.Threading.RateLimiting;
 using Articles.API.Authentication;
 using Articles.API.Endpoints;
 using Articles.API.Extensions;
@@ -8,55 +7,23 @@ using Articles.Infrastructure;
 using Articles.Infrastructure.BackgroundService;
 using Articles.Infrastructure.Monitoring;
 using Articles.Shared;
-using Articles.Shared.Options;
 using Articles.Storage.Minio;
 using Articles.Storage.Postgres;
 using Articles.Storage.Redis;
-using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var environment = builder.Environment;
 
-builder.WebHost.ConfigureKestrel(options =>
-	options.Limits.MaxRequestBodySize = 100_000_000);
-builder.Services.Configure<FormOptions>(options =>
-	options.MultipartBodyLengthLimit = 100_000_000);
+builder.ConfigureMaxRequestBodySize();
 
 configuration.AddJsonFile("rolesOptions.json"); //all roles and their permissions
 configuration.AddJsonFile("usageLimitingOptions.json"); //all usage limiting policies
 
-builder.Services.AddRateLimiter(options =>
-{
-	options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-
-	options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
-	{
-		var ipAddress = httpContext.Connection.RemoteIpAddress!.ToString();
-		return RateLimitPartition.GetFixedWindowLimiter(ipAddress, _ =>
-			new FixedWindowRateLimiterOptions()
-			{
-				PermitLimit = 10,
-				Window = TimeSpan.FromSeconds(10)
-			});
-	});
-});
-
 builder.Services
 	.AddSwagger()
-	.AddCors(options =>
-	options.AddPolicy("DefaultPolicy", policyBuilder =>
-	{
-		var integrationOptions = builder.Configuration
-			.GetRequiredSection(nameof(IntegrationOptions)).Get<IntegrationOptions>()!;
-
-		policyBuilder
-			.WithOrigins(integrationOptions.AllowedOrigins)
-			.AllowAnyMethod()
-			.AllowAnyHeader()
-			.Build();
-	})
-);
+	.AddRateLimiting()
+	.ConfigureCors(configuration);
 
 builder.Services
 	.AddApiLogging(configuration, environment)
@@ -88,7 +55,7 @@ app.UseRateLimiter();
 app.UseHttpsRedirection();
 app.UseSwaggerWithUI();
 
-app.UseCors("DefaultPolicy");
+app.UseCors(SecurityExtensions.DefaultCorsPolicy);
 
 await app.InitializeDatabaseAsync();
 await app.InitializeFileBucketsAsync();
