@@ -11,7 +11,8 @@ internal static class CommentEndpoints
 {
 	public static IEndpointRouteBuilder MapCommentEndpoints(this IEndpointRouteBuilder app)
 	{
-		var group = app.MapGroup("comments");
+		var group = app.MapGroup("comments")
+			.RequireRateLimiting(SecurityExtensions.ApiRateLimitingPolicy);
 
 		group.MapPatch("{commentId:guid}", Update);
 		group.MapDelete("{commentId:guid}", Delete);

@@ -10,16 +10,22 @@ using Articles.Shared;
 using Articles.Storage.Minio;
 using Articles.Storage.Postgres;
 using Articles.Storage.Redis;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var environment = builder.Environment;
 
+builder.ConfigureMaxRequestBodySize();
+
 configuration.AddJsonFile("rolesOptions.json"); //all roles and their permissions
 configuration.AddJsonFile("usageLimitingOptions.json"); //all usage limiting policies
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services
+	.AddSwagger()
+	.ConfigureCors(configuration)
+	.AddRateLimiting();
 
 builder.Services
 	.AddApiLogging(configuration, environment)
@@ -27,6 +33,7 @@ builder.Services
 	.AddApiTracing(configuration);
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();
 
@@ -47,14 +54,21 @@ builder.Services
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseMiddleware<GlobalExceptionHandler>()
+	.UseMiddleware<AuthenticationMiddleware>();
+
+if (environment.IsProduction())
+{
+	app.UseRateLimiter();
+}
+
+app.UseHttpsRedirection();
+app.UseSwaggerWithUi();
+
+app.UseCors(SecurityExtensions.DefaultCorsPolicy);
 
 await app.InitializeDatabaseAsync();
 await app.InitializeFileBucketsAsync();
-
-app.UseMiddleware<GlobalExceptionHandler>()
-	.UseMiddleware<AuthenticationMiddleware>();
 
 app.MapPrometheusScrapingEndpoint();
 
@@ -64,6 +78,11 @@ app.MapServiceEndpoints()
 	.MapBlogEndpoints()
 	.MapArticleEndpoints()
 	.MapCommentEndpoints();
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+	ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();
 

@@ -14,7 +14,8 @@ internal static class BlogEndpoints
 {
 	public static IEndpointRouteBuilder MapBlogEndpoints(this IEndpointRouteBuilder app)
 	{
-		var group = app.MapGroup("blogs");
+		var group = app.MapGroup("blogs")
+			.RequireRateLimiting(SecurityExtensions.ApiRateLimitingPolicy);
 
 		group.MapGet("{blogId:int}", GetBlog);
 		group.MapGet(string.Empty, GetBlogs);
