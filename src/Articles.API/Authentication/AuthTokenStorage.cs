@@ -9,7 +9,7 @@ internal sealed class AuthTokenStorage(IHttpContextAccessor httpContextAccessor)
 		HttpContext.Response.Cookies.Append(AuthTokenHeaders.AccessToken, accessToken, new CookieOptions
 		{
 			HttpOnly = true,
-			Secure = false, // true if https
+			Secure = true,
 			SameSite = SameSiteMode.Strict
 		});
 	}
@@ -19,9 +19,9 @@ internal sealed class AuthTokenStorage(IHttpContextAccessor httpContextAccessor)
 		HttpContext.Response.Cookies.Append(AuthTokenHeaders.RefreshToken, refreshToken, new CookieOptions
 		{
 			HttpOnly = true,
-			Secure = false, // true if https
-			SameSite = SameSiteMode.Strict
-			// Path = "/auth/refresh"
+			Secure = true,
+			SameSite = SameSiteMode.Strict,
+			Path = "/auth/refresh"
 		});
 	}
 

@@ -4,12 +4,16 @@ using Articles.Application.Interfaces.Mail;
 using Articles.Application.Interfaces.Monitoring;
 using Articles.Infrastructure.Authentication;
 using Articles.Infrastructure.Authorization;
+using Articles.Infrastructure.Health;
 using Articles.Infrastructure.Mail;
 using Articles.Infrastructure.Monitoring;
 using Articles.Infrastructure.Security;
 using Articles.Shared.Options;
+using Articles.Storage.Postgres;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NetEvolve.HealthChecks.Minio;
+using StackExchange.Redis;
 
 namespace Articles.Infrastructure;
 
@@ -37,14 +41,6 @@ public static class DependencyInjection
 		IRoleManager roleManager = RoleManager.ParseFromOptions(options);
 		services.AddSingleton(roleManager);
 
-		/*
-		services.AddSingleton<IRoleManager>(_ =>
-		{
-			var options = configuration.GetRequiredSection(nameof(RolesOptions)).Get<RolesOptions>()!;
-			return RoleManager.ParseFromOptions(options);
-		});
-		*/
-
 		services.AddTransient<IMailSender, MailSender>(static serviceProvider =>
 		{
 			var smtpOptions = serviceProvider.GetRequiredService<IOptions<SmtpClientOptions>>().Value;
@@ -59,6 +55,14 @@ public static class DependencyInjection
 
 		services.AddSingleton<IUseCaseTracingSource, UseCaseTracing>();
 		services.AddSingleton<IOutboxTracingSource, OutboxTracing>();
+
+		services.AddHealthChecks()
+			.AddRedis(sp => sp.GetRequiredService<IConnectionMultiplexer>())
+			.AddDbContextCheck<ArticlesDbContext>()
+			.AddCheck<MinioHealthCheck>("minio")
+			.AddCheck<LokiHealthCheck>("loki")
+			.AddCheck<PrometheusHealthCheck>("prometheus")
+			.AddCheck<JaegerHealthCheck>("jaeger");
 
 		return services;
 	}

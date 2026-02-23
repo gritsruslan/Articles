@@ -7,3 +7,8 @@ scrape_configs:
           - host.docker.internal:5200
         labels:
           app: articles
+
+      - targets:
+          - articles-api:5232
+        labels:
+          app: articles-docker

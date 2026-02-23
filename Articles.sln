@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{513455
 		docker\docker-compose.yaml = docker\docker-compose.yaml
 		docker\loki-config.yml = docker\loki-config.yml
 		docker\prometheus.yml = docker\prometheus.yml
+		docker\.dockerignore = docker\.dockerignore
+		docker\Dockerfile = docker\Dockerfile
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Articles.Storage.Redis", "src\Articles.Storage.Redis\Articles.Storage.Redis.csproj", "{D30AEA82-EC53-48CA-808C-DB728E19F79F}"
