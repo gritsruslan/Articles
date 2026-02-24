@@ -17,20 +17,15 @@ internal sealed class CachingCommentRepositoryDecorator(
 	public Task Add(Comment comment, CancellationToken cancellationToken) =>
 		inner.Add(comment, cancellationToken);
 
-	public Task<bool> Exists(CommentId commentId, CancellationToken cancellationToken) =>
-		inner.Exists(commentId, cancellationToken);
-
-	private static RedisKey GenerateReadModelKey(ArticleId articleId, int page, int pageSize) =>
-		$"articles.comments.byarticle.{articleId.Value}.{page}.{pageSize}";
-
-	private static readonly TimeSpan ReadModelTtl = TimeSpan.FromMinutes(5);
+	public Task<bool> ExistsById(CommentId commentId, CancellationToken cancellationToken) =>
+		inner.ExistsById(commentId, cancellationToken);
 
 	// caching here doesn't make sense because the API doesn't have a GET endpoint for comment by its id
-	public Task<Comment?> Get(CommentId commentId, CancellationToken cancellationToken) =>
-		inner.Get(commentId, cancellationToken);
+	public Task<Comment?> GetById(CommentId commentId, CancellationToken cancellationToken) =>
+		inner.GetById(commentId, cancellationToken);
 
-	public Task Delete(CommentId commentId, CancellationToken cancellationToken) =>
-		inner.Delete(commentId, cancellationToken);
+	public Task DeleteById(CommentId commentId, CancellationToken cancellationToken) =>
+		inner.DeleteById(commentId, cancellationToken);
 
 	public Task UpdateContent(
 		CommentId commentId, CommentContent content, CancellationToken cancellationToken) =>
@@ -52,4 +47,9 @@ internal sealed class CachingCommentRepositoryDecorator(
 		await database.StringSetAsync(key, JsonConvert.SerializeObject(readModels), ReadModelTtl);
 		return readModels;
 	}
+
+	private static RedisKey GenerateReadModelKey(ArticleId articleId, int page, int pageSize) =>
+		$"articles.comments.by-article.{articleId.Value}.{page}.{pageSize}";
+
+	private static readonly TimeSpan ReadModelTtl = TimeSpan.FromMinutes(5);
 }

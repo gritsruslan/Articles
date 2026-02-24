@@ -23,10 +23,10 @@ internal sealed class GetBlogArticlesQueryHandler(
 			return createPagedRequestResult.Error;
 		}
 
-		var exists = await blogRepository.Exists(blogId, cancellationToken);
+		var exists = await blogRepository.ExistsById(blogId, cancellationToken);
 		if (!exists)
 		{
-			return BlogErrors.BlogNotFound(blogId);
+			return BlogErrors.NotFound(blogId);
 		}
 
 		var pagedRequest = createPagedRequestResult.Value;

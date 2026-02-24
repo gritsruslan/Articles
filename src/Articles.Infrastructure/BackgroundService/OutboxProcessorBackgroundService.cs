@@ -48,8 +48,8 @@ public class OutboxProcessorBackgroundService(
 				var repository = scope.ServiceProvider.GetRequiredService<IDomainEventRepository>();
 
 				var outboxMessages = await repository.GetUnprocessed(BatchSize, stoppingToken);
-				var queueSize = await repository.QueueSize();
-				var results = new List<ProcessOutboxMessageResult>(outboxMessages.Count);
+				var queueSize = await repository.GetQueueSize();
+				var results = new List<ProcessOutboxMessageResult>(BatchSize);
 
 				foreach (var outboxMessage in outboxMessages)
 				{

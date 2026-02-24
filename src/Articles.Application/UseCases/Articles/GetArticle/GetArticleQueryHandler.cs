@@ -13,7 +13,7 @@ internal sealed class GetArticleQueryHandler(IArticleRepository articleRepositor
 		var article = await articleRepository.GetById(articleId, cancellationToken);
 		if (article is null)
 		{
-			return ArticleErrors.ArticleNotFound(articleId);
+			return ArticleErrors.NotFound(articleId);
 		}
 
 		await articleRepository.IncrementViewsCount(articleId, cancellationToken);

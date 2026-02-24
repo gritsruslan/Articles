@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 namespace Articles.Infrastructure.BackgroundService;
 
 // very simple file cleaner background service
-// maybe rewrite with domain events
 public sealed class FileCleanerBackgroundService(
 	ILogger<FileCleanerBackgroundService> logger,
 	IServiceProvider serviceProvider) : Microsoft.Extensions.Hosting.BackgroundService

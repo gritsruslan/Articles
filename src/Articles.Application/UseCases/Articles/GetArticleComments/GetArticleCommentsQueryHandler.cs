@@ -15,10 +15,10 @@ internal sealed class GetArticleCommentsQueryHandler(
 	{
 		var articleId = ArticleId.Create(request.ArticleId);
 
-		var articleExists = await articleRepository.Exists(articleId, cancellationToken);
+		var articleExists = await articleRepository.ExistsById(articleId, cancellationToken);
 		if (!articleExists)
 		{
-			return ArticleErrors.ArticleNotFound(articleId);
+			return ArticleErrors.NotFound(articleId);
 		}
 
 		var pagedResult = PagedRequest.Create(request.Page, request.PageSize);

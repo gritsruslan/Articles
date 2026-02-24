@@ -22,14 +22,13 @@ internal sealed class CommentRepository(ArticlesDbContext dbContext) : ICommentR
 		return dbContext.SaveChangesAsync(cancellationToken);
 	}
 
-	public Task<bool> Exists(CommentId commentId, CancellationToken cancellationToken)
+	public Task<bool> ExistsById(CommentId commentId, CancellationToken cancellationToken)
 	{
 		return dbContext.Comments
-			.Where(c => c.Id == commentId.Value)
-			.AnyAsync(cancellationToken);
+			.AnyAsync(c => c.Id == commentId.Value, cancellationToken);
 	}
 
-	public Task<Comment?> Get(CommentId commentId, CancellationToken cancellationToken)
+	public Task<Comment?> GetById(CommentId commentId, CancellationToken cancellationToken)
 	{
 		return dbContext.Comments
 			.Where(c => c.Id == commentId.Value)
@@ -41,10 +40,11 @@ internal sealed class CommentRepository(ArticlesDbContext dbContext) : ICommentR
 				ArticleId = ArticleId.Create(c.ArticleId),
 				CreatedAt = c.CreatedAt,
 				UpdatedAt = c.UpdatedAt
-			}).FirstOrDefaultAsync(cancellationToken);
+			})
+			.FirstOrDefaultAsync(cancellationToken);
 	}
 
-	public Task Delete(CommentId commentId, CancellationToken cancellationToken)
+	public Task DeleteById(CommentId commentId, CancellationToken cancellationToken)
 	{
 		return dbContext.Comments
 			.Where(c => c.Id == commentId.Value)
@@ -77,8 +77,7 @@ internal sealed class CommentRepository(ArticlesDbContext dbContext) : ICommentR
 			}).ToListAsync(cancellationToken);
 
 		var totalCount = await dbContext.Comments
-			.Where(c => c.ArticleId == articleId.Value)
-			.CountAsync(cancellationToken);
+			.CountAsync(c => c.ArticleId == articleId.Value, cancellationToken);
 
 		return new PagedData<CommentReadModel>(readModels, totalCount, pagedRequest.Page, pagedRequest.PageSize);
 	}

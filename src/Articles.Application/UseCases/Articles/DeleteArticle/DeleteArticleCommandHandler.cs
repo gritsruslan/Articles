@@ -20,7 +20,7 @@ internal sealed class DeleteArticleCommandHandler(
 		var article = await articleRepository.GetById(articleId, cancellationToken);
 		if (article is null)
 		{
-			return ArticleErrors.ArticleNotFound(articleId);
+			return ArticleErrors.NotFound(articleId);
 		}
 
 		if (userProvider.CurrentUser.Id != article.AuthorId)
@@ -29,7 +29,7 @@ internal sealed class DeleteArticleCommandHandler(
 		}
 
 		await fileRepository.UnlinkFromArticle(articleId, cancellationToken);
-		await articleRepository.Delete(articleId, cancellationToken);
+		await articleRepository.DeleteById(articleId, cancellationToken);
 
 		await scope.Commit(cancellationToken);
 

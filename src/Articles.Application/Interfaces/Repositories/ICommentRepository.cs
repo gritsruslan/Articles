@@ -8,11 +8,11 @@ public interface ICommentRepository
 {
 	Task Add(Comment comment, CancellationToken cancellationToken);
 
-	Task<bool> Exists(CommentId commentId, CancellationToken cancellationToken);
+	Task<bool> ExistsById(CommentId commentId, CancellationToken cancellationToken);
 
-	Task<Comment?> Get(CommentId commentId, CancellationToken cancellationToken);
+	Task<Comment?> GetById(CommentId commentId, CancellationToken cancellationToken);
 
-	Task Delete(CommentId commentId, CancellationToken cancellationToken);
+	Task DeleteById(CommentId commentId, CancellationToken cancellationToken);
 
 	Task UpdateContent(CommentId commentId, CommentContent content, CancellationToken cancellationToken);
 

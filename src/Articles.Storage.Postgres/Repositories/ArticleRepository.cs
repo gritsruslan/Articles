@@ -43,14 +43,13 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 			.FirstOrDefaultAsync(cancellationToken);
 	}
 
-	public Task<bool> Exists(ArticleId articleId, CancellationToken cancellationToken)
+	public Task<bool> ExistsById(ArticleId articleId, CancellationToken cancellationToken)
 	{
 		return dbContext.Articles
-			.Where(a => a.Id == articleId.Value)
-			.AnyAsync(cancellationToken);
+			.AnyAsync(a => a.Id == articleId.Value, cancellationToken);
 	}
 
-	public Task Delete(ArticleId articleId, CancellationToken cancellationToken)
+	public Task DeleteById(ArticleId articleId, CancellationToken cancellationToken)
 	{
 		return dbContext.Articles
 			.Where(a => a.Id == articleId.Value)
@@ -88,8 +87,7 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 			.ToListAsync(cancellationToken);
 
 		var totalCount = await dbContext.Articles
-			.Where(a => a.BlogId == blogId.Value)
-			.CountAsync(cancellationToken);
+			.CountAsync(a => a.BlogId == blogId.Value, cancellationToken);
 
 		return new PagedData<ArticleSearchReadModel>(
 			readModels, totalCount, pagedRequest.Page, pagedRequest.PageSize);

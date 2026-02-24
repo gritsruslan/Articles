@@ -24,7 +24,7 @@ public sealed class DomainEventRepository(ArticlesDbContext dbContext) : IDomain
 		await dbContext.SaveChangesAsync(cancellationToken);
 	}
 
-	public async Task<IList<OutboxMessage>> GetUnprocessed(int take, CancellationToken cancellationToken)
+	public async Task<IEnumerable<OutboxMessage>> GetUnprocessed(int take, CancellationToken cancellationToken)
 	{
 		return await dbContext.OutboxMessages
 			.AsTracking() //enable tracking for batch update
@@ -34,7 +34,7 @@ public sealed class DomainEventRepository(ArticlesDbContext dbContext) : IDomain
 			.ToListAsync(cancellationToken);
 	}
 
-	public async Task<int> QueueSize() =>
+	public async Task<int> GetQueueSize() =>
 		await dbContext.OutboxMessages.Where(m => m.ProcessedAt == null).CountAsync();
 
 	// batch update (not really)

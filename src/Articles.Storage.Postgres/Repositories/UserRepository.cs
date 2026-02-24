@@ -13,7 +13,7 @@ internal sealed class UserRepository(ArticlesDbContext dbContext) : IUserReposit
 
 	public async Task<User?> GetByEmail(Email email, CancellationToken cancellationToken)
 	{
-		var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Email == email.Value, cancellationToken);
+		var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == email.Value, cancellationToken);
 		return user is null
 			? null
 			: new User
@@ -31,7 +31,7 @@ internal sealed class UserRepository(ArticlesDbContext dbContext) : IUserReposit
 
 	public async Task<User?> GetById(UserId id, CancellationToken cancellationToken)
 	{
-		var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == id.Value, cancellationToken);
+		var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == id.Value, cancellationToken);
 		return user is null
 			? null
 			: new User

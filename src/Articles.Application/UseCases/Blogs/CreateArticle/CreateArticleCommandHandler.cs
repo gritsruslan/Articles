@@ -35,10 +35,10 @@ internal sealed class CreateArticleCommandHandler(
 
 		await using var scope = await unitOfWork.StartScope(cancellationToken);
 
-		var blogExists = await blogRepository.Exists(blogId, cancellationToken);
+		var blogExists = await blogRepository.ExistsById(blogId, cancellationToken);
 		if (!blogExists)
 		{
-			return BlogErrors.BlogNotFound(blogId);
+			return BlogErrors.NotFound(blogId);
 		}
 
 		var article = new Article

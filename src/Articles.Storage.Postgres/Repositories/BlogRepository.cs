@@ -32,7 +32,7 @@ internal sealed class BlogRepository(ArticlesDbContext dbContext) : IBlogReposit
 		}).FirstOrDefaultAsync(cancellationToken);
 	}
 
-	public Task<bool> Exists(BlogId id, CancellationToken cancellationToken)
+	public Task<bool> ExistsById(BlogId id, CancellationToken cancellationToken)
 	{
 		return dbContext.Blogs.AnyAsync(b => b.Id == id.Value, cancellationToken);
 	}

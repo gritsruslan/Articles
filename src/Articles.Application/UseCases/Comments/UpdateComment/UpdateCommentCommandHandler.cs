@@ -12,7 +12,7 @@ internal sealed class UpdateCommentCommandHandler(
 	{
 		var commentId = CommentId.Create(request.CommentId);
 
-		var comment = await repository.Get(commentId, cancellationToken);
+		var comment = await repository.GetById(commentId, cancellationToken);
 		if (comment is null)
 		{
 			return CommentErrors.NotFound(commentId);

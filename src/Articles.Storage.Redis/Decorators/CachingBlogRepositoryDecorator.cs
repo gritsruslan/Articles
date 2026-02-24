@@ -14,16 +14,6 @@ internal sealed class CachingBlogRepositoryDecorator(
 	IBlogRepository inner,
 	IDatabase database) : IBlogRepository
 {
-	private static RedisKey GenerateBlogKey(BlogId blogId) =>
-		$"articles.blogs.{blogId.Value}";
-
-	private static RedisKey GenerateReadModelsKey(int page, int pageSize) =>
-		$"articles.blogs.search.page.{page}.pageSize.{pageSize}";
-
-	private static readonly TimeSpan ReadModelsTtl = TimeSpan.FromSeconds(30);
-
-	private static readonly TimeSpan BlogsTtl = TimeSpan.FromSeconds(30);
-
 	public Task<BlogId> CreateBlog(BlogTitle title, CancellationToken cancellationToken) =>
 		inner.CreateBlog(title, cancellationToken);
 
@@ -47,8 +37,8 @@ internal sealed class CachingBlogRepositoryDecorator(
 		return blog;
 	}
 
-	public Task<bool> Exists(BlogId id, CancellationToken cancellationToken) =>
-		inner.Exists(id, cancellationToken);
+	public Task<bool> ExistsById(BlogId id, CancellationToken cancellationToken) =>
+		inner.ExistsById(id, cancellationToken);
 
 	public async Task<PagedData<BlogReadModel>>
 		GetReadModels(PagedRequest pagedRequest, CancellationToken cancellationToken)
@@ -74,4 +64,14 @@ internal sealed class CachingBlogRepositoryDecorator(
 
 		return readModels;
 	}
+
+	private static readonly TimeSpan ReadModelsTtl = TimeSpan.FromSeconds(30);
+
+	private static readonly TimeSpan BlogsTtl = TimeSpan.FromSeconds(30);
+
+	private static RedisKey GenerateBlogKey(BlogId blogId) =>
+		$"articles.blogs.{blogId.Value}";
+
+	private static RedisKey GenerateReadModelsKey(int page, int pageSize) =>
+		$"articles.blogs.search.page.{page}.pageSize.{pageSize}";
 }

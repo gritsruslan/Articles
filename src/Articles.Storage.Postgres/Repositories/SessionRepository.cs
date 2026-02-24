@@ -31,12 +31,14 @@ internal sealed class SessionRepository(ArticlesDbContext dbContext) : ISessionR
 				IssuedAt = s.IssuedAt,
 				ExpiresAt = s.ExpiresAt
 			})
-			.SingleOrDefaultAsync(cancellationToken);
+			.FirstOrDefaultAsync(cancellationToken);
 	}
 
 	public Task<bool> AnyByUserId(UserId userId, CancellationToken cancellationToken) =>
-		dbContext.Sessions.Where(s => s.UserId == userId.Value).AnyAsync(cancellationToken);
+		dbContext.Sessions.AnyAsync(s => s.UserId == userId.Value, cancellationToken);
 
 	public Task DeleteById(SessionId sessionId, CancellationToken cancellationToken) =>
-		dbContext.Sessions.Where(s => s.Id == sessionId.Value).ExecuteDeleteAsync(cancellationToken);
+		dbContext.Sessions
+			.Where(s => s.Id == sessionId.Value)
+			.ExecuteDeleteAsync(cancellationToken);
 }

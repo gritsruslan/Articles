@@ -27,7 +27,7 @@ internal sealed class GetFileQueryHandler(
 		var fileName = Path.GetFileNameWithoutExtension(fullFileName);
 		var fileId = Guid.Parse(fileName);
 
-		var exists = await metadataRepository.Exists(fileId, cancellationToken);
+		var exists = await metadataRepository.ExistsById(fileId, cancellationToken);
 		if (!exists)
 		{
 			return FileErrors.FileNotFound(fullFileName);

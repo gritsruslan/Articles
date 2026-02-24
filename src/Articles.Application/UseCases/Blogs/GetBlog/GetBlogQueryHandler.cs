@@ -12,7 +12,7 @@ internal sealed class GetBlogQueryHandler(IBlogRepository repository) : IQueryHa
 
 		if (blog is null)
 		{
-			return BlogErrors.BlogNotFound(blogId);
+			return BlogErrors.NotFound(blogId);
 		}
 
 		return blog;

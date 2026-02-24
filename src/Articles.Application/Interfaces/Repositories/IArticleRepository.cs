@@ -10,9 +10,9 @@ public interface IArticleRepository
 
 	Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken);
 
-	Task<bool> Exists(ArticleId articleId, CancellationToken cancellationToken);
+	Task<bool> ExistsById(ArticleId articleId, CancellationToken cancellationToken);
 
-	Task Delete(ArticleId articleId, CancellationToken cancellationToken);
+	Task DeleteById(ArticleId articleId, CancellationToken cancellationToken);
 
 	Task IncrementViewsCount(ArticleId articleId, CancellationToken cancellationToken);
 

@@ -13,7 +13,7 @@ internal sealed class DeleteCommentCommandHandler(
 		var commentId = CommentId.Create(request.CommentId);
 		var userId = userProvider.CurrentUser.Id;
 
-		var comment = await repository.Get(commentId, cancellationToken);
+		var comment = await repository.GetById(commentId, cancellationToken);
 		if (comment is null)
 		{
 			return CommentErrors.NotFound(commentId);
@@ -24,7 +24,7 @@ internal sealed class DeleteCommentCommandHandler(
 			return CommentErrors.NotAnAuthor();
 		}
 
-		await repository.Delete(commentId, cancellationToken);
+		await repository.DeleteById(commentId, cancellationToken);
 
 		return Result.Success();
 	}

@@ -17,18 +17,6 @@ internal sealed class CachingArticleRepositoryDecorator(
 	public Task Add(Article article, CancellationToken cancellationToken) =>
 		inner.Add(article, cancellationToken);
 
-	private static readonly TimeSpan ArticlesTtl = TimeSpan.FromMinutes(5);
-
-	private static RedisKey GenerateArticleKey(ArticleId articleId) =>
-		$"articles.articles.{articleId.Value}";
-
-	private static readonly TimeSpan ReadModelsTtl = TimeSpan.FromMinutes(5);
-	private static RedisKey GenerateReadModelsByBlogKey(BlogId blogId, int page, int pageSize) =>
-		$"articles.articles.byblog.{blogId.Value}.{page}.{pageSize}";
-
-	private static RedisKey GenerateSearchArticlesKey(string searchPattern, int page, int pageSize) =>
-		$"articles.articles.search.{searchPattern}.{page}.{pageSize}";
-
 	public async Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken)
 	{
 		var key = GenerateArticleKey(articleId);
@@ -49,14 +37,14 @@ internal sealed class CachingArticleRepositoryDecorator(
 		return article;
 	}
 
-	public Task<bool> Exists(ArticleId articleId, CancellationToken cancellationToken) =>
-		inner.Exists(articleId, cancellationToken);
+	public Task<bool> ExistsById(ArticleId articleId, CancellationToken cancellationToken) =>
+		inner.ExistsById(articleId, cancellationToken);
 
-	public async Task Delete(ArticleId articleId, CancellationToken cancellationToken)
+	public async Task DeleteById(ArticleId articleId, CancellationToken cancellationToken)
 	{
 		var key = GenerateArticleKey(articleId);
 		await database.KeyDeleteAsync(key);
-		await inner.Delete(articleId, cancellationToken);
+		await inner.DeleteById(articleId, cancellationToken);
 	}
 
 	public Task IncrementViewsCount(ArticleId articleId, CancellationToken cancellationToken) =>
@@ -103,4 +91,17 @@ internal sealed class CachingArticleRepositoryDecorator(
 
 		return readModels;
 	}
+
+	private static readonly TimeSpan ArticlesTtl = TimeSpan.FromMinutes(5);
+
+	private static readonly TimeSpan ReadModelsTtl = TimeSpan.FromMinutes(5);
+
+	private static RedisKey GenerateArticleKey(ArticleId articleId) =>
+		$"articles.articles.{articleId.Value}";
+
+	private static RedisKey GenerateReadModelsByBlogKey(BlogId blogId, int page, int pageSize) =>
+		$"articles.articles.by-blog.{blogId.Value}.{page}.{pageSize}";
+
+	private static RedisKey GenerateSearchArticlesKey(string searchPattern, int page, int pageSize) =>
+		$"articles.articles.search.{searchPattern}.{page}.{pageSize}";
 }

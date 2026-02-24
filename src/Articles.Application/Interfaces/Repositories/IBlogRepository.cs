@@ -10,7 +10,7 @@ public interface IBlogRepository
 
 	Task<Blog?> GetById(BlogId id, CancellationToken cancellationToken);
 
-	Task<bool> Exists(BlogId id, CancellationToken cancellationToken);
+	Task<bool> ExistsById(BlogId id, CancellationToken cancellationToken);
 
 	Task<PagedData<BlogReadModel>> GetReadModels(PagedRequest pagedRequest, CancellationToken cancellationToken);
 }

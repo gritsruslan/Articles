@@ -18,7 +18,7 @@ internal sealed class GetArticlesQueryHandler(IArticleRepository repository) : I
 
 		if (searchQuery.Length < searchQueryMinLength || searchQuery.Length > searchQueryMaxLength)
 		{
-			return AbstractErrors.InvalidParameterLength(
+			return ErrorsFactory.InvalidParameterLength(
 				nameof(searchQuery),
 				searchQuery,
 				2,

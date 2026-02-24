@@ -16,10 +16,10 @@ internal sealed class CreateCommentCommandHandler(
 		var articleId = ArticleId.Create(request.ArticleId);
 		var newCommentId = CommentId.New();
 
-		var articleExists = await articleRepository.Exists(articleId, cancellationToken);
+		var articleExists = await articleRepository.ExistsById(articleId, cancellationToken);
 		if (!articleExists)
 		{
-			return ArticleErrors.ArticleNotFound(articleId);
+			return ArticleErrors.NotFound(articleId);
 		}
 
 		var contentResult = CommentContent.Create(request.Content);
