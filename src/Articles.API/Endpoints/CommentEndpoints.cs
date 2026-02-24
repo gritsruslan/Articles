@@ -1,8 +1,8 @@
 using Articles.API.Extensions;
 using Articles.API.Handlers;
 using Articles.API.Requests;
-using Articles.Application.CommentUseCases.DeleteComment;
-using Articles.Application.CommentUseCases.UpdateComment;
+using Articles.Application.UseCases.Comments.DeleteComment;
+using Articles.Application.UseCases.Comments.UpdateComment;
 using Articles.Shared.Result;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

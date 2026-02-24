@@ -1,6 +1,6 @@
 using Articles.API.Handlers;
-using Articles.Application.FileUseCases.GetFile;
-using Articles.Application.FileUseCases.UploadFile;
+using Articles.Application.UseCases.Files.GetFile;
+using Articles.Application.UseCases.Files.UploadFile;
 using Articles.Shared.Result;
 using Microsoft.AspNetCore.Mvc;
 

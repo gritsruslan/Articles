@@ -3,6 +3,7 @@ using Articles.Domain.Identifiers;
 using Articles.Domain.Models;
 using Articles.Domain.ReadModels;
 using Articles.Shared.Abstraction;
+using Articles.Shared.Abstraction.Pagination;
 using Articles.Shared.DefaultServices;
 using Newtonsoft.Json;
 using StackExchange.Redis;

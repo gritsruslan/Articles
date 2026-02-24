@@ -1,8 +1,4 @@
 using Articles.API.Requests;
-using Articles.Application.Interfaces.Repositories;
-using Articles.Application.UseCases.Commands;
-using Articles.Domain.DomainEvents;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Serilog.Core;
 using Serilog.Events;
@@ -18,7 +14,6 @@ internal static class ServiceEndpoints
 
 		group.MapGet("currentLogLevel", CurrentLogLevel);
 		group.MapPost("switchLogLevel", SwitchLogLevel);
-		group.MapGet("test", Test);
 
 		return app;
 	}
@@ -45,20 +40,5 @@ internal static class ServiceEndpoints
 		};
 
 		return  Results.Ok(new { CurrentLogLevel = loggingLevelSwitch.MinimumLevel.ToString() });
-	}
-
-	// only for testing
-	private static async Task<IResult> Test([FromServices]
-		ISender sender)
-	{
-		var command = new TestCommand();
-		var result = await sender.Send(command);
-
-		if (result.IsFailure)
-		{
-			return Results.BadRequest(result.Error);
-		}
-
-		return Results.Ok();
 	}
 }

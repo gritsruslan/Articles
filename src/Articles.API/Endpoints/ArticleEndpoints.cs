@@ -1,14 +1,15 @@
 using Articles.API.Extensions;
 using Articles.API.Handlers;
 using Articles.API.Requests;
-using Articles.Application.ArticleUseCases.DeleteArticle;
-using Articles.Application.ArticleUseCases.GetArticleById;
-using Articles.Application.ArticleUseCases.GetArticles;
-using Articles.Application.CommentUseCases.CreateComment;
-using Articles.Application.CommentUseCases.GetCommentsByArticle;
+using Articles.Application.UseCases.Articles.CreateComment;
+using Articles.Application.UseCases.Articles.DeleteArticle;
+using Articles.Application.UseCases.Articles.GetArticle;
+using Articles.Application.UseCases.Articles.GetArticleComments;
+using Articles.Application.UseCases.Articles.GetArticles;
 using Articles.Domain.Models;
 using Articles.Domain.ReadModels;
 using Articles.Shared.Abstraction;
+using Articles.Shared.Abstraction.Pagination;
 using Articles.Shared.Result;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +41,7 @@ internal static class ArticleEndpoints
 		[FromServices] GlobalQueryHandler handler,
 		CancellationToken cancellationToken)
 	{
-		var query = new GetCommentsByArticleQuery(articleId, page, pageSize);
+		var query = new GetArticleCommentsQuery(articleId, page, pageSize);
 		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
@@ -77,7 +78,7 @@ internal static class ArticleEndpoints
 		[FromServices] GlobalQueryHandler handler,
 		CancellationToken cancellationToken)
 	{
-		var query = new GetArticleByIdQuery(articleId);
+		var query = new GetArticleQuery(articleId);
 		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 

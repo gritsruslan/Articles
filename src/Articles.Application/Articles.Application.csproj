@@ -15,4 +15,12 @@
     <ItemGroup>
         <InternalsVisibleTo Include="Articles.UnitTests"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="UseCases\Articles\" />
+      <Folder Include="UseCases\Auth\" />
+      <Folder Include="UseCases\Blogs\" />
+      <Folder Include="UseCases\Comments\" />
+      <Folder Include="UseCases\Files\" />
+    </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 using Articles.API.Extensions;
-using Articles.Shared.CQRS;
+using Articles.Shared.Abstraction.CQRS;
 using Articles.Shared.Result;
 using MediatR;
 
