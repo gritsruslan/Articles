@@ -17,7 +17,8 @@ internal sealed class CommentConfiguration : IEntityTypeConfiguration<CommentEnt
 		builder
 			.HasOne(e => e.Article)
 			.WithMany(a => a.Comments)
-			.HasForeignKey(e => e.ArticleId);
+			.HasForeignKey(e => e.ArticleId)
+			.OnDelete(DeleteBehavior.Cascade);
 
 		builder
 			.HasOne(e => e.Author)
