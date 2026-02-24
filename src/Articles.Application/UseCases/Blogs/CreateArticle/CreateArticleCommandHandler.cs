@@ -33,6 +33,8 @@ internal sealed class CreateArticleCommandHandler(
 		BlogId blogId = BlogId.Create(request.BlogId);
 		ArticleId articleId = ArticleId.New();
 
+		await using var scope = await unitOfWork.StartScope(cancellationToken);
+
 		var blogExists = await blogRepository.Exists(blogId, cancellationToken);
 		if (!blogExists)
 		{
@@ -59,8 +61,6 @@ internal sealed class CreateArticleCommandHandler(
 			}
 			fileIds.Add(fileId);
 		}
-
-		await using var scope = await unitOfWork.StartScope(cancellationToken);
 
 		await articleRepository.Add(article, cancellationToken);
 		await fileRepository.LinkToArticle(fileIds, articleId, cancellationToken);

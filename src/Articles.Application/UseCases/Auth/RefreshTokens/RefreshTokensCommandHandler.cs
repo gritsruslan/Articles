@@ -32,6 +32,8 @@ internal sealed class RefreshTokensCommandHandler(
 			return validationResult.Error;
 		}
 
+		await using var scope = await unitOfWork.StartScope(cancellationToken);
+
 		var session = await sessionRepository.GetById(refreshToken.SessionId, cancellationToken);
 		if (session is null)
 		{
@@ -50,8 +52,6 @@ internal sealed class RefreshTokensCommandHandler(
 		var newAccessToken = await accessTokenManager.CreateEncrypted(refreshToken.UserId, cancellationToken);
 		var newRefreshToken =
 			await refreshTokenManager.CreateEncrypted(refreshToken.UserId, newSession.Id, cancellationToken);
-
-		await using var scope = await unitOfWork.StartScope(cancellationToken);
 
 		await sessionRepository.DeleteById(session.Id, cancellationToken);
 		await sessionRepository.Add(newSession, cancellationToken);

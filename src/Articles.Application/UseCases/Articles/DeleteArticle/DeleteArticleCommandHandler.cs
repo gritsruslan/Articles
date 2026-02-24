@@ -15,6 +15,8 @@ internal sealed class DeleteArticleCommandHandler(
 	{
 		var articleId = ArticleId.Create(request.ArticleId);
 
+		await using var scope = await unitOfWork.StartScope(cancellationToken);
+
 		var article = await articleRepository.GetById(articleId, cancellationToken);
 		if (article is null)
 		{
@@ -25,8 +27,6 @@ internal sealed class DeleteArticleCommandHandler(
 		{
 			return ArticleErrors.NotAnAuthor();
 		}
-
-		await using var scope = await unitOfWork.StartScope(cancellationToken);
 
 		await fileRepository.UnlinkFromArticle(articleId, cancellationToken);
 		await articleRepository.Delete(articleId, cancellationToken);

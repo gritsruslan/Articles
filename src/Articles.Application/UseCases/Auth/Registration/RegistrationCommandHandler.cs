@@ -45,6 +45,8 @@ internal sealed class RegistrationCommandHandler(
 		var domainId = domainIdResult.Value;
 		var password = request.Password;
 
+		await using var scope = await unitOfWork.StartScope(cancellationToken);
+
 		if (await repository.ExistsByEmail(email, cancellationToken))
 		{
 			return UserErrors.UserWithThisEmailAlreadyExists(email.Value);
@@ -70,8 +72,6 @@ internal sealed class RegistrationCommandHandler(
 			PasswordHash = passwordHash,
 			Salt = salt
 		};
-
-		await using var scope = await unitOfWork.StartScope(cancellationToken);
 
 		await repository.Add(user, cancellationToken);
 		await domainEventRepository.Add(
