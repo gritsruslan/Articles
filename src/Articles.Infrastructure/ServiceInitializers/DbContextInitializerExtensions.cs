@@ -1,8 +1,10 @@
 ﻿using Articles.Storage.Postgres.Initializer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Articles.API.Extensions;
+namespace Articles.Infrastructure.ServiceInitializers;
 
-internal static class DbContextInitializerExtensions
+public static class DbContextInitializerExtensions
 {
 	public static async Task InitializeDatabaseAsync(this WebApplication app)
 	{

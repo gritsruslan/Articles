@@ -1,4 +1,5 @@
 using Articles.API.Authentication;
+using Articles.API.Constants;
 using Articles.API.Endpoints;
 using Articles.API.Extensions;
 using Articles.API.Handlers;
@@ -7,6 +8,7 @@ using Articles.Application;
 using Articles.Infrastructure;
 using Articles.Infrastructure.BackgroundService;
 using Articles.Infrastructure.Monitoring;
+using Articles.Infrastructure.ServiceInitializers;
 using Articles.Shared;
 using Articles.Storage.Minio;
 using Articles.Storage.Postgres;
@@ -64,12 +66,12 @@ app.UseMiddleware<GlobalExceptionHandler>()
 if (environment.IsProduction())
 {
 	app.UseRateLimiter();
+	app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
 app.UseSwaggerWithUi();
 
-app.UseCors(SecurityExtensions.DefaultCorsPolicy);
+app.UseCors(CorsConstants.DefaultPolicy);
 
 await app.InitializeDatabaseAsync();
 await app.InitializeFileBucketsAsync();

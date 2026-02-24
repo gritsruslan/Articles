@@ -1,10 +1,11 @@
-using Articles.Storage.Minio;
 using Articles.Storage.Minio.Initializer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Minio;
 
-namespace Articles.API.Extensions;
+namespace Articles.Infrastructure.ServiceInitializers;
 
-internal static class MinioBucketsInitializerExtensions
+public static class MinioBucketsInitializerExtensions
 {
 	public static async Task InitializeFileBucketsAsync(this WebApplication app)
 	{

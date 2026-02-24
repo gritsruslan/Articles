@@ -1,3 +1,4 @@
+using Articles.API.Constants;
 using Articles.API.Extensions;
 using Articles.API.Handlers;
 using Articles.API.Requests;
@@ -22,7 +23,7 @@ internal static class BlogEndpoints
 	public static IEndpointRouteBuilder MapBlogEndpoints(this IEndpointRouteBuilder app)
 	{
 		var group = app.MapGroup("blogs")
-			.RequireRateLimiting(SecurityExtensions.ApiRateLimitingPolicy);
+			.RequireRateLimiting(RateLimitingConstants.ApiPolicy);
 
 		group.MapGet("{blogId:int}", GetBlog);
 		group.MapGet(string.Empty, GetBlogReadModels);

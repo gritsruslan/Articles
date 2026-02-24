@@ -1,4 +1,5 @@
 ﻿using Articles.API.Authentication;
+using Articles.API.Constants;
 using Articles.API.Extensions;
 using Articles.API.Handlers;
 using Articles.API.Requests;
@@ -19,7 +20,7 @@ internal static class AuthEndpoints
 	public static IEndpointRouteBuilder MapAuthEndpoints(this IEndpointRouteBuilder app)
 	{
 		var group = app.MapGroup("auth")
-			.RequireRateLimiting(SecurityExtensions.AuthRateLimitingPolicy);
+			.RequireRateLimiting(RateLimitingConstants.AuthPolicy);
 
 		group.MapPost("login", Login);
 		group.MapPost("registration", Registration);

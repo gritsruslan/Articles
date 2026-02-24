@@ -1,4 +1,6 @@
-﻿namespace Articles.API.Authentication;
+﻿using Articles.API.Constants;
+
+namespace Articles.API.Authentication;
 
 internal sealed class AuthTokenStorage(IHttpContextAccessor httpContextAccessor) : IAuthTokenStorage
 {

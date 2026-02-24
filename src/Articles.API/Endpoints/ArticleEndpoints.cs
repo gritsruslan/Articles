@@ -1,3 +1,4 @@
+using Articles.API.Constants;
 using Articles.API.Extensions;
 using Articles.API.Handlers;
 using Articles.API.Requests;
@@ -20,7 +21,7 @@ internal static class ArticleEndpoints
 	public static IEndpointRouteBuilder MapArticleEndpoints(this IEndpointRouteBuilder app)
 	{
 		var group = app.MapGroup("articles")
-			.RequireRateLimiting(SecurityExtensions.ApiRateLimitingPolicy);
+			.RequireRateLimiting(RateLimitingConstants.ApiPolicy);
 
 		group.MapGet("{articleId:guid}", GetArticle);
 		group.MapGet("search", GetArticleReadModels);

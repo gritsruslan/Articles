@@ -1,3 +1,4 @@
+using Articles.API.Constants;
 using Articles.API.Extensions;
 using Articles.API.Handlers;
 using Articles.API.Requests;
@@ -14,7 +15,7 @@ internal static class CommentEndpoints
 	public static IEndpointRouteBuilder MapCommentEndpoints(this IEndpointRouteBuilder app)
 	{
 		var group = app.MapGroup("comments")
-			.RequireRateLimiting(SecurityExtensions.ApiRateLimitingPolicy);
+			.RequireRateLimiting(RateLimitingConstants.ApiPolicy);
 
 		group.MapPatch("{commentId:guid}", Update);
 		group.MapDelete("{commentId:guid}", Delete);

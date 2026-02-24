@@ -3,6 +3,7 @@
     <ProjectReference Include="..\Articles.Application\Articles.Application.csproj" />
     <ProjectReference Include="..\Articles.Domain\Articles.Domain.csproj" />
     <ProjectReference Include="..\Articles.Shared\Articles.Shared.csproj" />
+    <ProjectReference Include="..\Articles.Storage.Minio\Articles.Storage.Minio.csproj" />
     <ProjectReference Include="..\Articles.Storage.Postgres\Articles.Storage.Postgres.csproj" />
   </ItemGroup>
     
