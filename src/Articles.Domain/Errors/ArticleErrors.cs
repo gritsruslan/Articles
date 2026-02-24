@@ -6,33 +6,31 @@ namespace Articles.Domain.Errors;
 
 public static class ArticleErrors
 {
-	public static Error ArticleNotFound(ArticleId id) =>
-		new(ErrorType.NotFound,
-			$"Article with id {id.Value} was not found",
-			"article.not.found",
-			"ArticleId",
-			id.Value.ToString());
+	public static Error NotFound(ArticleId articleId) =>
+		ErrorsFactory.ObjectNotFoundById("article", articleId.Value.ToString());
 
 	public static Error NotAnAuthor() =>
-		new(ErrorType.Forbidden, "You are not an author of this article");
+		new(ErrorType.Forbidden,
+			"You are not an author of this article",
+			"not.an.author");
 
 	public static Error EmptyTitle() =>
-		AbstractErrors.EmptyParameter("ArticleTitle");
+		ErrorsFactory.RequiredParameter("article-title");
 
 	public static Error InvalidTitleLength(string invalidTitle) =>
-		AbstractErrors.InvalidParameterLength(
-			"ArticleTitle",
+		ErrorsFactory.InvalidParameterLength(
+			"article-title",
 			invalidTitle,
 			ArticleConstants.TitleMinLength,
 			ArticleConstants.TitleMaxLength);
 
 	public static Error EmptyData() =>
-		AbstractErrors.EmptyParameter("ArticleData");
+		ErrorsFactory.RequiredParameter("article-data");
 
 	public static Error InvalidDataLength() =>
-		AbstractErrors.InvalidParameterLength(
-			"ArticleData",
-			parameterValue: null,
+		ErrorsFactory.InvalidParameterLength(
+			"article-data",
+			parameterValue: null, //ignore
 			ArticleConstants.DataMinLength,
 			ArticleConstants.DataMaxLength);
 }

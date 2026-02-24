@@ -2,13 +2,21 @@
 
 namespace Articles.Domain.Errors;
 
-public static class AbstractErrors
+public static class ErrorsFactory
 {
-	public static Error EmptyParameter(string parameterName) =>
+
+	public static Error ObjectNotFoundById(string objectName, string objectIdString) =>
+		new(ErrorType.NotFound,
+			$"{objectName} with id {objectIdString} was not found",
+			$"{objectName.ToLower()}.not.found",
+			"id",
+			objectIdString);
+
+	public static Error RequiredParameter(string parameterName) =>
 		new(
 			ErrorType.Validation,
-			$"{parameterName} can't be empty",
-			$"empty.{parameterName.ToLower()}",
+			$"{parameterName} is required",
+			$"required.{parameterName.ToLower()}",
 			parameterName);
 
 	public static Error InvalidParameterLength(

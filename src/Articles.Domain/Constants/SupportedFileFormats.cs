@@ -23,6 +23,8 @@ public static class SupportedFileFormats
 
 	public const long MaxFileSize = 100_000_000; // 100MB
 
+	public const long MaxFileSizeMb = MaxFileSize / 1_000_000;
+
 	public const int ContentTypeMaxLength = 255;
 
 	public static IEnumerable<FileFormat> Images()

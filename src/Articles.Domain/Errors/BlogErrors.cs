@@ -6,16 +6,16 @@ namespace Articles.Domain.Errors;
 
 public static class BlogErrors
 {
-	public static Error BlogNotFound(BlogId id) =>
-		new(ErrorType.NotFound,
-			$"Blog with id {id.Value} was not found",
-			"blog.not.found",
-			"BlogId",
-			id.Value.ToString());
+	public static Error NotFound(BlogId blogId) =>
+		ErrorsFactory.ObjectNotFoundById("blog", blogId.Value.ToString());
 
 	public static Error EmptyTitle() =>
-		AbstractErrors.EmptyParameter("BlogTitle");
+		ErrorsFactory.RequiredParameter("blog-title");
 
 	public static Error InvalidTitleLength(string invalidTitle) =>
-		AbstractErrors.InvalidParameterLength("BlogTitle", invalidTitle, BlogConstants.TitleMinLength, BlogConstants.TitleMaxLength);
+		ErrorsFactory.InvalidParameterLength(
+			"blog-title",
+			invalidTitle,
+			BlogConstants.TitleMinLength,
+			BlogConstants.TitleMaxLength);
 }

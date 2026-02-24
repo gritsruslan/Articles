@@ -7,18 +7,20 @@ namespace Articles.Domain.Errors;
 public static class CommentErrors
 {
 	public static Error NotFound(CommentId commentId) =>
-		new(ErrorType.NotFound, $"Comment with id {commentId.Value} was not found");
+		ErrorsFactory.ObjectNotFoundById("comment", commentId.Value.ToString());
 
 	public static Error EmptyContent() =>
-		AbstractErrors.EmptyParameter("Content");
+		ErrorsFactory.RequiredParameter("comment-content");
 
 	public static Error InvalidContentLength(string invalidContent) =>
-		AbstractErrors.InvalidParameterLength(
-			"CommentContent",
+		ErrorsFactory.InvalidParameterLength(
+			"comment-content",
 			invalidContent,
 			CommentConstants.ContentMinLength,
 			CommentConstants.ContentMaxLength);
 
 	public static Error NotAnAuthor() =>
-		new(ErrorType.Forbidden, "You are not an author of this comment");
+		new(ErrorType.Forbidden,
+			"You are not an author of this comment",
+			"not.an.author");
 }

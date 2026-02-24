@@ -24,7 +24,7 @@ public static class SecurityErrors
 		new(ErrorType.Conflict, "Email already confirmed", "email.already.confirmed");
 
 	public static Error PasswordIsEmpty() =>
-		AbstractErrors.EmptyParameter("password");
+		ErrorsFactory.RequiredParameter("password");
 
 	public static Error PasswordIsTooShort(int minLength, int currentLength) =>
 		new(
@@ -75,16 +75,19 @@ public static class SecurityErrors
 
 	public static Error SessionExpired() => new(ErrorType.Unauthorized);
 
+	public static Error Forbidden() => new(ErrorType.Forbidden);
+
 	public static Error RefreshTokenExpired() =>
-		new(ErrorType.Unauthorized, "Refresh token has expired", "expired.refresh-token");
+		new(ErrorType.Unauthorized,
+			"Refresh token has expired",
+			"expired.refresh-token");
 
 	public static Error IncorrectEmailOrPassword() =>
 		new(
 			ErrorType.Unauthorized,
 			"Incorrect email or password",
-			"incorrect.user.credentials");
+			"incorrect.user-credentials");
 
-	public static Error Forbidden() => new(ErrorType.Forbidden);
 
 	public static Error UsageLimited() =>
 		new(ErrorType.Forbidden, "This request is usage limited, try later", "usage.limited");
