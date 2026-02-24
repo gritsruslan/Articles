@@ -35,7 +35,6 @@ internal sealed class AccessTokenManager(
 
 	public Result Validate(AccessToken accessToken)
 	{
-		//TODO maybe log
 		if(accessToken.ExpiresAt < dateTimeProvider.UtcNow)
 		{
 			return SecurityErrors.Unauthorized();

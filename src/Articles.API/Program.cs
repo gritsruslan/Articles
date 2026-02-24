@@ -1,4 +1,3 @@
-using Articles.API;
 using Articles.API.Authentication;
 using Articles.API.Endpoints;
 using Articles.API.Extensions;

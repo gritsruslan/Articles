@@ -15,7 +15,6 @@ public sealed class SupervisorUserOptions
 	[Required]
 	public required string DomainId { get; init; } = null!;
 
-	// todo : get from secrets
 	[Required]
 	public required string Password { get; init; } = null!;
 }

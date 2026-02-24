@@ -44,7 +44,6 @@ internal sealed class UsageLimitingPipelineBehaviour<TRequest, TResponse>(
 			return (dynamic) SecurityErrors.UsageLimited();
 		}
 
-		//todo LOCK
 		var result = await next(cancellationToken);
 		var resultBase = result as ResultBase ??
 		                 throw new InvalidCastException($"Failed to convert the result to type ResultBase");

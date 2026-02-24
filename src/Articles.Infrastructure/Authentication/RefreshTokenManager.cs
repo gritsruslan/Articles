@@ -33,7 +33,6 @@ internal sealed class RefreshTokenManager(
 
 	public Result Validate(RefreshToken refreshToken)
 	{
-		//TODO maybe log
 		if (refreshToken.Issuer != options.Value.Issuer)
 		{
 			return SecurityErrors.Unauthorized();
