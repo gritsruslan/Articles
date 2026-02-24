@@ -1,5 +1,6 @@
 ﻿using Articles.API.Authentication;
 using Articles.API.Extensions;
+using Articles.API.Handlers;
 using Articles.API.Requests;
 using Articles.Application.AuthUseCases.Commands.ConfirmEmail;
 using Articles.Application.AuthUseCases.Commands.Login;
@@ -34,7 +35,7 @@ internal static class AuthEndpoints
 	[ProducesResponseType<Error>(StatusCodes.Status401Unauthorized)]
 	private static async Task<IResult> Login(
 		[FromBody] LoginRequest request,
-		[FromServices] ISender sender,
+		[FromServices] GlobalCommandHandler handler,
 		[FromServices] IAuthTokenStorage tokenStorage,
 		HttpContext httpContext,
 		CancellationToken cancellationToken)
@@ -45,16 +46,12 @@ internal static class AuthEndpoints
 			request.RememberMe,
 			tokenStorage.GetUserAgent());
 
-		var result = await sender.Send(command, cancellationToken);
-		if (result.IsFailure)
+		return await handler.Handle(command, result =>
 		{
-			return result.Error.ToResponse();
-		}
-
-		tokenStorage.StoreAccessToken(result.Value.AccessToken);
-		tokenStorage.StoreRefreshToken(result.Value.RefreshToken);
-
-		return Results.Ok();
+			tokenStorage.StoreAccessToken(result.AccessToken);
+			tokenStorage.StoreRefreshToken(result.RefreshToken);
+			return Results.Ok();
+		}, cancellationToken);
 	}
 
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -62,18 +59,11 @@ internal static class AuthEndpoints
 	[ProducesResponseType<Error>(StatusCodes.Status409Conflict)]
 	private static async Task<IResult> Registration(
 		[FromBody] RegistrationRequest request,
-		[FromServices] ISender sender,
+		[FromServices] GlobalCommandHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var command = new RegistrationCommand(request.Name, request.Email, request.DomainId, request.Password);
-
-		var result = await sender.Send(command, cancellationToken);
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Created();
+		return await handler.Handle(command, Results.Created, cancellationToken);
 	}
 
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -81,39 +71,27 @@ internal static class AuthEndpoints
 	[ProducesResponseType<Error>(StatusCodes.Status409Conflict)]
 	private static async Task<IResult> ConfirmEmail(
 		[FromQuery] string token,
-		[FromServices] ISender sender,
+		[FromServices] GlobalCommandHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var command = new ConfirmEmailCommand(token);
-
-		var result = await sender.Send(command, cancellationToken);
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Ok();
+		return await handler.Handle(command, Results.Ok, cancellationToken);
 	}
 
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType<Error>(StatusCodes.Status401Unauthorized)]
 	private static async Task<IResult> Logout(
-		[FromServices] ISender sender,
+		[FromServices] GlobalCommandHandler handler,
 		[FromServices] IAuthTokenStorage tokenStorage,
 		CancellationToken cancellationToken)
 	{
 		var command = new LogoutCommand(tokenStorage.GetRefreshToken());
-
-		var result = await sender.Send(command, cancellationToken);
-		if (result.IsFailure)
+		return await handler.Handle(command, _ =>
 		{
-			return result.Error.ToResponse();
-		}
-
-		tokenStorage.RemoveAccessToken();
-		tokenStorage.RemoveRefreshToken();
-
-		return Results.NoContent();
+			tokenStorage.RemoveAccessToken();
+			tokenStorage.RemoveRefreshToken();
+			return Results.NoContent();
+		}, cancellationToken);
 	}
 
 
@@ -121,7 +99,7 @@ internal static class AuthEndpoints
 	[ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType<Error>(StatusCodes.Status401Unauthorized)]
 	private static async Task<IResult> RefreshTokens(
-		[FromServices] ISender sender,
+		[FromServices] GlobalCommandHandler handler,
 		[FromServices] IAuthTokenStorage tokenStorage,
 		CancellationToken cancellationToken)
 	{
@@ -129,29 +107,19 @@ internal static class AuthEndpoints
 			tokenStorage.GetRefreshToken(),
 			tokenStorage.GetUserAgent());
 
-		var result = await sender.Send(command, cancellationToken);
-		if (result.IsFailure)
+		return await handler.Handle(command, authTokenPair =>
 		{
-			return result.Error.ToResponse();
-		}
-
-		tokenStorage.StoreAccessToken(result.Value.AccessToken);
-		tokenStorage.StoreRefreshToken(result.Value.RefreshToken);
-
-		return Results.Ok();
+			tokenStorage.StoreAccessToken(authTokenPair.AccessToken);
+			tokenStorage.StoreRefreshToken(authTokenPair.RefreshToken);
+			return Results.Ok();
+		}, cancellationToken);
 	}
 
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	private static async Task<IResult> Me(
-		[FromServices] ISender sender,
+		[FromServices] GlobalQueryHandler handler,
 		CancellationToken cancellationToken)
 	{
-		var result = await sender.Send(new MeQuery(), cancellationToken);
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Ok(result.Value);
+		return await handler.Handle(new MeQuery(), Results.Ok, cancellationToken);
 	}
 }

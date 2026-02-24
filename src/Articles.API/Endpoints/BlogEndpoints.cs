@@ -1,10 +1,12 @@
 using Articles.API.Extensions;
+using Articles.API.Handlers;
 using Articles.API.Requests;
 using Articles.Application.ArticleUseCases.CreateArticle;
 using Articles.Application.BlogUseCases.CreateBlog;
 using Articles.Application.BlogUseCases.GetBlog;
 using Articles.Application.BlogUseCases.GetBlogArticles;
 using Articles.Application.BlogUseCases.GetBlogs;
+using Articles.Shared.CQRS;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,86 +31,56 @@ internal static class BlogEndpoints
 	private static async Task<IResult> CreateArticle(
 		[FromRoute] int blogId,
 		[FromBody] CreateArticleRequest request,
-		[FromServices] ISender sender,
+		[FromServices] GlobalCommandHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var command = new CreateArticleCommand(blogId, request.Title, request.Data, request.AttachedFiles);
-		var result = await sender.Send(command, cancellationToken);
 
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		var articleId = result.Value;
-		return Results.Created($"articles/{articleId}", null);
+		return await handler.Handle(
+			command,
+			id => Results.Created($"articles/{id}", null),
+			cancellationToken);
 	}
 
 	private static async Task<IResult> GetBlogArticles(
 		[FromRoute] int blogId,
 		[FromQuery] int page,
 		[FromQuery] int pageSize,
-		[FromServices] ISender sender,
+		[FromServices] GlobalQueryHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var query = new GetBlogArticlesQuery(blogId, page, pageSize);
-		var result = await sender.Send(query, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Ok(result.Value);
+		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
 	private static async Task<IResult> GetBlogs(
-		[FromServices] ISender sender,
 		[FromQuery] int page,
 		[FromQuery] int pageSize,
+		[FromServices] GlobalQueryHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var query = new GetBlogsQuery(page, pageSize);
-		var result = await sender.Send(query, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Ok(result.Value);
+		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
 	private static async Task<IResult> GetBlog(
-		[FromServices] ISender sender,
 		[FromRoute] int blogId,
+		[FromServices] GlobalQueryHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var query = new GetBlogQuery(blogId);
-		var result = await sender.Send(query, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Ok(result.Value);
+		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
 	private static async Task<IResult> CreateBlog(
-		[FromServices] ISender sender,
 		[FromBody] CreateBlogRequest request,
+		[FromServices] GlobalCommandHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var command = new CreateBlogCommand(request.Title);
-		var result = await sender.Send(command, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		var blogId = result.Value;
-		return Results.Created($"blogs/{blogId}", null);
+		return await handler.Handle(
+			command,
+			blogId => Results.Created($"blogs/{blogId}", null),
+			cancellationToken);
 	}
 }

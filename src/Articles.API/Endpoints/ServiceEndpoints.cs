@@ -9,6 +9,7 @@ using Serilog.Events;
 
 namespace Articles.API.Endpoints;
 
+// only for testing
 internal static class ServiceEndpoints
 {
 	public static IEndpointRouteBuilder MapServiceEndpoints(this IEndpointRouteBuilder app)

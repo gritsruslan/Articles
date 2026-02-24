@@ -125,11 +125,11 @@ services:
       HealthCheckOptions__MinioEndpoint: http://articles-minio:9000/minio/health/ready
       SmtpClientOptions__Host: mailhog
       MinioOptions__Endpoint: articles-minio:9000
-      EmailConfirmationTokenOptions__Key: abcdabcdabcd1234,
-      AccessTokenOptions__Key: VCwT8JrSfUPIql5qwOSGPLgQnWrTwULv,
-      RefreshTokenOptions__Key: 0BeUpZGAEBxWrXLOLEUTtgVgF5diWpYF,
-      SupervisorUserOptions__Password: admin,
-      MinioOptions__AccessKey: admin,
+      EmailConfirmationTokenOptions__Key: abcdabcdabcd1234
+      AccessTokenOptions__Key: VCwT8JrSfUPIql5qwOSGPLgQnWrTwULv
+      RefreshTokenOptions__Key: 0BeUpZGAEBxWrXLOLEUTtgVgF5diWpYF
+      SupervisorUserOptions__Password: admin
+      MinioOptions__AccessKey: admin
       MinioOptions__SecretKey: admin123
 
 

@@ -1,4 +1,5 @@
 using Articles.API.Extensions;
+using Articles.API.Handlers;
 using Articles.Application.FileUseCases.GetFile;
 using Articles.Application.FileUseCases.UploadFile;
 using MediatR;
@@ -19,35 +20,25 @@ internal static class FileEndpoints
 	}
 
 	private static async Task<IResult> GetFile(
-		[FromServices] ISender sender,
 		string fileName,
+		[FromServices] GlobalQueryHandler handler,
 		CancellationToken cancellationToken)
 	{
-		var command = new GetFileQuery(fileName);
-
-		var result = await sender.Send(command, cancellationToken);
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.File(result.Value.FileStream, result.Value.ContentType);
+		var query = new GetFileQuery(fileName);
+		return await handler.Handle(query,
+			response => Results.File(response.FileStream, response.ContentType),
+			cancellationToken);
 	}
 
 	private static async Task<IResult> UploadFile(
-		[FromServices] ISender sender,
 		IFormFile file,
+		[FromServices] GlobalCommandHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var command = new UploadFileCommand(file);
-		var result = await sender.Send(command, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		var fileName = result.Value;
-		return Results.Created($"files/{fileName}", null);
+		return await handler.Handle(
+			command,
+			fileName => Results.Created($"files/{fileName}", null),
+			cancellationToken);
 	}
 }

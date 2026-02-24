@@ -1,4 +1,5 @@
 using Articles.API.Extensions;
+using Articles.API.Handlers;
 using Articles.API.Requests;
 using Articles.Application.ArticleUseCases.DeleteArticle;
 using Articles.Application.ArticleUseCases.GetArticleById;
@@ -30,86 +31,49 @@ internal static class ArticleEndpoints
 		[FromRoute] Guid articleId,
 		[FromQuery] int page,
 		[FromQuery] int pageSize,
-		[FromServices] ISender sender,
+		[FromServices] GlobalQueryHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var query = new GetCommentsByArticleQuery(articleId, page, pageSize);
-		var result = await sender.Send(query, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Ok(result.Value);
+		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
 	private static async Task<IResult> CreateComment(
 		[FromRoute] Guid articleId,
 		[FromBody] CreateCommentRequest request,
-		[FromServices] ISender sender,
+		[FromServices] GlobalCommandHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var command = new CreateCommentCommand(articleId, request.Content);
-		var result = await sender.Send(command, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		var comment = result.Value;
-		return Results.Ok(comment);
+		return await handler.Handle(command, Results.Ok, cancellationToken);
 	}
 
 	private static async Task<IResult> GetArticles(
 		[FromQuery] string searchQuery,
 		[FromQuery] int page,
 		[FromQuery] int pageSize,
-		[FromServices] ISender sender,
+		[FromServices] GlobalQueryHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var query = new GetArticlesQuery(searchQuery, page, pageSize);
-		var result = await sender.Send(query, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Ok(result.Value);
+		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
-	// TODO ReadModel + Sort by likes count
 	private static async Task<IResult> GetArticle(
 		[FromRoute] Guid articleId,
-		[FromServices] ISender sender,
+		[FromServices] GlobalQueryHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var query = new GetArticleByIdQuery(articleId);
-		var result = await sender.Send(query, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Ok(result.Value);
+		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
 	private static async Task<IResult> DeleteArticle(
 		[FromRoute] Guid articleId,
-		[FromServices] ISender sender,
+		[FromServices] GlobalCommandHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var command = new DeleteArticleCommand(articleId);
-		var result = await sender.Send(command, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.NoContent();
+		return await handler.Handle(command, Results.Ok, cancellationToken);
 	}
 }

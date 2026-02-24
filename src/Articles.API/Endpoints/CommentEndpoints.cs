@@ -1,4 +1,5 @@
 using Articles.API.Extensions;
+using Articles.API.Handlers;
 using Articles.API.Requests;
 using Articles.Application.CommentUseCases.DeleteComment;
 using Articles.Application.CommentUseCases.UpdateComment;
@@ -23,33 +24,19 @@ internal static class CommentEndpoints
 	private static async Task<IResult> Update(
 		[FromRoute] Guid commentId,
 		[FromBody] UpdateCommentRequest request,
-		[FromServices] ISender sender,
+		[FromServices] GlobalCommandHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var command = new UpdateCommentCommand(commentId, request.Content);
-		var result = await sender.Send(command, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.Ok();
+		return await handler.Handle(command, Results.Ok, cancellationToken);
 	}
 
 	private static async Task<IResult> Delete(
 		[FromRoute] Guid commentId,
-		[FromServices] ISender sender,
+		[FromServices] GlobalCommandHandler handler,
 		CancellationToken cancellationToken)
 	{
 		var command = new DeleteCommentCommand(commentId);
-		var result = await sender.Send(command, cancellationToken);
-
-		if (result.IsFailure)
-		{
-			return result.Error.ToResponse();
-		}
-
-		return Results.NoContent();
+		return await handler.Handle(command, Results.NoContent, cancellationToken);
 	}
 }

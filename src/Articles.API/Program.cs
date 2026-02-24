@@ -1,6 +1,8 @@
+using Articles.API;
 using Articles.API.Authentication;
 using Articles.API.Endpoints;
 using Articles.API.Extensions;
+using Articles.API.Handlers;
 using Articles.API.Middlewares;
 using Articles.Application;
 using Articles.Infrastructure;
@@ -36,6 +38,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();
+builder.Services
+	.AddTransient<GlobalCommandHandler>()
+	.AddTransient<GlobalQueryHandler>();
 
 builder.Services
 	.AddHostedService<OutboxProcessorBackgroundService>()
