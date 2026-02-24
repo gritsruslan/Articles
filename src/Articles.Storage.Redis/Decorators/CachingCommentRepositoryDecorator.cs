@@ -12,6 +12,7 @@ namespace Articles.Storage.Redis.Decorators;
 
 internal sealed class CachingCommentRepositoryDecorator(
 	ICommentRepository inner,
+	RedisJsonCache redisJsonCache,
 	IDatabase database) : ICommentRepository
 {
 	public Task Add(Comment comment, CancellationToken cancellationToken) =>
@@ -35,21 +36,16 @@ internal sealed class CachingCommentRepositoryDecorator(
 		ArticleId articleId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var key = GenerateReadModelKey(articleId, pagedRequest.Page, pagedRequest.PageSize);
-		string? json = await database.StringGetAsync(key);
-
-		if (json is not null)
-		{
-			return JsonConvert.DeserializeObject<PagedData<CommentReadModel>>(json)!;
-		}
-
-		var readModels = await inner.GetReadModels(articleId, pagedRequest, cancellationToken);
-
-		await database.StringSetAsync(key, JsonConvert.SerializeObject(readModels), ReadModelTtl);
-		return readModels;
+		return await redisJsonCache.CacheAsJsonWithCondition(
+			key,
+			pagedRequest.Page <= 10,
+			() => inner.GetReadModels(articleId, pagedRequest, cancellationToken),
+			ReadModelTtl);
 	}
+
+	private static readonly TimeSpan ReadModelTtl = TimeSpan.FromMinutes(5);
 
 	private static RedisKey GenerateReadModelKey(ArticleId articleId, int page, int pageSize) =>
 		$"articles.comments.by-article.{articleId.Value}.{page}.{pageSize}";
 
-	private static readonly TimeSpan ReadModelTtl = TimeSpan.FromMinutes(5);
 }

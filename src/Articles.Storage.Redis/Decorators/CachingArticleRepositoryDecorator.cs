@@ -11,30 +11,20 @@ using StackExchange.Redis;
 namespace Articles.Storage.Redis.Decorators;
 
 internal sealed class CachingArticleRepositoryDecorator(
-	IArticleRepository inner, IDatabase database)
+	IArticleRepository inner,
+	RedisJsonCache redisJsonCache,
+	IDatabase database)
 	: IArticleRepository
 {
 	public Task Add(Article article, CancellationToken cancellationToken) =>
 		inner.Add(article, cancellationToken);
 
-	public async Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken)
+	public Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken)
 	{
 		var key = GenerateArticleKey(articleId);
-
-		string? articleJson = await database.StringGetAsync(key);
-		if (articleJson is not null)
-		{
-			return JsonConvert.DeserializeObject<Article>(articleJson);
-		}
-
-		var article = await inner.GetById(articleId, cancellationToken);
-		if (article is not null)
-		{
-			var json = JsonConvert.SerializeObject(article);
-			await database.StringSetAsync(key, json, ArticlesTtl);
-		}
-
-		return article;
+		return redisJsonCache.CacheAsJson(
+			key,
+			() => inner.GetById(articleId, cancellationToken));
 	}
 
 	public Task<bool> ExistsById(ArticleId articleId, CancellationToken cancellationToken) =>
@@ -54,42 +44,21 @@ internal sealed class CachingArticleRepositoryDecorator(
 	{
 		var key = GenerateReadModelsByBlogKey(blogId, pagedRequest.Page, pagedRequest.PageSize);
 
-		string? readModelsJson = await database.StringGetAsync(key);
-		if (readModelsJson is not null)
-		{
-			return JsonConvert.DeserializeObject<PagedData<ArticleSearchReadModel>>(readModelsJson)!;
-		}
-
-		var readModels = await inner.GetReadModelsByBlog(blogId, pagedRequest, cancellationToken);
-		await database.StringSetAsync(key, JsonConvert.SerializeObject(readModels), ReadModelsTtl);
-
-		return readModels;
+		return await redisJsonCache.CacheAsJson(key,
+			() => inner.GetReadModelsByBlog(blogId, pagedRequest, cancellationToken),
+			ReadModelsTtl);
 	}
 
 	public async Task<PagedData<ArticleSearchReadModel>> SearchReadModels(
 		string searchQuery, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var normalized = SearchPatternHelper.Normalize(searchQuery);
-
-		// cache only first 3 pages
-		if (pagedRequest.Page >= 3 || normalized.Length < 3)
-		{
-			return await inner.SearchReadModels(searchQuery, pagedRequest, cancellationToken);
-		}
-
 		var key = GenerateSearchArticlesKey(normalized, pagedRequest.Page, pagedRequest.PageSize);
 
-		string? json = await database.StringGetAsync(key);
-		if (json is not null)
-		{
-			return JsonConvert.DeserializeObject<PagedData<ArticleSearchReadModel>>(json)!;
-		}
-
-		var readModels = await inner.SearchReadModels(searchQuery, pagedRequest, cancellationToken);
-
-		await database.StringSetAsync(key, JsonConvert.SerializeObject(readModels), ReadModelsTtl);
-
-		return readModels;
+		return await redisJsonCache.CacheAsJsonWithCondition(key,
+			pagedRequest.Page <= 3 || normalized.Length >= 3, // cache only first 3 pages
+			() => inner.SearchReadModels(normalized, pagedRequest, cancellationToken),
+			ArticlesTtl);
 	}
 
 	private static readonly TimeSpan ArticlesTtl = TimeSpan.FromMinutes(5);

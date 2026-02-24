@@ -22,6 +22,8 @@ public static class DependencyInjection
 
 		services.AddScoped<IUsageLimitingRepository, UsageLimitingRepository>();
 
+		services.AddScoped<RedisJsonCache>();
+
 		services
 			.Decorate<IBlogRepository, CachingBlogRepositoryDecorator>()
 			.Decorate<IArticleRepository, CachingArticleRepositoryDecorator>()
