@@ -12,7 +12,6 @@ using Articles.Shared.Options;
 using Articles.Storage.Postgres;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NetEvolve.HealthChecks.Minio;
 using StackExchange.Redis;
 
 namespace Articles.Infrastructure;
@@ -23,15 +22,29 @@ public static class DependencyInjection
 		this IServiceCollection services,
 		IConfiguration configuration)
 	{
-		services.AddSingleton<IPasswordHasher, PasswordHasher>()
-			.AddSingleton<IPasswordValidator, PasswordValidator>();
+		services
+			.AddSecurityServices()
+			.AddCustomAuthentication()
+			.AddCustomAuthorization(configuration)
+			.ConfigureMailing()
+			.AddMonitoring()
+			.ConfigureHealthChecks();
 
-		services.AddScoped<IAccessTokenManager, AccessTokenManager>()
+		return services;
+	}
+
+	private static IServiceCollection AddCustomAuthentication(
+		this IServiceCollection services)
+	{
+		return services.AddScoped<IAccessTokenManager, AccessTokenManager>()
 			.AddScoped<IRefreshTokenManager, RefreshTokenManager>()
 			.AddSingleton<IEmailConfirmationTokenManager, EmailConfirmationTokenManager>();
+	}
 
-		services.AddSingleton<ISymmetricCryptoService, AesSymmetricCryptoService>();
-
+	private static IServiceCollection AddCustomAuthorization(
+		this IServiceCollection services,
+		IConfiguration configuration)
+	{
 		services.AddScoped<IApplicationUserProvider, ApplicationUserProvider>()
 			.AddScoped<IAuthenticationService, AuthenticationService>()
 			.AddScoped<IAuthorizationService, AuthorizationService>()
@@ -41,29 +54,50 @@ public static class DependencyInjection
 		IRoleManager roleManager = RoleManager.ParseFromOptions(options);
 		services.AddSingleton(roleManager);
 
-		services.AddTransient<IMailSender, MailSender>(static serviceProvider =>
+		return services;
+	}
+
+	private static IServiceCollection AddMonitoring(this IServiceCollection services)
+	{
+		services.AddSingleton<IUseCaseMetricsService, UseCaseMetricsService>()
+			.AddSingleton<IOutboxMetricsService, OutboxMetricsService>();
+
+		services.AddSingleton<IUseCaseTracingSource, UseCaseTracing>()
+			.AddSingleton<IOutboxTracingSource, OutboxTracing>();
+
+		return services;
+	}
+
+	private static IServiceCollection ConfigureMailing(this IServiceCollection services)
+	{
+		return services.AddTransient<IMailSender, MailSender>(static serviceProvider =>
 		{
 			var smtpOptions = serviceProvider.GetRequiredService<IOptions<SmtpClientOptions>>().Value;
 			var mailingOptions = serviceProvider.GetRequiredService<IOptions<MailingOptions>>();
 			var smtpClient = new SmtpClient(smtpOptions.Host, smtpOptions.Port);
 			return new MailSender(mailingOptions, smtpClient);
 		});
+	}
 
-		//monitoring
-		services.AddSingleton<IUseCaseMetricsService, UseCaseMetricsService>()
-			.AddSingleton<IOutboxMetricsService, OutboxMetricsService>();
+	private static IServiceCollection AddSecurityServices(
+		this IServiceCollection services)
+	{
+		return services
+			.AddSingleton<IPasswordHasher, PasswordHasher>()
+			.AddSingleton<IPasswordValidator, PasswordValidator>()
+			.AddSingleton<ISymmetricCryptoService, AesSymmetricCryptoService>();
+	}
 
-		services.AddSingleton<IUseCaseTracingSource, UseCaseTracing>();
-		services.AddSingleton<IOutboxTracingSource, OutboxTracing>();
-
-		services.AddHealthChecks()
+	private static IServiceCollection ConfigureHealthChecks(
+		this IServiceCollection services)
+	{
+		return services.AddHealthChecks()
 			.AddRedis(sp => sp.GetRequiredService<IConnectionMultiplexer>())
 			.AddDbContextCheck<ArticlesDbContext>()
 			.AddCheck<MinioHealthCheck>("minio")
 			.AddCheck<LokiHealthCheck>("loki")
 			.AddCheck<PrometheusHealthCheck>("prometheus")
-			.AddCheck<JaegerHealthCheck>("jaeger");
-
-		return services;
+			.AddCheck<JaegerHealthCheck>("jaeger")
+			.Services;
 	}
 }
