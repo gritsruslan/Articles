@@ -24,6 +24,8 @@ internal sealed class UploadFileCommandHandler(
 		}
 		var format = formatResult.Value;
 
+		var fileFullName = fileNewName + format.Extension;
+
 		var bucketResult = FileBucketNames.FromFormat(format);
 		if (bucketResult.IsFailure)
 		{
@@ -51,6 +53,6 @@ internal sealed class UploadFileCommandHandler(
 
 		logger.LogInformation("File Uploaded : {fileNewName}", fileNewName);
 
-		return string.Join(fileNewName, format.Extension);
+		return fileFullName;
 	}
 }

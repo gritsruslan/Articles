@@ -6,7 +6,10 @@ using Articles.Application.ArticleUseCases.GetArticleById;
 using Articles.Application.ArticleUseCases.GetArticles;
 using Articles.Application.CommentUseCases.CreateComment;
 using Articles.Application.CommentUseCases.GetCommentsByArticle;
-using MediatR;
+using Articles.Domain.Models;
+using Articles.Domain.ReadModels;
+using Articles.Shared.Abstraction;
+using Articles.Shared.Result;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Articles.API.Endpoints;
@@ -19,7 +22,7 @@ internal static class ArticleEndpoints
 			.RequireRateLimiting(SecurityExtensions.ApiRateLimitingPolicy);
 
 		group.MapGet("{articleId:guid}", GetArticle);
-		group.MapGet("search", GetArticles);
+		group.MapGet("search", GetArticleReadModels);
 		group.MapDelete("{articleId:guid}", DeleteArticle);
 		group.MapPost("{articleId:guid}/comments", CreateComment);
 		group.MapGet("{articleId:guid}/comments", GetArticleComments);
@@ -27,6 +30,9 @@ internal static class ArticleEndpoints
 		return app;
 	}
 
+	[ProducesResponseType<PagedData<CommentReadModel>>(StatusCodes.Status200OK)]
+	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+	[ProducesResponseType<Error>(StatusCodes.Status422UnprocessableEntity)]
 	private static async Task<IResult> GetArticleComments(
 		[FromRoute] Guid articleId,
 		[FromQuery] int page,
@@ -38,6 +44,10 @@ internal static class ArticleEndpoints
 		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
+	[ProducesResponseType<Comment>(StatusCodes.Status200OK)]
+	[ProducesResponseType<Error>(StatusCodes.Status403Forbidden)]
+	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+	[ProducesResponseType<Error>(StatusCodes.Status422UnprocessableEntity)]
 	private static async Task<IResult> CreateComment(
 		[FromRoute] Guid articleId,
 		[FromBody] CreateCommentRequest request,
@@ -48,7 +58,8 @@ internal static class ArticleEndpoints
 		return await handler.Handle(command, Results.Ok, cancellationToken);
 	}
 
-	private static async Task<IResult> GetArticles(
+	[ProducesResponseType<PagedData<ArticleSearchReadModel>>(StatusCodes.Status200OK)]
+	private static async Task<IResult> GetArticleReadModels(
 		[FromQuery] string searchQuery,
 		[FromQuery] int page,
 		[FromQuery] int pageSize,
@@ -59,6 +70,8 @@ internal static class ArticleEndpoints
 		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
+	[ProducesResponseType<Article>(StatusCodes.Status200OK)]
+	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
 	private static async Task<IResult> GetArticle(
 		[FromRoute] Guid articleId,
 		[FromServices] GlobalQueryHandler handler,
@@ -68,6 +81,10 @@ internal static class ArticleEndpoints
 		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
+
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType<Error>(StatusCodes.Status403Forbidden)]
+	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
 	private static async Task<IResult> DeleteArticle(
 		[FromRoute] Guid articleId,
 		[FromServices] GlobalCommandHandler handler,

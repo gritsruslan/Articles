@@ -3,6 +3,7 @@ using Articles.API.Handlers;
 using Articles.API.Requests;
 using Articles.Application.CommentUseCases.DeleteComment;
 using Articles.Application.CommentUseCases.UpdateComment;
+using Articles.Shared.Result;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,9 @@ internal static class CommentEndpoints
 		return app;
 	}
 
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<Error>(StatusCodes.Status403Forbidden)]
+	[ProducesResponseType<Error>(StatusCodes.Status422UnprocessableEntity)]
 	private static async Task<IResult> Update(
 		[FromRoute] Guid commentId,
 		[FromBody] UpdateCommentRequest request,
@@ -31,6 +35,9 @@ internal static class CommentEndpoints
 		return await handler.Handle(command, Results.Ok, cancellationToken);
 	}
 
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType<Error>(StatusCodes.Status403Forbidden)]
+	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
 	private static async Task<IResult> Delete(
 		[FromRoute] Guid commentId,
 		[FromServices] GlobalCommandHandler handler,

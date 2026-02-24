@@ -54,7 +54,7 @@ internal static class AuthEndpoints
 		}, cancellationToken);
 	}
 
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType<Error>(StatusCodes.Status409Conflict)]
 	private static async Task<IResult> Registration(
@@ -78,7 +78,7 @@ internal static class AuthEndpoints
 		return await handler.Handle(command, Results.Ok, cancellationToken);
 	}
 
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType<Error>(StatusCodes.Status401Unauthorized)]
 	private static async Task<IResult> Logout(
 		[FromServices] GlobalCommandHandler handler,

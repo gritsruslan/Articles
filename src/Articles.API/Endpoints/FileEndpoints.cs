@@ -1,8 +1,7 @@
-using Articles.API.Extensions;
 using Articles.API.Handlers;
 using Articles.Application.FileUseCases.GetFile;
 using Articles.Application.FileUseCases.UploadFile;
-using MediatR;
+using Articles.Shared.Result;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Articles.API.Endpoints;
@@ -19,6 +18,8 @@ internal static class FileEndpoints
 		return app;
 	}
 
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
 	private static async Task<IResult> GetFile(
 		string fileName,
 		[FromServices] GlobalQueryHandler handler,
@@ -30,6 +31,10 @@ internal static class FileEndpoints
 			cancellationToken);
 	}
 
+
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType<Error>(StatusCodes.Status413PayloadTooLarge)]
+	[ProducesResponseType<Error>(StatusCodes.Status415UnsupportedMediaType)]
 	private static async Task<IResult> UploadFile(
 		IFormFile file,
 		[FromServices] GlobalCommandHandler handler,

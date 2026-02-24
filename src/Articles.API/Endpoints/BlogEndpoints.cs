@@ -6,9 +6,14 @@ using Articles.Application.BlogUseCases.CreateBlog;
 using Articles.Application.BlogUseCases.GetBlog;
 using Articles.Application.BlogUseCases.GetBlogArticles;
 using Articles.Application.BlogUseCases.GetBlogs;
+using Articles.Domain.Models;
+using Articles.Domain.ReadModels;
+using Articles.Shared.Abstraction;
 using Articles.Shared.CQRS;
+using Articles.Shared.Result;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using OpenTelemetry.Trace;
 
 namespace Articles.API.Endpoints;
 
@@ -20,7 +25,7 @@ internal static class BlogEndpoints
 			.RequireRateLimiting(SecurityExtensions.ApiRateLimitingPolicy);
 
 		group.MapGet("{blogId:int}", GetBlog);
-		group.MapGet(string.Empty, GetBlogs);
+		group.MapGet(string.Empty, GetBlogReadModels);
 		group.MapPost(string.Empty, CreateBlog);
 		group.MapGet("{blogId:int}/articles", GetBlogArticles);
 		group.MapPost("{blogId:int}/articles", CreateArticle);
@@ -28,6 +33,9 @@ internal static class BlogEndpoints
 		return app;
 	}
 
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+	[ProducesResponseType<Error>(StatusCodes.Status422UnprocessableEntity)]
 	private static async Task<IResult> CreateArticle(
 		[FromRoute] int blogId,
 		[FromBody] CreateArticleRequest request,
@@ -42,6 +50,9 @@ internal static class BlogEndpoints
 			cancellationToken);
 	}
 
+	[ProducesResponseType<PagedData<ArticleSearchReadModel>>(StatusCodes.Status200OK)]
+	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+	[ProducesResponseType<Error>(StatusCodes.Status422UnprocessableEntity)]
 	private static async Task<IResult> GetBlogArticles(
 		[FromRoute] int blogId,
 		[FromQuery] int page,
@@ -53,7 +64,9 @@ internal static class BlogEndpoints
 		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
-	private static async Task<IResult> GetBlogs(
+	[ProducesResponseType<PagedData<BlogReadModel>>(StatusCodes.Status200OK)]
+	[ProducesResponseType<Error>(StatusCodes.Status422UnprocessableEntity)]
+	private static async Task<IResult> GetBlogReadModels(
 		[FromQuery] int page,
 		[FromQuery] int pageSize,
 		[FromServices] GlobalQueryHandler handler,
@@ -63,6 +76,8 @@ internal static class BlogEndpoints
 		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
+	[ProducesResponseType<Blog>(StatusCodes.Status200OK)]
+	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
 	private static async Task<IResult> GetBlog(
 		[FromRoute] int blogId,
 		[FromServices] GlobalQueryHandler handler,
@@ -72,6 +87,9 @@ internal static class BlogEndpoints
 		return await handler.Handle(query, Results.Ok, cancellationToken);
 	}
 
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType<Error>(StatusCodes.Status403Forbidden)]
+	[ProducesResponseType<Error>(StatusCodes.Status422UnprocessableEntity)]
 	private static async Task<IResult> CreateBlog(
 		[FromBody] CreateBlogRequest request,
 		[FromServices] GlobalCommandHandler handler,
