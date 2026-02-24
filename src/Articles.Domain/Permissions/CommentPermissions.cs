@@ -5,4 +5,5 @@ public enum CommentPermissions
 {
 	CreateComment = 103_01,
 	DeleteOwnComment = 103_02,
+	UpdateOwnComment = 103_03
 }

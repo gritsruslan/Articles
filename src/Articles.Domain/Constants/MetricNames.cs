@@ -8,6 +8,12 @@ public static class MetricNames
 
 	public const string Logout = "articles.user.logout";
 
+	public const string CreateArticles = "articles.article.create";
+
+	public const string DeleteArticle = "articles.article.delete";
+
+	public const string CreateComment = "articles.article-comments.create";
+
 	public const string OutboxProcessedMessages = "articles.outbox.processed_messages";
 
 	public const string OutboxRetryAttempts = "articles.outbox.retry_attempts";
