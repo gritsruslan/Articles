@@ -21,7 +21,7 @@ public static class TracingCollectionExtensions
 				ResourceBuilder.CreateDefault().AddService(OverallConstants.ApiName)
 			)
 			// collect only 10% of all traces
-			// child traces inherit from the parent
+			// child traces inherit from a parent
 			.SetSampler(
 				new ParentBasedSampler(
 					rootSampler: new TraceIdRatioBasedSampler(0.1)))

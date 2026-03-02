@@ -5,7 +5,7 @@ namespace Articles.Shared.Options;
 public sealed class EmailConfirmationTokenOptions
 {
 	[Required]
-	public required string Key { get; init; } = null!;
+	public string Key { get; set; } = null!;
 
-	public TimeSpan LifeSpan { get; init; }
+	public TimeSpan LifeSpan { get; set; }
 }

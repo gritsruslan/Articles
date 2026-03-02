@@ -3,7 +3,7 @@ using FileMetadata = Articles.Storage.Postgres.Entities.FileMetadata;
 
 namespace Articles.Storage.Postgres.Repositories;
 
-public sealed class FileMetadataRepository(ArticlesDbContext dbContext) : IFileMetadataRepository
+internal sealed class FileMetadataRepository(ArticlesDbContext dbContext) : IFileMetadataRepository
 {
 	public Task<bool> ExistsById(Guid fileId, CancellationToken cancellationToken)
 	{

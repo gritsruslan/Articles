@@ -35,7 +35,7 @@ internal sealed class UploadFileCommandHandler(
 			return bucketResult.Error;
 		}
 
-		if (file.Length > SupportedFileFormats.MaxFileSize)
+		if (file.Length > FileFormats.MaxFileSize)
 		{
 			return FileErrors.TooLargeFile();
 		}

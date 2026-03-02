@@ -4,7 +4,7 @@ using Articles.Domain.Constants;
 
 namespace Articles.Infrastructure.Monitoring;
 
-public sealed class OutboxTracing : IOutboxTracingSource
+internal sealed class OutboxTracing : IOutboxTracingSource
 {
 	public ActivitySource ActivitySource { get; } = new(OverallConstants.Outbox);
 }

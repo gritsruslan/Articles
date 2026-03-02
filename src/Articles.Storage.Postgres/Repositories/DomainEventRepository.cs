@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Articles.Storage.Postgres.Repositories;
 
-public sealed class DomainEventRepository(ArticlesDbContext dbContext, IDateTimeProvider dateTimeProvider) : IDomainEventRepository
+internal sealed class DomainEventRepository(ArticlesDbContext dbContext, IDateTimeProvider dateTimeProvider) : IDomainEventRepository
 {
 	public async Task Add(DomainEvent domainEvent, CancellationToken cancellationToken)
 	{

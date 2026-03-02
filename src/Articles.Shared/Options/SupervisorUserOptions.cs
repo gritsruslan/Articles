@@ -7,14 +7,14 @@ public sealed class SupervisorUserOptions
 	public Guid Id { get; init; }
 
 	[Required]
-	public required string Email { get; init; } = null!;
+	public string Email { get; set; } = null!;
 
 	[Required]
-	public required string Name { get; init; } = null!;
+	public string Name { get; set; } = null!;
 
 	[Required]
-	public required string DomainId { get; init; } = null!;
+	public string DomainId { get; set; } = null!;
 
 	[Required]
-	public required string Password { get; init; } = null!;
+	public string Password { get; set; } = null!;
 }

@@ -7,7 +7,7 @@ namespace Articles.Domain.ValueObjects;
 
 public partial record struct Email
 {
-	private Email(string emailStr) => Value = emailStr;
+	private Email(string email) => Value = email;
 
 	public string Value { get; }
 

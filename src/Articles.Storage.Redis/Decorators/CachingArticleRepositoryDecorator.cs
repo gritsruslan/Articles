@@ -13,7 +13,7 @@ namespace Articles.Storage.Redis.Decorators;
 
 internal sealed class CachingArticleRepositoryDecorator(
 	IArticleRepository inner,
-	RedisJsonCache redisJsonCache,
+	RedisHelper redisHelper,
 	IDatabase database)
 	: IArticleRepository
 {
@@ -23,7 +23,7 @@ internal sealed class CachingArticleRepositoryDecorator(
 	public Task<Article?> GetById(ArticleId articleId, CancellationToken cancellationToken)
 	{
 		var key = GenerateArticleKey(articleId);
-		return redisJsonCache.CacheAsJson(
+		return redisHelper.CacheAsJson(
 			key,
 			() => inner.GetById(articleId, cancellationToken));
 	}
@@ -52,9 +52,9 @@ internal sealed class CachingArticleRepositoryDecorator(
 	{
 		var key = GenerateReadModelsByBlogKey(blogId, pagedRequest.Page, pagedRequest.PageSize);
 
-		return await redisJsonCache.CacheAsJson(key,
+		return await redisHelper.CacheAsJson(key,
 			() => inner.GetReadModelsByBlog(blogId, pagedRequest, cancellationToken),
-			ReadModelsTtl);
+			ttl: ReadModelsTtl);
 	}
 
 	public async Task<PagedData<ArticleSearchReadModel>> SearchReadModels(
@@ -63,9 +63,9 @@ internal sealed class CachingArticleRepositoryDecorator(
 		var normalized = SearchPatternHelper.Normalize(searchQuery);
 		var key = GenerateSearchArticlesKey(normalized, pagedRequest.Page, pagedRequest.PageSize);
 
-		return await redisJsonCache.CacheAsJsonWithCondition(key,
-			pagedRequest.Page <= 3 || normalized.Length >= 3, // cache only first 3 pages
+		return await redisHelper.CacheAsJson(key,
 			() => inner.SearchReadModels(normalized, pagedRequest, cancellationToken),
+			pagedRequest.Page <= 3 || normalized.Length >= 3, // cache only the first 3 pages
 			ArticlesTtl);
 	}
 

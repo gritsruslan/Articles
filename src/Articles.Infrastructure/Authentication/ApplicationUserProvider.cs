@@ -2,7 +2,7 @@
 
 namespace Articles.Infrastructure.Authentication;
 
-public class ApplicationUserProvider : IApplicationUserProvider
+internal sealed class ApplicationUserProvider : IApplicationUserProvider
 {
 	public RecognizedUser CurrentUser { get; set; } = null!;
 }

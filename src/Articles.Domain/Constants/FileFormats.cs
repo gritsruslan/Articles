@@ -3,7 +3,7 @@ using Articles.Domain.ValueObjects;
 
 namespace Articles.Domain.Constants;
 
-public static class SupportedFileFormats
+public static class FileFormats
 {
 	//images
 	public static readonly FileFormat Jpeg = new(".jpeg", MediaTypeNames.Image.Jpeg);
@@ -21,7 +21,7 @@ public static class SupportedFileFormats
 	public static readonly FileFormat Xml = new(".xml", "application/xml");
 	public static readonly FileFormat Csv = new(".csv", "application/csv");
 
-	public const long MaxFileSize = 100_000_000; // 100MB
+	public const long MaxFileSize = 128_000_000; // 128MB
 
 	public const long MaxFileSizeMb = MaxFileSize / 1_000_000;
 

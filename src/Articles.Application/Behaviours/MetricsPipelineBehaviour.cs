@@ -24,7 +24,7 @@ internal sealed class MetricsPipelineBehaviour<TRequest, TResponse>
 		{
 			result = await next(cancellationToken);
 			var resultBase = result as ResultBase ??
-			                 throw new InvalidCastException($"Failed to convert the result to type ResultBase");
+			                 throw new InvalidCastException("Failed to convert the result to type ResultBase");
 
 			if (resultBase.IsSuccess)
 			{

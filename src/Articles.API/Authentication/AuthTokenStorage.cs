@@ -16,8 +16,7 @@ internal sealed class AuthTokenStorage(IHttpContextAccessor httpContextAccessor)
 		});
 	}
 
-	public void StoreRefreshToken(string refreshToken)
-	{
+	public void StoreRefreshToken(string refreshToken) =>
 		HttpContext.Response.Cookies.Append(AuthTokenHeaders.RefreshToken, refreshToken, new CookieOptions
 		{
 			HttpOnly = true,
@@ -25,7 +24,6 @@ internal sealed class AuthTokenStorage(IHttpContextAccessor httpContextAccessor)
 			SameSite = SameSiteMode.Strict,
 			Path = "/auth/refresh"
 		});
-	}
 
 	public string? GetRefreshToken() => HttpContext.Request.Cookies[AuthTokenHeaders.RefreshToken];
 

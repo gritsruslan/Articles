@@ -1,6 +1,6 @@
 namespace Articles.Shared.Abstraction.Pagination;
 
-public class PagedData<T>(IEnumerable<T> items, int totalCount, int page, int pageSize)
+public sealed class PagedData<T>(IEnumerable<T> items, int totalCount, int page, int pageSize)
 {
 	public IEnumerable<T> Items { get; set; } = items;
 

@@ -24,7 +24,7 @@ public sealed class Error(
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string? InvalidObjectValue { get; } = invalidObjectValueString;
 
-	[JsonIgnore] public bool IsOnlyErrorCode => Message is null && InvalidObject is null;
+	[JsonIgnore] public bool HasOnlyErrorCode => Message is null && InvalidObject is null;
 
 	private static string ConvertErrorTypeToCode(ErrorType errorType)
 	{

@@ -7,8 +7,6 @@ namespace Articles.Infrastructure.Monitoring;
 // metrics for outbox processor
 public class OutboxMetricsService : IOutboxMetricsService
 {
-	private readonly Meter _meter;
-
 	private readonly Counter<long> _processedMessages;
 
 	private readonly Counter<long> _retryAttempts;
@@ -19,14 +17,17 @@ public class OutboxMetricsService : IOutboxMetricsService
 
 	public OutboxMetricsService(IMeterFactory meterFactory)
 	{
-		_meter = meterFactory.Create(OverallConstants.Outbox);
+		var meter = meterFactory.Create(OverallConstants.Outbox);
 
-		_queueSizeGauge = _meter.CreateGauge<int>(MetricNames.OutboxProcessorQueueSize);
-		_messageProcessingDuration = _meter.CreateHistogram<double>(
+		_queueSizeGauge = meter.CreateGauge<int>(MetricNames.OutboxProcessorQueueSize);
+
+		_messageProcessingDuration = meter.CreateHistogram<double>(
 			MetricNames.OutboxMessageProcessingDuration);
-		_processedMessages = _meter.CreateCounter<long>(
+
+		_processedMessages = meter.CreateCounter<long>(
 			MetricNames.OutboxProcessedMessages);
-		_retryAttempts = _meter.CreateCounter<long>(MetricNames.OutboxRetryAttempts);
+
+		_retryAttempts = meter.CreateCounter<long>(MetricNames.OutboxRetryAttempts);
 	}
 
 	public void MonitorProcessedMessage(bool success) =>

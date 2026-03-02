@@ -6,7 +6,7 @@ namespace Articles.Domain.ValueObjects;
 
 public record struct UserName
 {
-	private UserName(string userNameStr) => Value = userNameStr;
+	private UserName(string userName) => Value = userName;
 
 	public string Value { get; }
 

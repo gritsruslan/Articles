@@ -1,6 +1,6 @@
 ﻿namespace Articles.Domain.Permissions;
 
-// All comment permissions start with 103
+// All comment permissions begin with 103
 public enum CommentPermissions
 {
 	CreateComment = 103_01,

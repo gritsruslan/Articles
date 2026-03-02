@@ -10,7 +10,7 @@ namespace Articles.Infrastructure.Authentication;
 internal sealed class RefreshTokenManager(
 	IOptions<RefreshTokenOptions> options,
 	ILogger<RefreshTokenManager> logger,
-	ISymmetricCryptoService encryptionService) : IRefreshTokenManager
+	ISymmetricCryptoService cryptoService) : IRefreshTokenManager
 {
 	private readonly byte[] _key = Encoding.UTF8.GetBytes(options.Value.Key);
 
@@ -28,7 +28,7 @@ internal sealed class RefreshTokenManager(
 		};
 
 		var json = JsonConvert.SerializeObject(refreshToken);
-		return encryptionService.EncryptAsync(json, _key, cancellationToken);
+		return cryptoService.EncryptAsync(json, _key, cancellationToken);
 	}
 
 	public Result Validate(RefreshToken refreshToken)
@@ -45,47 +45,33 @@ internal sealed class RefreshTokenManager(
 		return Result.Success();
 	}
 
-	//IMPROVEMENT maybe remove async
-	public async Task<Result<RefreshToken>> Decrypt(string? refreshTokenStr, CancellationToken cancellationToken)
+	public async Task<Result<RefreshToken>> Decrypt(string? refreshToken, CancellationToken cancellationToken)
 	{
-		if (refreshTokenStr is null)
+		if (refreshToken is null)
 		{
 			return SecurityErrors.Unauthorized();
 		}
 
-		string json;
 		try
 		{
-			json = await encryptionService.DecryptAsync(refreshTokenStr, _key, cancellationToken);
+			string json = await cryptoService.DecryptAsync(refreshToken, _key, cancellationToken);
+			RefreshToken? token = JsonConvert.DeserializeObject<RefreshToken>(json);
+
+			if (token is null)
+			{
+				logger.LogWarning(
+					"Failed to deserialize json refresh token into RefreshToken type, " +
+					"the json is {RefreshTokenJson}", json);
+				return SecurityErrors.InvalidRefreshToken();
+			}
+
+			return token;
 		}
-		catch (CryptographicException ex)
+		catch (Exception ex)
 		{
 			logger.LogWarning(ex, "Failed to decrypt refresh token, maybe someone is " +
-			                      "trying to forge it. Encrypted value is {EncryptedRefreshToken}", refreshTokenStr);
+			                      "trying to forge it. Encrypted value is {encryptedRefreshToken}", refreshToken);
 			return SecurityErrors.InvalidRefreshToken();
 		}
-
-		RefreshToken? refreshToken;
-		try
-		{
-			refreshToken = JsonConvert.DeserializeObject<RefreshToken>(json);
-		}
-		catch (JsonException ex)
-		{
-			logger.LogWarning(
-				"Failed to deserialize json refresh token into RefreshToken type, " +
-				"the json is {RefreshTokenJson}," +
-				"exception is {Exception}", json, ex);
-			return SecurityErrors.InvalidRefreshToken();
-		}
-		if (refreshToken is null)
-		{
-			logger.LogWarning(
-				"Failed to deserialize json refresh token into RefreshToken type, " +
-				"the json is {RefreshTokenJson}", json);
-			return SecurityErrors.InvalidRefreshToken();
-		}
-
-		return refreshToken;
 	}
 }

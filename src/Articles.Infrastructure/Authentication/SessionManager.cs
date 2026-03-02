@@ -45,18 +45,17 @@ internal sealed class SessionManager(
 		if (userId != session.UserId)
 		{
 			logger.LogWarning("The UserID in the token and in the session do not match, " +
-			                  "maybe someone has stolen refresh token. UserId in token : {token_user_id} ," +
-			                  "UserId in session : {session_user_id} .", userId.Value, session.UserId.Value);
+			                  "maybe someone has stolen refresh token. UserId in token : {tokenUserId} ," +
+			                  "UserId in session : {sessionUserId} .", userId.Value, session.UserId.Value);
 			return SecurityErrors.Unauthorized();
 		}
 
 		if (userAgent != session.UserAgent)
 		{
 			logger.LogWarning("The UserAgent in the session and in the client dont match," +
-			                  " maybe someone has stolen refresh token." +
-			                  "UserId is : {user_id} \n" +
-			                  "Session UserAgent is : {session_user_agent} \n" +
-			                  "Client UserAgent is : {client_user_agent}",
+			                  " maybe someone has stolen refresh token. UserId is : {userId} \n" +
+			                  "Session UserAgent is : {sessionUserAgent} \n" +
+			                  "Client UserAgent is : {clientUserAgent}",
 				userId.Value, session.UserAgent, userAgent);
 			return SecurityErrors.Unauthorized();
 		}

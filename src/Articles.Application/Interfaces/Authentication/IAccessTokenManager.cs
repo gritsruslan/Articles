@@ -8,5 +8,5 @@ public interface IAccessTokenManager
 
 	Result Validate(AccessToken accessToken);
 
-	Task<Result<AccessToken>> Decrypt(string accessTokenStr, CancellationToken cancellationToken);
+	Task<Result<AccessToken>> Decrypt(string accessToken, CancellationToken cancellationToken);
 }

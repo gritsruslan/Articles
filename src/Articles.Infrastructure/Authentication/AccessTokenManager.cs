@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿using System.Text;
 using Articles.Application.Authentication;
 using Articles.Shared.DefaultServices;
 using Articles.Shared.Options;
@@ -11,7 +10,7 @@ namespace Articles.Infrastructure.Authentication;
 internal sealed class AccessTokenManager(
 	IOptions<AccessTokenOptions> options,
 	ILogger<AccessTokenManager> logger,
-	ISymmetricCryptoService encryptionService,
+	ISymmetricCryptoService cryptoService,
 	IDateTimeProvider dateTimeProvider) : IAccessTokenManager
 {
 	private readonly byte[] _key = Encoding.UTF8.GetBytes(options.Value.Key);
@@ -30,7 +29,7 @@ internal sealed class AccessTokenManager(
 		};
 
 		var json = JsonConvert.SerializeObject(accessToken);
-		return encryptionService.EncryptAsync(json, _key, cancellationToken);
+		return cryptoService.EncryptAsync(json, _key, cancellationToken);
 	}
 
 	public Result Validate(AccessToken accessToken)
@@ -50,41 +49,28 @@ internal sealed class AccessTokenManager(
 		return Result.Success();
 	}
 
-	public async Task<Result<AccessToken>> Decrypt(string accessTokenStr, CancellationToken cancellationToken)
+	public async Task<Result<AccessToken>> Decrypt(string accessToken, CancellationToken cancellationToken)
 	{
-		string json;
 		try
 		{
-			json = await encryptionService.DecryptAsync(accessTokenStr, _key, cancellationToken);
-		}
-		catch (CryptographicException ex)
-		{
-			logger.LogWarning(ex, "Failed to decrypt access token, maybe someone is " +
-			                      "trying to forge it. Encrypted value is {AccessToken}", accessTokenStr);
-			return SecurityErrors.InvalidAccessToken();
-		}
+			string json = await cryptoService.DecryptAsync(accessToken, _key, cancellationToken);
+			AccessToken? token = JsonConvert.DeserializeObject<AccessToken>(json);
 
-		AccessToken? token;
-		try
-		{
-			token = JsonConvert.DeserializeObject<AccessToken>(json);
+			if (token is null)
+			{
+				logger.LogWarning(
+					"Failed to deserialize json access token into AccessToken type, " +
+					"the json is {accessTokenJson}", json);
+				return SecurityErrors.InvalidAccessToken();
+			}
+
+			return token;
 		}
 		catch (Exception ex)
 		{
-			logger.LogWarning(
-				"Failed to deserialize json access token into AccessToken type, " +
-				"the json is {AccessTokenJson}," +
-				"exceptions is {Exception}", json, ex);
+			logger.LogWarning(ex, "Corrupted decrypt access token, maybe someone is trying to forge it. " +
+			                  "Encrypted value is {encryptedAccessToken}. ", accessToken);
 			return SecurityErrors.InvalidAccessToken();
 		}
-		if (token is null)
-		{
-			logger.LogWarning(
-				"Failed to deserialize json access token into AccessToken type, " +
-				"the json is {AccessTokenJson}", json);
-			return SecurityErrors.InvalidAccessToken();
-		}
-
-		return token;
 	}
 }

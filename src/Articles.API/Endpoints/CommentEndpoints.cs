@@ -17,8 +17,8 @@ internal static class CommentEndpoints
 		var group = app.MapGroup("comments")
 			.RequireRateLimiting(RateLimitingConstants.ApiPolicy);
 
-		group.MapPatch("{commentId:guid}", Update);
-		group.MapDelete("{commentId:guid}", Delete);
+		group.MapPatch("{commentId:guid}", UpdateComment);
+		group.MapDelete("{commentId:guid}", DeleteComment);
 
 		return app;
 	}
@@ -26,7 +26,7 @@ internal static class CommentEndpoints
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType<Error>(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType<Error>(StatusCodes.Status422UnprocessableEntity)]
-	private static async Task<IResult> Update(
+	private static async Task<IResult> UpdateComment(
 		[FromRoute] Guid commentId,
 		[FromBody] UpdateCommentRequest request,
 		[FromServices] GlobalCommandHandler handler,
@@ -39,7 +39,7 @@ internal static class CommentEndpoints
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType<Error>(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
-	private static async Task<IResult> Delete(
+	private static async Task<IResult> DeleteComment(
 		[FromRoute] Guid commentId,
 		[FromServices] GlobalCommandHandler handler,
 		CancellationToken cancellationToken)

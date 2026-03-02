@@ -1,6 +1,5 @@
 using Articles.Domain.ReadModels;
 using Articles.Domain.ValueObjects;
-using Articles.Shared.Abstraction;
 using Articles.Shared.Abstraction.Pagination;
 using Articles.Storage.Postgres.Entities;
 

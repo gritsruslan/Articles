@@ -28,7 +28,8 @@ public static class DependencyInjection
 
 		services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
-		services.AddScoped<IUserRepository, UserRepository>()
+		services
+			.AddScoped<IUserRepository, UserRepository>()
 			.AddScoped<ISessionRepository, SessionRepository>()
 			.AddScoped<IDomainEventRepository, DomainEventRepository>()
 			.AddScoped<IFileMetadataRepository, FileMetadataRepository>()

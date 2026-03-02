@@ -2,11 +2,11 @@ namespace Articles.Shared.Options;
 
 public sealed class PermissionOptions
 {
-	public string[] BlogPermissions { get; init; } = [];
+	public string[] BlogPermissions { get; set; } = [];
 
-	public string[] ArticlePermissions { get; init; } = [];
+	public string[] ArticlePermissions { get; set; } = [];
 
-	public string[] CommentPermissions { get; init; } = [];
+	public string[] CommentPermissions { get; set; } = [];
 
-	public string[] AdminPermissions { get; init; } = [];
+	public string[] AdminPermissions { get; set; } = [];
 }

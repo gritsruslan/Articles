@@ -5,5 +5,5 @@ namespace Articles.Shared.Options;
 public sealed class UsageLimitingOptions
 {
 	[Required]
-	public required UsageLimitingPolicy[] Policies { get; init; } = null!;
+	public UsageLimitingPolicy[] Policies { get; set; } = null!;
 }

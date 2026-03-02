@@ -24,17 +24,17 @@ public static class FileBucketNames
 	{
 		Func<FileFormat, bool> predicate = f => f == format;
 
-		if (SupportedFileFormats.Images().Any(predicate))
+		if (FileFormats.Images().Any(predicate))
 		{
 			return Images;
 		}
 
-		if (SupportedFileFormats.Videos().Any(predicate))
+		if (FileFormats.Videos().Any(predicate))
 		{
 			return Videos;
 		}
 
-		if (SupportedFileFormats.Other().Any(predicate))
+		if (FileFormats.Other().Any(predicate))
 		{
 			return Other;
 		}

@@ -7,7 +7,7 @@ namespace Articles.Domain.ValueObjects;
 
 public partial record struct DomainId
 {
-	private DomainId(string domainIdStr) => Value = domainIdStr;
+	private DomainId(string domainId) => Value = domainId;
 
 	public string Value { get; }
 

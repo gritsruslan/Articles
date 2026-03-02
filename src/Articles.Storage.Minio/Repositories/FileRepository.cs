@@ -4,7 +4,7 @@ using Minio.DataModel.Args;
 
 namespace Articles.Storage.Minio.Repositories;
 
-internal class FileRepository(IMinioClient minioClient) : IFileRepository
+internal sealed class FileRepository(IMinioClient minioClient) : IFileRepository
 {
 	public Task UploadFile(
 		string bucketName,

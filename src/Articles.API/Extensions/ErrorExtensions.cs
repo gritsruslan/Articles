@@ -8,7 +8,7 @@ internal static class ErrorExtensions
 	public static IResult ToResponse(this Error error)
 	{
 		var statusCode = ConvertErrorTypeToStatusCode(error.Type);
-		if (error.IsOnlyErrorCode)
+		if (error.HasOnlyErrorCode)
 		{
 			return Results.StatusCode(statusCode);
 		}

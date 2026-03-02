@@ -5,11 +5,11 @@ namespace Articles.Shared.Options;
 public class MinioOptions
 {
 	[Required]
-	public string Endpoint { get; init; } = null!;
+	public string Endpoint { get; set; } = null!;
 
 	[Required]
-	public string AccessKey { get; init; } = null!;
+	public string AccessKey { get; set; } = null!;
 
 	[Required]
-	public string SecretKey { get; init; } = null!;
+	public string SecretKey { get; set; } = null!;
 }

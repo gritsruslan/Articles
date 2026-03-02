@@ -14,11 +14,11 @@ public static class MetricNames
 
 	public const string CreateComment = "articles.article-comments.create";
 
-	public const string OutboxProcessedMessages = "articles.outbox.processed_messages";
+	public const string OutboxProcessedMessages = "articles.outbox.processed-messages";
 
-	public const string OutboxRetryAttempts = "articles.outbox.retry_attempts";
+	public const string OutboxRetryAttempts = "articles.outbox.retry-attempts";
 
-	public const string OutboxProcessorQueueSize = "articles.outbox_processor.batch_size";
+	public const string OutboxProcessorQueueSize = "articles.outbox-processor.batch-size";
 
-	public const string OutboxMessageProcessingDuration = "articles.outbox.message_processing_duration";
+	public const string OutboxMessageProcessingDuration = "articles.outbox.message-processing-duration";
 }

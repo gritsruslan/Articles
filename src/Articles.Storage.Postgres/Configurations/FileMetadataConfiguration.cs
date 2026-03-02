@@ -4,13 +4,13 @@ using FileMetadata = Articles.Storage.Postgres.Entities.FileMetadata;
 
 namespace Articles.Storage.Postgres.Configurations;
 
-public sealed class FileMetadataConfiguration : IEntityTypeConfiguration<FileMetadata>
+internal sealed class FileMetadataConfiguration : IEntityTypeConfiguration<FileMetadata>
 {
 	public void Configure(EntityTypeBuilder<FileMetadata> builder)
 	{
-		builder.HasKey(x => x.Id);
+		builder.HasKey(fm => fm.Id);
 
-		builder.Property(x => x.ContentType)
-			.HasMaxLength(SupportedFileFormats.ContentTypeMaxLength);
+		builder.Property(fm => fm.ContentType)
+			.HasMaxLength(FileFormats.ContentTypeMaxLength);
 	}
 }

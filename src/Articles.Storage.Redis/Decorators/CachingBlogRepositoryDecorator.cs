@@ -12,7 +12,7 @@ namespace Articles.Storage.Redis.Decorators;
 
 internal sealed class CachingBlogRepositoryDecorator(
 	IBlogRepository inner,
-	RedisJsonCache redisJsonCache) : IBlogRepository
+	RedisHelper redisHelper) : IBlogRepository
 {
 	public Task<BlogId> CreateBlog(BlogTitle title, CancellationToken cancellationToken) =>
 		inner.CreateBlog(title, cancellationToken);
@@ -20,10 +20,10 @@ internal sealed class CachingBlogRepositoryDecorator(
 	public async Task<Blog?> GetById(BlogId id, CancellationToken cancellationToken)
 	{
 		var key = GenerateBlogKey(id);
-		return await redisJsonCache.CacheAsJson(
+		return await redisHelper.CacheAsJson(
 			key,
 			() => inner.GetById(id, cancellationToken),
-			BlogsTtl);
+			ttl: BlogsTtl);
 	}
 
 	public Task<bool> ExistsById(BlogId id, CancellationToken cancellationToken) =>
@@ -33,10 +33,10 @@ internal sealed class CachingBlogRepositoryDecorator(
 		GetReadModels(PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var key = GenerateReadModelsKey(pagedRequest.Page, pagedRequest.PageSize);
-		return await redisJsonCache.CacheAsJsonWithCondition(
+		return await redisHelper.CacheAsJson(
 			key,
-			pagedRequest.Page <= 10, // cache only the first 10 pages
 			() => inner.GetReadModels(pagedRequest, cancellationToken),
+			pagedRequest.Page <= 10, // cache only the first 10 pages
 			ReadModelsTtl);
 	}
 

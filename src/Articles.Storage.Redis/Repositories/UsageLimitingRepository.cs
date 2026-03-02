@@ -6,9 +6,6 @@ namespace Articles.Storage.Redis.Repositories;
 
 internal sealed class UsageLimitingRepository(IDatabase database) : IUsageLimitingRepository
 {
-	private RedisKey GenerateKey(string policyName, UserId userId) =>
-		(RedisKey) $"articles.usage-limiting-policy.{policyName}.{userId.Value}";
-
 	public async Task<int> GetOrAddPolicyCount(
 		UserId userId,
 		string policyName,
@@ -35,4 +32,7 @@ internal sealed class UsageLimitingRepository(IDatabase database) : IUsageLimiti
 
 	public async Task DecreasePolicyCount(UserId userId, string policyName) =>
 		await database.StringDecrementAsync(GenerateKey(policyName, userId));
+
+	private RedisKey GenerateKey(string policyName, UserId userId) =>
+		(RedisKey) $"articles.usage-limiting-policy.{policyName}.{userId.Value}";
 }

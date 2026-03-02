@@ -5,11 +5,11 @@ namespace Articles.Shared.Options;
 public sealed class RefreshTokenOptions
 {
 	[Required]
-	public required string Key { get; init; } = null!;
+	public string Key { get; set; } = null!;
 
 	[Required]
-	public required string Issuer { get; init; } = null!;
+	public string Issuer { get; set; } = null!;
 
 	[Required]
-	public required string Audience { get; init; } = null!;
+	public string Audience { get; set; } = null!;
 }

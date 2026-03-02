@@ -5,7 +5,7 @@ namespace Articles.Shared.Options;
 public sealed class SmtpClientOptions
 {
 	[Required]
-	public required string Host { get; init; } = null!;
+	public string Host { get; set; } = null!;
 
-	public int Port { get; init; }
+	public int Port { get; set; }
 }
