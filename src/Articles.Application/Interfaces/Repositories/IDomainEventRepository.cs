@@ -11,6 +11,6 @@ public interface IDomainEventRepository
 	Task<int> GetQueueSize();
 
 	Task MarkAsProcessed(
-		IList<ProcessOutboxMessageResult> processResults,
+		IEnumerable<ProcessOutboxMessageResult> processResults,
 		CancellationToken cancellationToken);
 }

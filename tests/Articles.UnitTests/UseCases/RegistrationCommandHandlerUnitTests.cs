@@ -1,6 +1,5 @@
-﻿using Articles.Application.AuthUseCases.Commands.Registration;
-using Articles.Application.Interfaces.Repositories;
-using Articles.Domain.DomainEvents;
+﻿using Articles.Application.Interfaces.Repositories;
+using Articles.Application.UseCases.Auth.Registration;
 using Articles.Domain.Errors;
 using Articles.Shared.UnitOfWork;
 
@@ -8,7 +7,6 @@ namespace Articles.UnitTests.UseCases;
 
 public class RegistrationCommandHandlerUnitTests
 {
-	// todo domainEvent check
 	private readonly RegistrationCommandHandler _registrationHandler;
 
 	private readonly Mock<IUserRepository> _userRepositoryMock;

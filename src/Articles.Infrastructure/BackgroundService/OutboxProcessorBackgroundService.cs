@@ -25,8 +25,7 @@ public class OutboxProcessorBackgroundService(
 
 	private static readonly ConcurrentDictionary<string, Type> DomainEventTypesDictionary = new();
 
-	// for caching
-	// needs AssemblyQualifiedName
+	//	for caching, needs AssemblyQualifiedName
 	private static Type GetOrAddDomainEventType(string typename)
 	{
 		return DomainEventTypesDictionary.GetOrAdd(typename, typeName => Type.GetType(typeName) ??
@@ -57,7 +56,7 @@ public class OutboxProcessorBackgroundService(
 					results.Add(result);
 				}
 
-				await repository.MarkAsProcessed(results, stoppingToken);
+				await repository.MarkAsProcessed(results.AsEnumerable(), stoppingToken);
 				metricsService.MonitorQueueSize(queueSize);
 			}
 			catch (Exception ex)

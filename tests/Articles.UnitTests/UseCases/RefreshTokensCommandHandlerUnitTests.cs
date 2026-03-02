@@ -1,5 +1,5 @@
-﻿using Articles.Application.AuthUseCases.Commands.RefreshTokens;
-using Articles.Application.Interfaces.Repositories;
+﻿using Articles.Application.Interfaces.Repositories;
+using Articles.Application.UseCases.Auth.RefreshTokens;
 using Articles.Shared.DefaultServices;
 using Articles.Shared.UnitOfWork;
 

@@ -1,5 +1,5 @@
-﻿using Articles.Application.AuthUseCases.Commands.Logout;
-using Articles.Application.Interfaces.Repositories;
+﻿using Articles.Application.Interfaces.Repositories;
+using Articles.Application.UseCases.Auth.Logout;
 
 namespace Articles.UnitTests.UseCases;
 

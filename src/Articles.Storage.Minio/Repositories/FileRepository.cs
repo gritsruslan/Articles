@@ -31,7 +31,7 @@ internal class FileRepository(IMinioClient minioClient) : IFileRepository
 	{
 		var stream = new MemoryStream();
 
-		var fileStat = await minioClient.GetObjectAsync(
+		await minioClient.GetObjectAsync(
 			new GetObjectArgs()
 				.WithBucket(bucketName)
 				.WithObject(fileName)
@@ -50,13 +50,5 @@ internal class FileRepository(IMinioClient minioClient) : IFileRepository
 			new RemoveObjectArgs()
 				.WithBucket(bucketName)
 				.WithObject(fileName), cancellationToken);
-	}
-
-	public Task DeleteFiles(string bucketName, IList<string> fileNames, CancellationToken cancellationToken)
-	{
-		return minioClient.RemoveObjectsAsync(
-			new RemoveObjectsArgs()
-				.WithBucket(bucketName)
-				.WithObjects(fileNames), cancellationToken);
 	}
 }

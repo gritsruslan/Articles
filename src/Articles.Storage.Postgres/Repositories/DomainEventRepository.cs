@@ -1,18 +1,19 @@
 ﻿using System.Diagnostics;
 using Articles.Domain.DomainEvents;
+using Articles.Shared.DefaultServices;
 using Articles.Storage.Postgres.Entities;
 using Newtonsoft.Json;
 
 namespace Articles.Storage.Postgres.Repositories;
 
-public sealed class DomainEventRepository(ArticlesDbContext dbContext) : IDomainEventRepository
+public sealed class DomainEventRepository(ArticlesDbContext dbContext, IDateTimeProvider dateTimeProvider) : IDomainEventRepository
 {
 	public async Task Add(DomainEvent domainEvent, CancellationToken cancellationToken)
 	{
 		var outboxMessage = new OutboxMessage
 		{
 			Id = Guid.NewGuid(),
-			EmittedAt = DateTime.UtcNow,
+			EmittedAt = dateTimeProvider.UtcNow,
 			Type = domainEvent.GetType().AssemblyQualifiedName ??
 			       throw new ArgumentException("AssemblyQualifiedName of DomainEvent is null"),
 			ContentBlob = JsonConvert.SerializeObject(domainEvent),
@@ -39,7 +40,7 @@ public sealed class DomainEventRepository(ArticlesDbContext dbContext) : IDomain
 
 	// batch update (not really)
 	public async Task MarkAsProcessed(
-		IList<ProcessOutboxMessageResult> processResults,
+		IEnumerable<ProcessOutboxMessageResult> processResults,
 		CancellationToken cancellationToken)
 	{
 		foreach (var result in processResults)

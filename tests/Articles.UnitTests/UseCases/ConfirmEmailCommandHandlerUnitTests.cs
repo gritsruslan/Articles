@@ -1,5 +1,5 @@
-﻿using Articles.Application.AuthUseCases.Commands.ConfirmEmail;
-using Articles.Application.Interfaces.Repositories;
+﻿using Articles.Application.Interfaces.Repositories;
+using Articles.Application.UseCases.Auth.ConfirmEmail;
 
 namespace Articles.UnitTests.UseCases;
 

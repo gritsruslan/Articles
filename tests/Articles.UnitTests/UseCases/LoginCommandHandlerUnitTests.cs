@@ -1,5 +1,5 @@
-﻿using Articles.Application.AuthUseCases.Commands.Login;
-using Articles.Application.Interfaces.Repositories;
+﻿using Articles.Application.Interfaces.Repositories;
+using Articles.Application.UseCases.Auth.Login;
 using Articles.Domain.Errors;
 
 namespace Articles.UnitTests.UseCases;

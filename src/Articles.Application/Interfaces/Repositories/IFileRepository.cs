@@ -11,6 +11,4 @@ public interface IFileRepository
 	Task<Stream> GetFile(string bucketName, string fileName, CancellationToken cancellationToken);
 
 	Task DeleteFile(string bucketName, string fileName, CancellationToken cancellationToken);
-
-	Task DeleteFiles(string bucketName, IList<string> fileNames, CancellationToken cancellationToken);
 }

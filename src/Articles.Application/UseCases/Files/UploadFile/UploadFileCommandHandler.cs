@@ -1,6 +1,7 @@
 using Articles.Application.Interfaces.Repositories;
 using Articles.Domain.Constants;
 using Articles.Shared.Abstraction.CQRS;
+using Articles.Shared.DefaultServices;
 using Articles.Shared.UnitOfWork;
 using Microsoft.Extensions.Logging;
 
@@ -10,7 +11,8 @@ internal sealed class UploadFileCommandHandler(
 	IFileRepository fileRepository,
 	ILogger<UploadFileCommandHandler> logger,
 	IFileMetadataRepository metadataRepository,
-	IUnitOfWork unitOfWork) :
+	IUnitOfWork unitOfWork,
+	IDateTimeProvider dateTimeProvider) :
 	ICommandHandler<UploadFileCommand, string>
 {
 	public async Task<Result<string>> Handle(UploadFileCommand request, CancellationToken cancellationToken)
@@ -44,7 +46,7 @@ internal sealed class UploadFileCommandHandler(
 		{
 			Id = Guid.Parse(fileNewName),
 			FileFormat = format,
-			UploadedAt = DateTime.UtcNow,
+			UploadedAt = dateTimeProvider.UtcNow,
 			ArticleId = null
 		}, cancellationToken);
 		await fileRepository.UploadFile(

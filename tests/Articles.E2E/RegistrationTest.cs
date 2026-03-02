@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Articles.Application.AuthUseCases.Commands.Registration;
 using Articles.Application.Interfaces.Repositories;
+using Articles.Application.UseCases.Auth.Registration;
 
 namespace Articles.E2E;
 
