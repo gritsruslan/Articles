@@ -77,7 +77,7 @@ internal sealed class RegistrationCommandHandler(
 		await domainEventRepository.Add(
 			new UserRegisteredDomainEvent(id.Value, email.Value, name.Value), cancellationToken);
 
-		await scope.Commit(cancellationToken);
+		await scope.Commit(cancellationToken); //NullReferenceException here
 
 		return Result.Success();
 	}

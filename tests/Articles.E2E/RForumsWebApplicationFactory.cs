@@ -18,7 +18,14 @@ public class ArticlesWebApplicationFactory : WebApplicationFactory<Program>, IAs
 			new Dictionary<string, string>
 			{
 			["ConnectionStrings:Postgres"] = _postgresSqlContainer.GetConnectionString(),
-			["ConnectionStrings:Redis"] = _redisContainer.GetConnectionString()
+			["ConnectionStrings:Redis"] = _redisContainer.GetConnectionString(),
+			["ASPNETCORE_ENVIRONMENT"] = "Development",
+			["EmailConfirmationTokenOptions:Key"] =  "abcdabcdabcd1234",
+			["AccessTokenOptions:Key"] =  "VCwT8JrSfUPIql5qwOSGPLgQnWrTwULv",
+			["RefreshTokenOptions:Key"] =  "0BeUpZGAEBxWrXLOLEUTtgVgF5diWpYF",
+			["SupervisorUserOptions:Password"] =  "admin",
+			["MinioOptions:AccessKey"] =  "admin",
+			["MinioOptions:SecretKey"] =  "admin123"
 		}!).Build();
 
 		builder.UseConfiguration(newConfiguration);

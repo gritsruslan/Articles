@@ -23,7 +23,7 @@ public class RefreshTokensTests(ArticlesWebApplicationFactory factory)
 
 		await Task.Delay(100); // wait a bit
 
-		using var refreshResponse = await client.PostAsync("auth/refresh", new StringContent(string.Empty));
+		using var refreshResponse = await client.PostAsync("auth/refresh", null);
 		refreshResponse.IsSuccessStatusCode.Should().BeTrue();
 
 		var oldAccess = loginResponse.GetCookie(AuthTokenHeaders.AccessToken);
