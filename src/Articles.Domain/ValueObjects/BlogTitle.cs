@@ -12,7 +12,7 @@ public record struct BlogTitle
 
 
 	// Use only in cases where you are sure that the userName is valid
-	public static BlogTitle CreateVerified(string blogTitleStr) => new(blogTitleStr);
+	public static BlogTitle CreateVerified(string blogTitle) => new(blogTitle);
 
 	public static Result<BlogTitle> Create(string blogTitleStr)
 	{

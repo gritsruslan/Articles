@@ -3,13 +3,11 @@ using Articles.Domain.Constants;
 using Articles.Shared.Abstraction.CQRS;
 using Articles.Shared.DefaultServices;
 using Articles.Shared.UnitOfWork;
-using Microsoft.Extensions.Logging;
 
 namespace Articles.Application.UseCases.Files.UploadFile;
 
 internal sealed class UploadFileCommandHandler(
 	IFileRepository fileRepository,
-	ILogger<UploadFileCommandHandler> logger,
 	IFileMetadataRepository metadataRepository,
 	IUnitOfWork unitOfWork,
 	IDateTimeProvider dateTimeProvider) :
@@ -53,8 +51,6 @@ internal sealed class UploadFileCommandHandler(
 			bucketResult.Value, file.OpenReadStream(), fileNewName, file.ContentType);
 
 		await scope.Commit(cancellationToken);
-
-		logger.LogInformation("File Uploaded : {fileNewName}", fileNewName);
 
 		return fileFullName;
 	}

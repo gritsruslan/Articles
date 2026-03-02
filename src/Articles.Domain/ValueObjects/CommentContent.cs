@@ -12,21 +12,21 @@ public record struct CommentContent
 
 
 	// Use only in cases where you are sure that the userName is valid
-	public static CommentContent CreateVerified(string commentContentStr) => new(commentContentStr);
+	public static CommentContent CreateVerified(string commentContent) => new(commentContent);
 
-	public static Result<CommentContent> Create(string commentContentStr)
+	public static Result<CommentContent> Create(string commentContent)
 	{
-		if (string.IsNullOrWhiteSpace(commentContentStr))
+		if (string.IsNullOrWhiteSpace(commentContent))
 		{
 			return CommentErrors.EmptyContent();
 		}
 
-		if (commentContentStr.Length is < CommentConstants.ContentMinLength or > CommentConstants.ContentMaxLength)
+		if (commentContent.Length is < CommentConstants.ContentMinLength or > CommentConstants.ContentMaxLength)
 		{
-			return CommentErrors.InvalidContentLength(commentContentStr);
+			return CommentErrors.InvalidContentLength(commentContent);
 		}
 
-		return new CommentContent(commentContentStr);
+		return new CommentContent(commentContent);
 	}
 }
 

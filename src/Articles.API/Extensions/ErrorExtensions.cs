@@ -16,9 +16,8 @@ internal static class ErrorExtensions
 		return TypedResults.Json(error, statusCode: statusCode);
 	}
 
-	private static int ConvertErrorTypeToStatusCode(ErrorType errorType)
-	{
-		return errorType switch
+	private static int ConvertErrorTypeToStatusCode(ErrorType errorType) =>
+		errorType switch
 		{
 			ErrorType.Validation
 				or ErrorType.InvalidValue
@@ -33,5 +32,4 @@ internal static class ErrorExtensions
 			ErrorType.Gone => StatusCodes.Status410Gone,
 			_ => StatusCodes.Status500InternalServerError
 		};
-	}
 }

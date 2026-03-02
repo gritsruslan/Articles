@@ -12,20 +12,20 @@ public record struct UserName
 
 
 	// Use only in cases where you are sure that the userName is valid
-	public static UserName CreateVerified(string userNameStr) => new(userNameStr);
+	public static UserName CreateVerified(string userName) => new(userName);
 
-	public static Result<UserName> Create(string userNameStr)
+	public static Result<UserName> Create(string userName)
 	{
-		if (string.IsNullOrWhiteSpace(userNameStr))
+		if (string.IsNullOrWhiteSpace(userName))
 		{
 			return UserErrors.EmptyName();
 		}
 
-		if (userNameStr.Length is < UserConstants.NameMinLength or > UserConstants.NameMaxLength)
+		if (userName.Length is < UserConstants.NameMinLength or > UserConstants.NameMaxLength)
 		{
-			return UserErrors.InvalidNameLength(userNameStr);
+			return UserErrors.InvalidNameLength(userName);
 		}
 
-		return new UserName(userNameStr);
+		return new UserName(userName);
 	}
 }

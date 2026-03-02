@@ -6,9 +6,8 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace Articles.API.Extensions;
 
-public static class SecurityExtensions
+internal static class SecurityExtensions
 {
-
 	public static WebApplicationBuilder ConfigureMaxRequestBodySize(
 		this WebApplicationBuilder builder)
 	{

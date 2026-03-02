@@ -41,14 +41,9 @@ internal sealed class FileRepository(IMinioClient minioClient) : IFileRepository
 		return stream;
 	}
 
-	public Task DeleteFile(
-		string bucketName,
-		string fileName,
-		CancellationToken cancellationToken)
-	{
-		return minioClient.RemoveObjectAsync(
+	public Task DeleteFile(string bucketName, string fileName, CancellationToken cancellationToken) =>
+		minioClient.RemoveObjectAsync(
 			new RemoveObjectArgs()
 				.WithBucket(bucketName)
 				.WithObject(fileName), cancellationToken);
-	}
 }

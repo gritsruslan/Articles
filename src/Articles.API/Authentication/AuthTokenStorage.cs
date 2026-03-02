@@ -6,15 +6,13 @@ internal sealed class AuthTokenStorage(IHttpContextAccessor httpContextAccessor)
 {
 	private HttpContext HttpContext => httpContextAccessor.HttpContext!;
 
-	public void StoreAccessToken(string accessToken)
-	{
+	public void StoreAccessToken(string accessToken) =>
 		HttpContext.Response.Cookies.Append(AuthTokenHeaders.AccessToken, accessToken, new CookieOptions
 		{
 			HttpOnly = true,
 			Secure = true,
 			SameSite = SameSiteMode.Strict
 		});
-	}
 
 	public void StoreRefreshToken(string refreshToken) =>
 		HttpContext.Response.Cookies.Append(AuthTokenHeaders.RefreshToken, refreshToken, new CookieOptions

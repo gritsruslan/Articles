@@ -22,15 +22,11 @@ internal sealed class CommentRepository(ArticlesDbContext dbContext) : ICommentR
 		return dbContext.SaveChangesAsync(cancellationToken);
 	}
 
-	public Task<bool> ExistsById(CommentId commentId, CancellationToken cancellationToken)
-	{
-		return dbContext.Comments
-			.AnyAsync(c => c.Id == commentId.Value, cancellationToken);
-	}
+	public Task<bool> ExistsById(CommentId commentId, CancellationToken cancellationToken) =>
+		dbContext.Comments.AnyAsync(c => c.Id == commentId.Value, cancellationToken);
 
-	public Task<Comment?> GetById(CommentId commentId, CancellationToken cancellationToken)
-	{
-		return dbContext.Comments
+	public Task<Comment?> GetById(CommentId commentId, CancellationToken cancellationToken) =>
+		dbContext.Comments
 			.Where(c => c.Id == commentId.Value)
 			.Select(c => new Comment
 			{
@@ -42,22 +38,15 @@ internal sealed class CommentRepository(ArticlesDbContext dbContext) : ICommentR
 				UpdatedAt = c.UpdatedAt
 			})
 			.FirstOrDefaultAsync(cancellationToken);
-	}
 
-	public Task DeleteById(CommentId commentId, CancellationToken cancellationToken)
-	{
-		return dbContext.Comments
-			.Where(c => c.Id == commentId.Value)
-			.ExecuteDeleteAsync(cancellationToken);
-	}
+	public Task DeleteById(CommentId commentId, CancellationToken cancellationToken) =>
+		dbContext.Comments.Where(c => c.Id == commentId.Value).ExecuteDeleteAsync(cancellationToken);
 
-	public Task UpdateContent(CommentId commentId, CommentContent content, CancellationToken cancellationToken)
-	{
-		return dbContext.Comments
+	public Task UpdateContent(CommentId commentId, CommentContent content, CancellationToken cancellationToken) =>
+		dbContext.Comments
 			.Where(c => c.Id == commentId.Value)
 			.ExecuteUpdateAsync(s =>
 				s.SetProperty(c => c.Content, content.Value), cancellationToken);
-	}
 
 	public async Task<PagedData<CommentReadModel>>
 		GetReadModels(ArticleId articleId, PagedRequest pagedRequest, CancellationToken cancellationToken)

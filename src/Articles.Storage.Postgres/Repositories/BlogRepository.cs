@@ -20,21 +20,18 @@ internal sealed class BlogRepository(ArticlesDbContext dbContext) : IBlogReposit
 		return BlogId.Create(created.Entity.Id);
 	}
 
-	public Task<Blog?> GetById(BlogId id, CancellationToken cancellationToken)
-	{
-		return dbContext.Blogs
+	public Task<Blog?> GetById(BlogId id, CancellationToken cancellationToken) =>
+		dbContext.Blogs
 			.Where(b => b.Id == id.Value)
 			.Select(b => new Blog
-		{
-			Id = BlogId.Create(b.Id),
-			Title = BlogTitle.CreateVerified(b.Title)
-		}).FirstOrDefaultAsync(cancellationToken);
-	}
+			{
+				Id = BlogId.Create(b.Id),
+				Title = BlogTitle.CreateVerified(b.Title)
+			})
+			.FirstOrDefaultAsync(cancellationToken);
 
-	public Task<bool> ExistsById(BlogId id, CancellationToken cancellationToken)
-	{
-		return dbContext.Blogs.AnyAsync(b => b.Id == id.Value, cancellationToken);
-	}
+	public Task<bool> ExistsById(BlogId id, CancellationToken cancellationToken) =>
+		dbContext.Blogs.AnyAsync(b => b.Id == id.Value, cancellationToken);
 
 
 	public async Task<PagedData<BlogReadModel>> GetReadModels(

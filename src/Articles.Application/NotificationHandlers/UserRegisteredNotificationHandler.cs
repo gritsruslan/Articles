@@ -17,7 +17,7 @@ public class UserRegisteredNotificationHandler(
 {
 	public async Task Handle(UserRegisteredDomainEvent notification, CancellationToken cancellationToken)
 	{
-		var token = new EmailConfirmationToken()
+		var token = new EmailConfirmationToken
 		{
 			UserId = UserId.Create(notification.UserId),
 			IssuedAt = dateTimeProvider.UtcNow,

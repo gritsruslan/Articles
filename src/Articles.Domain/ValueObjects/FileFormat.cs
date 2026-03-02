@@ -11,9 +11,8 @@ public sealed record FileFormat(string Extension, string ContentType)
 
 	public string ContentType { get; set; } = ContentType;
 
-	public static Result<FileFormat> FromExtension(string extension)
-	{
-		return extension switch
+	public static Result<FileFormat> FromExtension(string extension) =>
+		extension switch
 		{
 			".jpeg" => FileFormats.Jpeg,
 			".png" => FileFormats.Png,
@@ -27,11 +26,9 @@ public sealed record FileFormat(string Extension, string ContentType)
 			".csv" => FileFormats.Csv,
 			_ => FileErrors.UnsupportedFileFormat()
 		};
-	}
 
-	public static Result<FileFormat> FromContentType(string contentType)
-	{
-		return contentType switch
+	public static Result<FileFormat> FromContentType(string contentType) =>
+		contentType switch
 		{
 			MediaTypeNames.Image.Jpeg => FileFormats.Jpeg,
 			MediaTypeNames.Image.Png => FileFormats.Png,
@@ -45,5 +42,4 @@ public sealed record FileFormat(string Extension, string ContentType)
 			"application/csv" => FileFormats.Csv,
 			_ => FileErrors.UnsupportedFileFormat()
 		};
-	}
 }

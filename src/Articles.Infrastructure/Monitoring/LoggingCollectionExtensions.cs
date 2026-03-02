@@ -41,10 +41,8 @@ public static class LoggingCollectionExtensions
 
 	private sealed class LogsTimestampEnricher : ILogEventEnricher
 	{
-		public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
-		{
+		public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory) =>
 			logEvent.AddPropertyIfAbsent(
 				propertyFactory.CreateProperty("timestamp", logEvent.Timestamp.UtcDateTime));
-		}
 	}
 }

@@ -5,12 +5,10 @@ namespace Articles.Storage.Postgres.Repositories;
 
 internal sealed class FileMetadataRepository(ArticlesDbContext dbContext) : IFileMetadataRepository
 {
-	public Task<bool> ExistsById(Guid fileId, CancellationToken cancellationToken)
-	{
-		return dbContext.FileMetadata.AnyAsync(f => f.Id == fileId, cancellationToken);
-	}
+	public Task<bool> ExistsById(Guid fileId, CancellationToken cancellationToken) =>
+		dbContext.FileMetadata.AnyAsync(f => f.Id == fileId, cancellationToken);
 
-	public async Task Add(Articles.Domain.Models.FileMetadata fileMetadata, CancellationToken cancellationToken)
+	public Task Add(Articles.Domain.Models.FileMetadata fileMetadata, CancellationToken cancellationToken)
 	{
 		dbContext.FileMetadata.Add(new FileMetadata
 		{
@@ -20,7 +18,7 @@ internal sealed class FileMetadataRepository(ArticlesDbContext dbContext) : IFil
 			UploadedAt = fileMetadata.UploadedAt
 		});
 
-		await dbContext.SaveChangesAsync(cancellationToken);
+		return dbContext.SaveChangesAsync(cancellationToken);
 	}
 
 	public async Task<IEnumerable<Domain.Models.FileMetadata>> GetUnlinked(int take, TimeSpan? olderThan, CancellationToken cancellationToken)
@@ -44,24 +42,18 @@ internal sealed class FileMetadataRepository(ArticlesDbContext dbContext) : IFil
 			.ToListAsync(cancellationToken);
 	}
 
-	public Task LinkToArticle(IEnumerable<Guid> fileIds, ArticleId articleId, CancellationToken cancellationToken)
-	{
-		return dbContext.FileMetadata
+	public Task LinkToArticle(IEnumerable<Guid> fileIds, ArticleId articleId, CancellationToken cancellationToken) =>
+		dbContext.FileMetadata
 			.Where(f => fileIds.Contains(f.Id))
 			.ExecuteUpdateAsync(c => c.SetProperty(f => f.ArticleId, articleId.Value), cancellationToken);
-	}
 
-	public Task UnlinkFromArticle(ArticleId articleId, CancellationToken cancellationToken)
-	{
-		return dbContext.FileMetadata
+	public Task UnlinkFromArticle(ArticleId articleId, CancellationToken cancellationToken) =>
+		dbContext.FileMetadata
 			.Where(f => f.ArticleId == articleId.Value)
 			.ExecuteUpdateAsync(c => c.SetProperty(f => f.ArticleId, (Guid?) null), cancellationToken);
-	}
 
-	public Task DeleteById(Guid fileId, CancellationToken cancellationToken)
-	{
-		return dbContext.FileMetadata
+	public Task DeleteById(Guid fileId, CancellationToken cancellationToken) =>
+		dbContext.FileMetadata
 			.Where(f => f.Id == fileId)
 			.ExecuteDeleteAsync(cancellationToken);
-	}
 }

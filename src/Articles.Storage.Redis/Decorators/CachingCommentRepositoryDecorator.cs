@@ -32,11 +32,11 @@ internal sealed class CachingCommentRepositoryDecorator(
 		CommentId commentId, CommentContent content, CancellationToken cancellationToken) =>
 		inner.UpdateContent(commentId, content, cancellationToken);
 
-	public async Task<PagedData<CommentReadModel>> GetReadModels(
+	public Task<PagedData<CommentReadModel>> GetReadModels(
 		ArticleId articleId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var key = GenerateReadModelKey(articleId, pagedRequest.Page, pagedRequest.PageSize);
-		return await redisHelper.CacheAsJson(
+		return redisHelper.CacheAsJson(
 			key,
 			() => inner.GetReadModels(articleId, pagedRequest, cancellationToken),
 			pagedRequest.Page <= 10, // cache only the first 10 pages

@@ -28,9 +28,8 @@ internal sealed class SessionManager(
 		};
 	}
 
-	public Session Create(UserId userId, string userAgent, DateTime expiresAt)
-	{
-		return new Session
+	public Session Create(UserId userId, string userAgent, DateTime expiresAt) =>
+		new()
 		{
 			Id = SessionId.New(),
 			UserId = userId,
@@ -38,7 +37,6 @@ internal sealed class SessionManager(
 			IssuedAt = dateTimeProvider.UtcNow,
 			ExpiresAt = expiresAt
 		};
-	}
 
 	public Result Validate(Session session, UserId userId, string userAgent)
 	{

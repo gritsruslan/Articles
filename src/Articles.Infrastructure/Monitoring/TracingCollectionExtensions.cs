@@ -42,12 +42,10 @@ public static class TracingCollectionExtensions
 		return services;
 	}
 
-	private static bool Filter(HttpContext httpContext)
-	{
-		return !httpContext.Request.Path.StartsWithSegments("/metrics") &&
-		       !httpContext.Request.Path.StartsWithSegments("/swagger") &&
-		       !httpContext.Request.Path.StartsWithSegments("/health");
-	}
+	private static bool Filter(HttpContext httpContext) =>
+		!httpContext.Request.Path.StartsWithSegments("/metrics") &&
+		!httpContext.Request.Path.StartsWithSegments("/swagger") &&
+		!httpContext.Request.Path.StartsWithSegments("/health");
 
 	private static void EnrichWithHttpResponse(Activity activity, HttpResponse response)
 	{
