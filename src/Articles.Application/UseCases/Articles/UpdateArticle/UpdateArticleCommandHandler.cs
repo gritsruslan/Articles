@@ -1,18 +1,26 @@
+using Articles.Application.Interfaces.Authentication;
 using Articles.Application.Interfaces.Repositories;
 using Articles.Shared.Abstraction.CQRS;
 
 namespace Articles.Application.UseCases.Articles.UpdateArticle;
 
 internal sealed class UpdateArticleCommandHandler(
-	IArticleRepository repository) : ICommandHandler<UpdateArticleCommand>
+	IArticleRepository repository,
+	IApplicationUserProvider userProvider) : ICommandHandler<UpdateArticleCommand>
 {
 	public async Task<Result> Handle(UpdateArticleCommand request, CancellationToken cancellationToken)
 	{
 		var articleId = ArticleId.Create(request.ArticleId);
+		var article = await repository.GetById(articleId, cancellationToken);
 
-		if (!await repository.ExistsById(articleId, cancellationToken))
+		if (article is null)
 		{
 			return ArticleErrors.NotFound(articleId);
+		}
+
+		if (article.AuthorId != userProvider.CurrentUser.Id)
+		{
+			return ArticleErrors.NotAnAuthor();
 		}
 
 		var titleResult = ArticleTitle.Create(request.NewTitle);

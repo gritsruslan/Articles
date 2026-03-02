@@ -32,6 +32,10 @@ internal static class ArticleEndpoints
 		return app;
 	}
 
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
+	[ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+	[ProducesResponseType<Error>(StatusCodes.Status422UnprocessableEntity)]
 	private static async Task<IResult> UpdateArticle(
 		[FromRoute] Guid articleId,
 		[FromBody] UpdateArticleRequest request,
