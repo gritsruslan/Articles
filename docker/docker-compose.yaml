@@ -108,7 +108,8 @@ services:
 
   api:
     build:
-      context: .
+      dockerfile: .
+      context: ../
     container_name: articles-api
     image: articles-api:latest
     ports:
@@ -131,6 +132,8 @@ services:
       SupervisorUserOptions__Password: admin
       MinioOptions__AccessKey: admin
       MinioOptions__SecretKey: admin123
+    depends_on:
+      - postgres
 
 
 
