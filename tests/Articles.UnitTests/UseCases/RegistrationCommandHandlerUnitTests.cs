@@ -45,7 +45,20 @@ public class RegistrationCommandHandlerUnitTests
 		_userExistsByDomainIdSetup.Returns(Task.FromResult(false));
 
 		_domainEventRepositoryMock = new Mock<IDomainEventRepository>();
+
+
+		var scopeMock = new Mock<IUnitOfWorkScope>();
+		scopeMock
+			.Setup(x => x.Commit(It.IsAny<CancellationToken>()))
+			.Returns(Task.CompletedTask);
+		scopeMock
+			.Setup(x => x.DisposeAsync())
+			.Returns(ValueTask.CompletedTask);
+
 		_unitOfWorkMock = new Mock<IUnitOfWork>();
+		_unitOfWorkMock
+			.Setup(x => x.StartScope(It.IsAny<CancellationToken>()))
+			.ReturnsAsync(scopeMock.Object);
 
 		_registrationHandler = new RegistrationCommandHandler(
 			passwordHasherMock.Object,
@@ -78,7 +91,7 @@ public class RegistrationCommandHandlerUnitTests
 		var result = await _registrationHandler.Handle(invalidCommand, CancellationToken.None);
 
 		result.IsFailure.Should().BeTrue();
-		result.Error.Type.Should().Be(ErrorType.InvalidValue);
+		result.Error.Type.Should().Be(ErrorType.Validation);
 		_userRepositoryMock.Verify(r => r.Add(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Never);
 	}
 
@@ -90,7 +103,7 @@ public class RegistrationCommandHandlerUnitTests
 		var result = await _registrationHandler.Handle(invalidCommand, CancellationToken.None);
 
 		result.IsFailure.Should().BeTrue();
-		result.Error.Type.Should().Be(ErrorType.InvalidValue);
+		result.Error.Type.Should().Be(ErrorType.Validation);
 		_userRepositoryMock.Verify(r => r.Add(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Never);
 	}
 

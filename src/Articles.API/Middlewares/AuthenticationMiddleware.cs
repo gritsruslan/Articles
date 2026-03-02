@@ -32,6 +32,7 @@ internal sealed class AuthenticationMiddleware(RequestDelegate next)
 			await next(httpContext);
 			return;
 		}
+
 		var token = decryptionResult.Value;
 		var validationResult = accessTokenManager.Validate(token);
 		if (validationResult.IsFailure)
@@ -40,7 +41,6 @@ internal sealed class AuthenticationMiddleware(RequestDelegate next)
 			await next(httpContext);
 			return;
 		}
-
 
 		var apiUser = await authenticationService.Authenticate(token.UserId, CancellationToken.None);
 		applicationUserProvider.CurrentUser = apiUser;

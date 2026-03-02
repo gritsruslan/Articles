@@ -7,28 +7,28 @@ namespace Articles.Domain.ValueObjects;
 
 public partial record struct Email
 {
-	private Email(string emailStr) => Value = emailStr;
+	private Email(string email) => Value = email;
 
 	public string Value { get; }
 
-	public static Result<Email> Create(string emailStr)
+	public static Result<Email> Create(string email)
 	{
-		if (string.IsNullOrWhiteSpace(emailStr))
+		if (string.IsNullOrWhiteSpace(email))
 		{
 			return UserErrors.EmptyEmail();
 		}
 
-		if (emailStr.Length is < UserConstants.EmailMinLength or > UserConstants.EmailMaxLength)
+		if (email.Length is < UserConstants.EmailMinLength or > UserConstants.EmailMaxLength)
 		{
-			return UserErrors.InvalidEmailLength(emailStr);
+			return UserErrors.InvalidEmailLength(email);
 		}
 
-		if (!EmailRegex().IsMatch(emailStr))
+		if (!EmailRegex().IsMatch(email))
 		{
-			return UserErrors.InvalidEmail(emailStr);
+			return UserErrors.InvalidEmail(email);
 		}
 
-		return new Email(emailStr);
+		return new Email(email);
 	}
 
 	// Use only in cases where you are sure that the email is valid

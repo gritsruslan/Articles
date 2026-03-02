@@ -36,40 +36,28 @@ internal sealed class EmailConfirmationTokenManager(
 		string encryptedToken,
 		CancellationToken cancellationToken)
 	{
-		string json;
 		try
 		{
-			json = await cryptoService.DecryptAsync(encryptedToken, _key, cancellationToken);
+			string json = await cryptoService.DecryptAsync(encryptedToken, _key, cancellationToken);
+			EmailConfirmationToken? token = JsonConvert.DeserializeObject<EmailConfirmationToken>(json);
+
+			if (token is null)
+			{
+				logger.LogWarning(
+					"Failed to deserialize json email confirmation token into EmailConfirmationToken type, " +
+					"the json is {EmailConfirmationTokenJson}", json);
+
+				return SecurityErrors.InvalidEmailConfirmationToken();
+			}
+
+			return token;
 		}
 		catch (Exception ex)
 		{
 			logger.LogWarning(ex, "Failed to decrypt email confirmation token, maybe someone is " +
-			                      "trying to forge it. Encrypted value is {EncryptedEmailConfirmationToken}",
+			                      "trying to forge it. Encrypted value is {encryptedEmailConfirmationToken}",
 				encryptedToken);
 			return SecurityErrors.InvalidEmailConfirmationToken();
 		}
-
-		EmailConfirmationToken? token;
-		try
-		{
-			token = JsonConvert.DeserializeObject<EmailConfirmationToken>(json);
-		}
-		catch (Exception ex)
-		{
-			logger.LogWarning(
-				"Failed to deserialize json email confirmation token into EmailConfirmationToken type, " +
-				"the json is {EmailConfirmationTokenJson}," +
-				"exceptions is {Exception}", json, ex);
-			return SecurityErrors.InvalidEmailConfirmationToken();
-		}
-		if (token is null)
-		{
-			logger.LogWarning(
-				"Failed to deserialize json email confirmation token into EmailConfirmationToken type, " +
-				"the json is {EmailConfirmationTokenJson}", json);
-			return SecurityErrors.InvalidEmailConfirmationToken();
-		}
-
-		return token;
 	}
 }

@@ -39,7 +39,7 @@ public class ConfirmEmailTests(ArticlesWebApplicationFactory factory, ITestOutpu
 		testOutputHelper.WriteLine($"Token : {token}");
 
 		using var confirmEmailResponse = await client.PostAsync(
-			$"auth/confirm-email?token={token}", new StringContent(string.Empty));
+			$"auth/confirm-email?token={token}", null);
 		confirmEmailResponse.IsSuccessStatusCode.Should().BeTrue();
 
 		var user = await userRepository.GetByEmail(Email.CreateVerified(email), CancellationToken.None);
@@ -59,7 +59,7 @@ public class ConfirmEmailTests(ArticlesWebApplicationFactory factory, ITestOutpu
 		var token = "INVALID_TOKEN";
 
 		using var confirmEmailResponse = await client.PostAsync(
-			$"auth/confirm-email?token={token}", new StringContent(string.Empty));
+			$"auth/confirm-email?token={token}", null);
 		confirmEmailResponse.IsSuccessStatusCode.Should().BeFalse();
 
 		var user = await GetUserRepository().GetByEmail(Email.CreateVerified(email), CancellationToken.None);

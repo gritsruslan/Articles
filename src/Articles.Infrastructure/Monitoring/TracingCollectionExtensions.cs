@@ -21,7 +21,7 @@ public static class TracingCollectionExtensions
 				ResourceBuilder.CreateDefault().AddService(OverallConstants.ApiName)
 			)
 			// collect only 10% of all traces
-			// child traces inherit from the parent
+			// child traces inherit from a parent
 			.SetSampler(
 				new ParentBasedSampler(
 					rootSampler: new TraceIdRatioBasedSampler(0.1)))
@@ -42,12 +42,10 @@ public static class TracingCollectionExtensions
 		return services;
 	}
 
-	private static bool Filter(HttpContext httpContext)
-	{
-		return !httpContext.Request.Path.StartsWithSegments("/metrics") &&
-		       !httpContext.Request.Path.StartsWithSegments("/swagger") &&
-		       !httpContext.Request.Path.StartsWithSegments("/health");
-	}
+	private static bool Filter(HttpContext httpContext) =>
+		!httpContext.Request.Path.StartsWithSegments("/metrics") &&
+		!httpContext.Request.Path.StartsWithSegments("/swagger") &&
+		!httpContext.Request.Path.StartsWithSegments("/health");
 
 	private static void EnrichWithHttpResponse(Activity activity, HttpResponse response)
 	{

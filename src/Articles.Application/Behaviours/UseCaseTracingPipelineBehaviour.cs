@@ -19,8 +19,9 @@ internal sealed class UseCaseTracingPipelineBehaviour<TRequest, TResponse>(
 			return await next(cancellationToken);
 		}
 
+		const string useCaseActivityName = "Articles.UseCase";
 		using var activity = useCaseTracingSource.ActivitySource
-			.StartActivity("Articles.UseCase", ActivityKind.Internal, default(ActivityContext));
+			.StartActivity(useCaseActivityName, ActivityKind.Internal, default(ActivityContext));
 		activity?.AddTag("request.type", request.GetType().Name);
 
 		try

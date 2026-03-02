@@ -4,11 +4,11 @@ using Minio.DataModel.Args;
 
 namespace Articles.Storage.Minio.Initializer;
 
-public sealed class MinioBucketsInitializer : IMinioBucketsInitializer
+internal sealed class MinioBucketsInitializer : IMinioBucketsInitializer
 {
 	public async Task Initialize(IMinioClient minioClient)
 	{
-		string[] buckets = [FileBucketNames.Images, FileBucketNames.Videos, FileBucketNames.Other];
+		var buckets = FileBucketNames.AllBuckets;
 
 		foreach (var bucket in buckets)
 		{

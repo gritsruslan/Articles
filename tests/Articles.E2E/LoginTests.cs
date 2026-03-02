@@ -1,5 +1,4 @@
-﻿using Articles.API.Authentication;
-using Articles.API.Constants;
+﻿using Articles.API.Constants;
 
 namespace Articles.E2E;
 

@@ -70,10 +70,10 @@ public static class DependencyInjection
 
 	private static IServiceCollection ConfigureMailing(this IServiceCollection services)
 	{
-		return services.AddTransient<IMailSender, MailSender>(static serviceProvider =>
+		return services.AddTransient<IMailSender, MailSender>(static sp =>
 		{
-			var smtpOptions = serviceProvider.GetRequiredService<IOptions<SmtpClientOptions>>().Value;
-			var mailingOptions = serviceProvider.GetRequiredService<IOptions<MailingOptions>>();
+			var smtpOptions = sp.GetRequiredService<IOptions<SmtpClientOptions>>().Value;
+			var mailingOptions = sp.GetRequiredService<IOptions<MailingOptions>>();
 			var smtpClient = new SmtpClient(smtpOptions.Host, smtpOptions.Port);
 			return new MailSender(mailingOptions, smtpClient);
 		});

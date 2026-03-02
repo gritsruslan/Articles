@@ -16,7 +16,7 @@ public sealed class ArticleSearchReadModel
 
 	public Guid AuthorId { get; set; }
 
-	public string AuthorName { get; set; }
+	public string AuthorName { get; set; } = null!;
 
 	public long ViewsCount { get; set; }
 

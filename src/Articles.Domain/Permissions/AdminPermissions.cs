@@ -1,6 +1,7 @@
 ﻿namespace Articles.Domain.Permissions;
 
-// add admin permissions starts with 999
+// add admin permissions begin with 999
+// for future
 public enum AdminPermissions
 {
 	BlockUser = 999_01,

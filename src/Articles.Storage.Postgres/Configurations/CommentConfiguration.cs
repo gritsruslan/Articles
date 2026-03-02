@@ -8,21 +8,21 @@ internal sealed class CommentConfiguration : IEntityTypeConfiguration<CommentEnt
 {
 	public void Configure(EntityTypeBuilder<CommentEntity> builder)
 	{
-		builder.HasKey(e => e.Id);
+		builder.HasKey(c => c.Id);
 
 		builder
-			.Property(e => e.Content)
+			.Property(c => c.Content)
 			.HasMaxLength(CommentConstants.ContentMaxLength);
 
 		builder
-			.HasOne(e => e.Article)
+			.HasOne(c => c.Article)
 			.WithMany(a => a.Comments)
-			.HasForeignKey(e => e.ArticleId)
+			.HasForeignKey(c => c.ArticleId)
 			.OnDelete(DeleteBehavior.Cascade);
 
 		builder
-			.HasOne(e => e.Author)
+			.HasOne(c => c.Author)
 			.WithMany()
-			.HasForeignKey(e => e.AuthorId);
+			.HasForeignKey(c => c.AuthorId);
 	}
 }

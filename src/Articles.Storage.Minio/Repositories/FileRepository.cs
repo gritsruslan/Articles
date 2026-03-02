@@ -4,7 +4,7 @@ using Minio.DataModel.Args;
 
 namespace Articles.Storage.Minio.Repositories;
 
-internal class FileRepository(IMinioClient minioClient) : IFileRepository
+internal sealed class FileRepository(IMinioClient minioClient) : IFileRepository
 {
 	public Task UploadFile(
 		string bucketName,
@@ -41,14 +41,9 @@ internal class FileRepository(IMinioClient minioClient) : IFileRepository
 		return stream;
 	}
 
-	public Task DeleteFile(
-		string bucketName,
-		string fileName,
-		CancellationToken cancellationToken)
-	{
-		return minioClient.RemoveObjectAsync(
+	public Task DeleteFile(string bucketName, string fileName, CancellationToken cancellationToken) =>
+		minioClient.RemoveObjectAsync(
 			new RemoveObjectArgs()
 				.WithBucket(bucketName)
 				.WithObject(fileName), cancellationToken);
-	}
 }

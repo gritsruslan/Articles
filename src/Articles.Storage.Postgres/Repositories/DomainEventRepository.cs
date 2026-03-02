@@ -6,9 +6,9 @@ using Newtonsoft.Json;
 
 namespace Articles.Storage.Postgres.Repositories;
 
-public sealed class DomainEventRepository(ArticlesDbContext dbContext, IDateTimeProvider dateTimeProvider) : IDomainEventRepository
+internal sealed class DomainEventRepository(ArticlesDbContext dbContext, IDateTimeProvider dateTimeProvider) : IDomainEventRepository
 {
-	public async Task Add(DomainEvent domainEvent, CancellationToken cancellationToken)
+	public Task Add(DomainEvent domainEvent, CancellationToken cancellationToken)
 	{
 		var outboxMessage = new OutboxMessage
 		{
@@ -22,24 +22,22 @@ public sealed class DomainEventRepository(ArticlesDbContext dbContext, IDateTime
 		};
 
 		dbContext.OutboxMessages.Add(outboxMessage);
-		await dbContext.SaveChangesAsync(cancellationToken);
+		return dbContext.SaveChangesAsync(cancellationToken);
 	}
 
-	public async Task<IEnumerable<OutboxMessage>> GetUnprocessed(int take, CancellationToken cancellationToken)
-	{
-		return await dbContext.OutboxMessages
+	public async Task<IEnumerable<OutboxMessage>> GetUnprocessed(int take, CancellationToken cancellationToken) =>
+		await dbContext.OutboxMessages
 			.AsTracking() //enable tracking for batch update
 			.Where(m => m.ProcessedAt == null)
 			.OrderBy(m => m.EmittedAt)
 			.Take(take)
 			.ToListAsync(cancellationToken);
-	}
 
-	public async Task<int> GetQueueSize() =>
-		await dbContext.OutboxMessages.Where(m => m.ProcessedAt == null).CountAsync();
+	public Task<int> GetQueueSize() =>
+		dbContext.OutboxMessages.Where(m => m.ProcessedAt == null).CountAsync();
 
 	// batch update (not really)
-	public async Task MarkAsProcessed(
+	public Task MarkAsProcessed(
 		IEnumerable<ProcessOutboxMessageResult> processResults,
 		CancellationToken cancellationToken)
 	{
@@ -51,6 +49,6 @@ public sealed class DomainEventRepository(ArticlesDbContext dbContext, IDateTime
 			message.Error = result.Error;
 		}
 
-		await dbContext.SaveChangesAsync(cancellationToken);
+		return dbContext.SaveChangesAsync(cancellationToken);
 	}
 }

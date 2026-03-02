@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Articles.Storage.Postgres.Configurations;
 
-public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
+internal sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
 {
 	public void Configure(EntityTypeBuilder<OutboxMessage> builder)
 	{
@@ -13,11 +13,11 @@ public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<Outbox
 		builder.Property(o => o.ContentBlob).HasColumnType("json");
 
 		builder.Property(o => o.TraceId)
-			.HasMaxLength(OverallConstants.TraceIdSize)
+			.HasMaxLength(MonitoringConstants.TraceIdSize)
 			.IsFixedLength();
 
 		builder.Property(o => o.SpanId)
-			.HasMaxLength(OverallConstants.SpanIdSize)
+			.HasMaxLength(MonitoringConstants.SpanIdSize)
 			.IsFixedLength();
 	}
 }

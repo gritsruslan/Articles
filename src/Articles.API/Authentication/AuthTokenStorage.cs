@@ -2,29 +2,45 @@
 
 namespace Articles.API.Authentication;
 
-internal sealed class AuthTokenStorage(IHttpContextAccessor httpContextAccessor) : IAuthTokenStorage
+internal sealed class AuthTokenStorage(
+	IHttpContextAccessor httpContextAccessor,
+	IWebHostEnvironment environment) : IAuthTokenStorage
 {
 	private HttpContext HttpContext => httpContextAccessor.HttpContext!;
 
 	public void StoreAccessToken(string accessToken)
 	{
-		HttpContext.Response.Cookies.Append(AuthTokenHeaders.AccessToken, accessToken, new CookieOptions
+		var cookieOptions = new CookieOptions
 		{
 			HttpOnly = true,
-			Secure = true,
+			Secure = false,
 			SameSite = SameSiteMode.Strict
-		});
+		};
+
+		if (environment.IsProduction())
+		{
+			cookieOptions.Secure = true;
+		}
+
+		HttpContext.Response.Cookies.Append(AuthTokenHeaders.AccessToken, accessToken, cookieOptions);
 	}
 
 	public void StoreRefreshToken(string refreshToken)
 	{
-		HttpContext.Response.Cookies.Append(AuthTokenHeaders.RefreshToken, refreshToken, new CookieOptions
+		var cookieOptions = new CookieOptions
 		{
 			HttpOnly = true,
-			Secure = true,
+			Secure = false,
 			SameSite = SameSiteMode.Strict,
-			Path = "/auth/refresh"
-		});
+		};
+
+		if (environment.IsProduction())
+		{
+			cookieOptions.Secure = true;
+			cookieOptions.Path = "/auth/refresh";
+		}
+
+		HttpContext.Response.Cookies.Append(AuthTokenHeaders.RefreshToken, refreshToken, cookieOptions);
 	}
 
 	public string? GetRefreshToken() => HttpContext.Request.Cookies[AuthTokenHeaders.RefreshToken];
