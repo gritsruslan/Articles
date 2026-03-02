@@ -17,7 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="UseCases\Articles\" />
       <Folder Include="UseCases\Auth\" />
       <Folder Include="UseCases\Blogs\" />
       <Folder Include="UseCases\Comments\" />

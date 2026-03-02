@@ -2,6 +2,7 @@ using Articles.Application.Interfaces.Repositories;
 using Articles.Domain.Identifiers;
 using Articles.Domain.Models;
 using Articles.Domain.ReadModels;
+using Articles.Domain.ValueObjects;
 using Articles.Shared.Abstraction;
 using Articles.Shared.Abstraction.Pagination;
 using Articles.Shared.DefaultServices;
@@ -29,6 +30,13 @@ internal sealed class CachingArticleRepositoryDecorator(
 
 	public Task<bool> ExistsById(ArticleId articleId, CancellationToken cancellationToken) =>
 		inner.ExistsById(articleId, cancellationToken);
+
+	public async Task Update(ArticleId articleId, ArticleTitle newTitle, ArticleData newData, CancellationToken cancellationToken)
+	{
+		var key = GenerateArticleKey(articleId);
+		await database.KeyDeleteAsync(key);
+		await inner.Update(articleId, newTitle, newData, cancellationToken);
+	}
 
 	public async Task DeleteById(ArticleId articleId, CancellationToken cancellationToken)
 	{

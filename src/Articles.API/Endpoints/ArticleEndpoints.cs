@@ -1,5 +1,4 @@
 using Articles.API.Constants;
-using Articles.API.Extensions;
 using Articles.API.Handlers;
 using Articles.API.Requests;
 using Articles.Application.UseCases.Articles.CreateComment;
@@ -7,9 +6,9 @@ using Articles.Application.UseCases.Articles.DeleteArticle;
 using Articles.Application.UseCases.Articles.GetArticle;
 using Articles.Application.UseCases.Articles.GetArticleComments;
 using Articles.Application.UseCases.Articles.GetArticles;
+using Articles.Application.UseCases.Articles.UpdateArticle;
 using Articles.Domain.Models;
 using Articles.Domain.ReadModels;
-using Articles.Shared.Abstraction;
 using Articles.Shared.Abstraction.Pagination;
 using Articles.Shared.Result;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +25,21 @@ internal static class ArticleEndpoints
 		group.MapGet("{articleId:guid}", GetArticle);
 		group.MapGet("search", GetArticleReadModels);
 		group.MapDelete("{articleId:guid}", DeleteArticle);
+		group.MapPatch("{articleId:guid}", UpdateArticle);
 		group.MapPost("{articleId:guid}/comments", CreateComment);
 		group.MapGet("{articleId:guid}/comments", GetArticleComments);
 
 		return app;
+	}
+
+	private static async Task<IResult> UpdateArticle(
+		[FromRoute] Guid articleId,
+		[FromBody] UpdateArticleRequest request,
+		[FromServices] GlobalCommandHandler handler,
+		CancellationToken cancellationToken)
+	{
+		var command = new UpdateArticleCommand(articleId, request.NewTitle, request.NewData);
+		return await handler.Handle(command, Results.Ok, cancellationToken);
 	}
 
 	[ProducesResponseType<PagedData<CommentReadModel>>(StatusCodes.Status200OK)]

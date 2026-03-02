@@ -12,6 +12,8 @@ public interface IArticleRepository
 
 	Task<bool> ExistsById(ArticleId articleId, CancellationToken cancellationToken);
 
+	Task Update(ArticleId articleId, ArticleTitle newTitle, ArticleData newData, CancellationToken cancellationToken);
+
 	Task DeleteById(ArticleId articleId, CancellationToken cancellationToken);
 
 	Task IncrementViewsCount(ArticleId articleId, CancellationToken cancellationToken);

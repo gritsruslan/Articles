@@ -6,6 +6,5 @@ public enum ArticlePermissions
 {
 	CreateArticle = 102_01,
 	DeleteOwnArticle = 102_02,
-	LikeArticle = 102_03,
-	UnlikeArticle = 102_04,
+	UpdateOwnArticle = 102_03
 }
