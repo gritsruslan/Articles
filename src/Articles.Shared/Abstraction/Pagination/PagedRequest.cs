@@ -2,7 +2,7 @@ using Articles.Shared.Result;
 
 namespace Articles.Shared.Abstraction.Pagination;
 
-public class PagedRequest
+public sealed class PagedRequest
 {
 	private PagedRequest(int page, int pageSize)
 	{
@@ -14,7 +14,7 @@ public class PagedRequest
 	{
 		if (page <= 0)
 		{
-			return new Error(ErrorType.InvalidValue, "Page must be greater than zero");
+			return new Error(ErrorType.InvalidValue, "Page number must be greater than zero");
 		}
 
 		if (pageSize <= 0)

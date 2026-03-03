@@ -5,9 +5,9 @@ namespace Articles.Shared.Options;
 public sealed class UsageLimitingPolicy
 {
 	[Required]
-	public required string Name { get; init; } = null!;
+	public string Name { get; set; } = null!;
 
-	public int OperationsCount { get; init; }
+	public int OperationsCount { get; set; }
 
-	public TimeSpan RefreshTime { get; init; }
+	public TimeSpan RefreshTime { get; set; }
 }

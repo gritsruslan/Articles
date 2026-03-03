@@ -4,7 +4,7 @@ public class BlogReadModel
 {
 	public int Id { get; set; }
 
-	public required string Title { get; set; }
+	public string Title { get; set; } = null!;
 
 	public int ArticlesCount { get; set; }
 

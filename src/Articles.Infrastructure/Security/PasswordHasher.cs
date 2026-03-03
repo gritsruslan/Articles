@@ -10,15 +10,13 @@ internal sealed class PasswordHasher : IPasswordHasher
 
 	public byte[] GenerateSalt() => RandomNumberGenerator.GetBytes(SecurityConstants.SaltLength);
 
-	public byte[] HashPassword(string password, byte[] salt)
-	{
-		return KeyDerivation.Pbkdf2(
+	public byte[] HashPassword(string password, byte[] salt) =>
+		KeyDerivation.Pbkdf2(
 			password,
 			salt,
 			KeyDerivationPrf.HMACSHA256,
 			HashIterationsCount,
 			SecurityConstants.PasswordHashLength);
-	}
 
 	public bool VerifyPassword(byte[] passwordHash, byte[] salt, string password) =>
 		HashPassword(password, salt).SequenceEqual(passwordHash);

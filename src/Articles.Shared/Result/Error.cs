@@ -24,11 +24,10 @@ public sealed class Error(
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string? InvalidObjectValue { get; } = invalidObjectValueString;
 
-	[JsonIgnore] public bool IsOnlyErrorCode => Message is null && InvalidObject is null;
+	[JsonIgnore] public bool HasOnlyErrorCode => Message is null && InvalidObject is null;
 
-	private static string ConvertErrorTypeToCode(ErrorType errorType)
-	{
-		return errorType switch
+	private static string ConvertErrorTypeToCode(ErrorType errorType) =>
+		errorType switch
 		{
 			ErrorType.Validation or ErrorType.InvalidValue => "object.is.invalid",
 			ErrorType.NotFound => "object.not.found",
@@ -39,5 +38,4 @@ public sealed class Error(
 			ErrorType.Forbidden => "forbidden",
 			_ => "error"
 		};
-	}
 }

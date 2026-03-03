@@ -8,24 +8,24 @@ internal sealed class ArticleEntityConfiguration : IEntityTypeConfiguration<Arti
 {
 	public void Configure(EntityTypeBuilder<ArticleEntity> builder)
 	{
-		builder.HasKey(x => x.Id);
+		builder.HasKey(a => a.Id);
 
 		builder
-			.Property(x => x.Title)
+			.Property(a => a.Title)
 			.HasMaxLength(ArticleConstants.TitleMaxLength);
 
 		builder
-			.Property(x => x.Data)
+			.Property(a => a.Data)
 			.HasMaxLength(ArticleConstants.DataMaxLength);
 
 		builder
-			.HasOne(x => x.Author)
+			.HasOne(a => a.Author)
 			.WithMany()
-			.HasForeignKey(x => x.AuthorId);
+			.HasForeignKey(a => a.AuthorId);
 
 		builder
-			.HasOne(x => x.Blog)
+			.HasOne(a => a.Blog)
 			.WithMany()
-			.HasForeignKey(x => x.BlogId);
+			.HasForeignKey(a => a.BlogId);
 	}
 }

@@ -8,18 +8,12 @@ namespace Articles.Infrastructure.Authorization;
 
 internal sealed class RoleManager : IRoleManager
 {
-	private RoleManager(Dictionary<int, Role> rolesDictionary)
-	{
-		RolesDictionary = rolesDictionary;
-	}
+	private RoleManager(Dictionary<int, Role> rolesDictionary) => RolesDictionary = rolesDictionary;
 
 	private IReadOnlyDictionary<int, Role> RolesDictionary { get; }
 
-	public Role GetRole(RoleId roleId)
-	{
-		return RolesDictionary[roleId.Value] ??
-		       throw new InvalidOperationException($"Role with id {roleId} not found!");
-	}
+	public Role GetRole(RoleId roleId) =>
+		RolesDictionary[roleId.Value] ?? throw new InvalidOperationException($"Role with id {roleId} not found!");
 
 	public Role Guest() => GetRole(RoleId.Create((int)Roles.Guest));
 

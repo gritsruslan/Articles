@@ -10,5 +10,5 @@ public interface IRefreshTokenManager
 		CancellationToken cancellationToken);
 	Result Validate(RefreshToken refreshToken);
 
-	Task<Result<RefreshToken>> Decrypt(string? refreshTokenStr, CancellationToken cancellationToken);
+	Task<Result<RefreshToken>> Decrypt(string? refreshToken, CancellationToken cancellationToken);
 }

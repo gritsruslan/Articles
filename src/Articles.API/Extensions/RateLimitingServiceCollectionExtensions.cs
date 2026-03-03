@@ -12,9 +12,9 @@ internal static class RateLimitingServiceCollectionExtensions
 		{
 			options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
-			options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+			options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(_ =>
 				RateLimitPartition.GetFixedWindowLimiter(
-					"global",
+					RateLimitingConstants.GlobalPartitionKey,
 					_ => new FixedWindowRateLimiterOptions
 					{
 						PermitLimit = 1000,
@@ -26,7 +26,7 @@ internal static class RateLimitingServiceCollectionExtensions
 				var ip = httpContext.Connection.RemoteIpAddress?.ToString();
 				if (ip is null)
 				{
-					return RateLimitPartition.GetNoLimiter("no-ip");
+					return RateLimitPartition.GetNoLimiter(RateLimitingConstants.UndefinedIpAddressPartitionKey);
 				}
 
 				return RateLimitPartition.GetFixedWindowLimiter(ip, _ =>
@@ -44,7 +44,7 @@ internal static class RateLimitingServiceCollectionExtensions
 
 				if (userProvider.CurrentUser.IsGuest)
 				{
-					return RateLimitPartition.GetNoLimiter("Guest");
+					return RateLimitPartition.GetNoLimiter(RateLimitingConstants.GuestPartitionKey);
 				}
 
 				var userId = userProvider.CurrentUser.Id.Value.ToString();

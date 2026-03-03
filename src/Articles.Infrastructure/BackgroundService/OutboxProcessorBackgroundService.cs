@@ -26,11 +26,9 @@ public class OutboxProcessorBackgroundService(
 	private static readonly ConcurrentDictionary<string, Type> DomainEventTypesDictionary = new();
 
 	//	for caching, needs AssemblyQualifiedName
-	private static Type GetOrAddDomainEventType(string typename)
-	{
-		return DomainEventTypesDictionary.GetOrAdd(typename, typeName => Type.GetType(typeName) ??
-		   throw new TypeLoadException($"Could not find type '{typeName}' for DomainEvent"));
-	}
+	private static Type GetOrAddDomainEventType(string typename) =>
+		DomainEventTypesDictionary.GetOrAdd(typename, typeName => Type.GetType(typeName) ?? throw new TypeLoadException(
+			$"Could not find type '{typeName}' for DomainEvent"));
 
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{

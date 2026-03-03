@@ -7,28 +7,28 @@ namespace Articles.Domain.ValueObjects;
 
 public partial record struct DomainId
 {
-	private DomainId(string domainIdStr) => Value = domainIdStr;
+	private DomainId(string domainId) => Value = domainId;
 
 	public string Value { get; }
 
-	public static Result<DomainId> Create(string domainIdStr)
+	public static Result<DomainId> Create(string domainId)
 	{
-		if (string.IsNullOrWhiteSpace(domainIdStr))
+		if (string.IsNullOrWhiteSpace(domainId))
 		{
 			return UserErrors.EmptyDomainId();
 		}
 
-		if (domainIdStr.Length is < UserConstants.DomainIdMinLength or > UserConstants.DomainIdMaxLength)
+		if (domainId.Length is < UserConstants.DomainIdMinLength or > UserConstants.DomainIdMaxLength)
 		{
-			return UserErrors.InvalidDomainIdLength(domainIdStr);
+			return UserErrors.InvalidDomainIdLength(domainId);
 		}
 
-		if (!DomainIdRegex().IsMatch(domainIdStr))
+		if (!DomainIdRegex().IsMatch(domainId))
 		{
-			return UserErrors.InvalidDomainId(domainIdStr);
+			return UserErrors.InvalidDomainId(domainId);
 		}
 
-		return new DomainId(domainIdStr);
+		return new DomainId(domainId);
 	}
 
 	// Use only in cases where you are sure that the domain id is valid

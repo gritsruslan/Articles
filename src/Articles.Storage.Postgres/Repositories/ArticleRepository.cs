@@ -43,33 +43,23 @@ internal sealed class ArticleRepository(ArticlesDbContext dbContext) : IArticleR
 			.FirstOrDefaultAsync(cancellationToken);
 	}
 
-	public Task<bool> ExistsById(ArticleId articleId, CancellationToken cancellationToken)
-	{
-		return dbContext.Articles
-			.AnyAsync(a => a.Id == articleId.Value, cancellationToken);
-	}
+	public Task<bool> ExistsById(ArticleId articleId, CancellationToken cancellationToken) =>
+		dbContext.Articles.AnyAsync(a => a.Id == articleId.Value, cancellationToken);
 
-	public Task Update(ArticleId articleId, ArticleTitle newTitle, ArticleData newData, CancellationToken cancellationToken)
-	{
-		return dbContext.Articles
+	public Task Update(ArticleId articleId, ArticleTitle newTitle, ArticleData newData, CancellationToken cancellationToken) =>
+		dbContext.Articles
 			.Where(a => a.Id == articleId.Value)
 			.ExecuteUpdateAsync(s =>
 				s.SetProperty(a => a.Title, newTitle.Value)
-					.SetProperty(a => a.Data, newData.Value), cancellationToken);
-	}
+				 .SetProperty(a => a.Data, newData.Value), cancellationToken);
 
-	public Task DeleteById(ArticleId articleId, CancellationToken cancellationToken)
-	{
-		return dbContext.Articles
-			.Where(a => a.Id == articleId.Value)
+	public Task DeleteById(ArticleId articleId, CancellationToken cancellationToken) =>
+		dbContext.Articles.Where(a => a.Id == articleId.Value)
 			.ExecuteDeleteAsync(cancellationToken);
-	}
 
-	public Task IncrementViewsCount(ArticleId articleId, CancellationToken cancellationToken)
-	{
-		return dbContext.Articles.Where(a => a.Id == articleId.Value)
+	public Task IncrementViewsCount(ArticleId articleId, CancellationToken cancellationToken) =>
+		dbContext.Articles.Where(a => a.Id == articleId.Value)
 			.ExecuteUpdateAsync(s => s.SetProperty(a => a.ViewsCount, a => a.ViewsCount + 1), cancellationToken);
-	}
 
 	public async Task<PagedData<ArticleSearchReadModel>> GetReadModelsByBlog(
 		BlogId blogId, PagedRequest pagedRequest, CancellationToken cancellationToken)

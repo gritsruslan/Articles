@@ -28,7 +28,6 @@ internal sealed class AesSymmetricCryptoService : ISymmetricCryptoService
 			await cryptoStream.FlushFinalBlockAsync(cancellationToken);
 		}
 
-		//return Convert.ToBase64String(memoryStream.ToArray());
 		return UrlSafeBase64.ToUrlSafeBase64(memoryStream.ToArray());
 	}
 

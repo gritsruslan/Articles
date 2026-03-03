@@ -3,19 +3,13 @@ using StackExchange.Redis;
 
 namespace Articles.Storage.Redis;
 
-// helper class for redis caching
-internal sealed class RedisJsonCache(IDatabase database)
+// helper class for redis aside caching
+internal sealed class RedisHelper(IDatabase database)
 {
-	public Task<T> CacheAsJson<T>(
+	public async Task<T> CacheAsJson<T>(
 		RedisKey key,
 		Func<Task<T>> factory,
-		TimeSpan? ttl = null) =>
-		CacheAsJsonWithCondition(key, true, factory, ttl);
-
-	public async Task<T> CacheAsJsonWithCondition<T>(
-		RedisKey key,
-		bool cacheCondition,
-		Func<Task<T>> factory,
+		bool cacheCondition = true,
 		TimeSpan? ttl = null)
 	{
 		if (!cacheCondition)

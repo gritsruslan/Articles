@@ -21,7 +21,7 @@ public class LogoutTests(ArticlesWebApplicationFactory factory)
 			JsonContent.Create(new LoginRequest(email, password, RememberMe : false)));
 		loginResponse.IsSuccessStatusCode.Should().BeTrue();
 
-		using var logoutResponse = await client.PostAsync("auth/logout", new StringContent(string.Empty));
+		using var logoutResponse = await client.PostAsync("auth/logout", null);
 
 		logoutResponse.IsSuccessStatusCode.Should().BeTrue();
 		logoutResponse.HasMeaningfulCookie(AuthTokenHeaders.AccessToken).Should().BeFalse();

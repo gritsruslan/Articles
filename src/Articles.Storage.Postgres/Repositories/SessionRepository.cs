@@ -19,9 +19,8 @@ internal sealed class SessionRepository(ArticlesDbContext dbContext) : ISessionR
 		return dbContext.SaveChangesAsync(cancellationToken);
 	}
 
-	public Task<Session?> GetById(SessionId sessionId, CancellationToken cancellationToken)
-	{
-		return dbContext.Sessions
+	public Task<Session?> GetById(SessionId sessionId, CancellationToken cancellationToken) =>
+		dbContext.Sessions
 			.Where(s => s.Id == sessionId.Value)
 			.Select(s => new Session
 			{
@@ -32,10 +31,6 @@ internal sealed class SessionRepository(ArticlesDbContext dbContext) : ISessionR
 				ExpiresAt = s.ExpiresAt
 			})
 			.FirstOrDefaultAsync(cancellationToken);
-	}
-
-	public Task<bool> AnyByUserId(UserId userId, CancellationToken cancellationToken) =>
-		dbContext.Sessions.AnyAsync(s => s.UserId == userId.Value, cancellationToken);
 
 	public Task DeleteById(SessionId sessionId, CancellationToken cancellationToken) =>
 		dbContext.Sessions

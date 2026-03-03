@@ -10,7 +10,7 @@ public static class FileErrors
 
 	public static Error TooLargeFile() =>
 		new(ErrorType.EntityTooLarge,
-			$"File is too large. Max file size is {SupportedFileFormats.MaxFileSizeMb}",
+			$"File is too large. Max file size is {FileFormats.MaxFileSizeMb}",
 			"file.too.large");
 
 	public static Error FileNotFound(string fileName) =>

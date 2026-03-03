@@ -12,7 +12,7 @@ namespace Articles.Storage.Redis.Decorators;
 
 internal sealed class CachingCommentRepositoryDecorator(
 	ICommentRepository inner,
-	RedisJsonCache redisJsonCache,
+	RedisHelper redisHelper,
 	IDatabase database) : ICommentRepository
 {
 	public Task Add(Comment comment, CancellationToken cancellationToken) =>
@@ -32,14 +32,14 @@ internal sealed class CachingCommentRepositoryDecorator(
 		CommentId commentId, CommentContent content, CancellationToken cancellationToken) =>
 		inner.UpdateContent(commentId, content, cancellationToken);
 
-	public async Task<PagedData<CommentReadModel>> GetReadModels(
+	public Task<PagedData<CommentReadModel>> GetReadModels(
 		ArticleId articleId, PagedRequest pagedRequest, CancellationToken cancellationToken)
 	{
 		var key = GenerateReadModelKey(articleId, pagedRequest.Page, pagedRequest.PageSize);
-		return await redisJsonCache.CacheAsJsonWithCondition(
+		return redisHelper.CacheAsJson(
 			key,
-			pagedRequest.Page <= 10,
 			() => inner.GetReadModels(articleId, pagedRequest, cancellationToken),
+			pagedRequest.Page <= 10, // cache only the first 10 pages
 			ReadModelTtl);
 	}
 
